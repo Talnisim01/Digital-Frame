@@ -136,11 +136,13 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 /* ============ עיגולי רקע (glow orbs) — PNG עם שקיפות אמיתית, בלי blend mode ============ */
 .orb-bg{position:absolute;pointer-events:none;background-size:contain;background-repeat:no-repeat;
   background-position:center;z-index:0;will-change:transform}
-/* סקשן 1 — אליפסה גבוהה שנחתכת מלמעלה ומלמטה, פרוסה על רוב המסך */
-.hero .orb-bg{z-index:1;width:min(98vw,1700px);height:132vh;top:50%;left:50%;translate:-50% -50%;
+/* סקשן 1 — אליפסה רחבה שגולשת מעבר לקצוות.
+   ממורכזת עם inset+margin:auto ולא עם translate — כדי ש-GSAP לא יילחם על ה-transform */
+.hero .orb-bg{z-index:1;position:absolute;inset:0;margin:auto;
+  width:min(120vw,2000px);height:125vh;
   background-image:url('assets/orb-arcs.png');background-size:100% 100%;opacity:1}
 @media(max-width:900px){
-  .hero .orb-bg{width:170vw;height:96vh;top:46%}
+  .hero .orb-bg{width:200vw;height:88vh}
 }
 
 /* ============ מחוון סקשנים בתחתית ============ */
@@ -156,9 +158,9 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
   text-align:center;padding:120px clamp(24px,5vw,72px);overflow:hidden;background:var(--paper)}
 /* סקשן 3 — זוהר ענק ורך, ממוקם גבוה, + קשת עדינה מעליו (כמו ברפרנס) */
-.next-sec .orb3{width:min(150vw,1900px);aspect-ratio:1;top:42%;left:50%;translate:-50% -50%;
+.next-sec .orb3{position:absolute;inset:0;margin:auto;width:min(150vw,1900px);height:150vh;
   background-image:url('assets/glow.png');opacity:.62;filter:blur(20px)}
-.next-sec .orb-dome{width:min(110vw,1400px);aspect-ratio:1;top:52%;left:50%;translate:-50% -50%;
+.next-sec .orb-dome{position:absolute;inset:0;margin:auto;width:min(110vw,1400px);height:110vh;
   background-image:url('assets/dome.png');opacity:.5}
 .next-inner{position:relative;z-index:2;max-width:60ch}
 .next-sec .eyebrow{justify-content:center;color:var(--orange)}
@@ -313,6 +315,9 @@ function start(){
   /* מעבר סקשן 1 -> 2 */
   gsap.to('.hero .content',{y:-90,opacity:0,scale:.96,ease:'none',
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  /* העיגול נע לאט יותר מהגלילה ודוהה — כך הוא לא "נחתך" פתאום מתחת לסקשן הבא */
+  gsap.to('.hero .orb-bg',{yPercent:-18,scale:1.12,opacity:0,ease:'none',
+    scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
   gsap.to('.blobs',{scale:1.25,opacity:.5,ease:'none',
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
   gsap.from('[data-r]',{y:50,opacity:0,duration:1.1,stagger:.15,ease:'expo.out',
@@ -374,9 +379,8 @@ function start(){
     });
   }
   /* תנועה עדינה של העיגולים — בלי סיבוב, כי הם נמתחים לאליפסה והסיבוב היה מעוות אותם */
-  document.querySelectorAll('.orb-bg').forEach((o,i)=>{
-    gsap.to(o,{scale:1.05,duration:14+i*3,yoyo:true,repeat:-1,ease:'sine.inOut'});
-    gsap.to(o,{xPercent:i%2?2:-2,duration:20+i*4,yoyo:true,repeat:-1,ease:'sine.inOut'});
+  document.querySelectorAll('.next-sec .orb-bg').forEach((o,i)=>{
+    gsap.to(o,{scale:1.04,duration:16+i*3,yoyo:true,repeat:-1,ease:'sine.inOut'});
   });
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
