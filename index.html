@@ -12,6 +12,8 @@
   --paper:#F1EFED; --light:#FEFDFB; --silver:#E9EAEC;
   --ink:#141B24; --gray:#A3A6AA;
   --orange:#ff6711; --orange-soft:#FFB878;
+  --color-black:#000000; --color-black-opacity:rgba(0,0,0,.1);
+  --color-black-dark:#111822; --color-black-soft:#101820; --color-neutral:#8a8f8d;
   --ease:cubic-bezier(.19,1,.22,1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -39,6 +41,9 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .logo{font-weight:800;font-size:22px;letter-spacing:.18em}
 .logo b{color:var(--orange)}
 .divider{width:1px;height:20px;background:rgba(20,27,36,.2)}
+/* מפריד אנכי בין ה-CTA להמבורגר */
+.nav-sep{width:1px;height:26px;background:var(--color-black-opacity);
+  background-color:rgba(17,24,34,.25);margin-inline:6px}
 .dash{width:42px;height:42px;border:1px solid rgba(20,27,36,.22);border-radius:50%;display:grid;place-items:center;transition:.4s var(--ease)}
 .dash i{width:12px;height:1px;background:var(--ink);display:block}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
@@ -56,17 +61,17 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .talk:hover{border-color:var(--orange)}
 
 /* ההמבורגר — שני קווים באותו אורך, מוסטים אופקית (מדורג). בהובר מתיישרים לאותו קו */
-/* ההמבורגר — שני קווים באותו אורך.
-   ברירת מחדל: מוסטים לכיוונים הפוכים ב-translateX.
-   בהובר: שניהם ל-translateX(0) => מתיישרים למקבילים מושלמים. */
-.burger{display:flex;flex-direction:column;gap:9px;cursor:pointer;background:none;border:0;
-  padding:10px 0;width:56px;overflow:hidden}
-.burger i{display:block;width:46px;height:2px;background:var(--ink);
+/* ההמבורגר — מידות מדויקות: 60x3px, #111822.
+   ברירת מחדל: העליון translateX(-20%), התחתון translateX(20%).
+   בהובר: שניהם translateX(0) => מקבילים מיושרים. */
+.burger{display:flex;flex-direction:column;gap:10px;cursor:pointer;background:none;border:0;
+  padding:10px 0;width:60px}
+.burger i{display:block;width:60px;height:3px;background:var(--color-black-dark);
   transition:transform .45s var(--ease)}
-.burger i:first-child{transform:translateX(-10px)}   /* עליון מוסט שמאלה */
-.burger i:last-child{transform:translateX(10px)}     /* תחתון מוסט ימינה */
+.burger i:first-child{transform:translateX(-20%)}
+.burger i:last-child{transform:translateX(20%)}
 .burger:hover i:first-child,
-.burger:hover i:last-child{transform:translateX(0)}  /* מתיישרים */
+.burger:hover i:last-child{transform:translateX(0)}
 @media(max-width:920px){.nav-c{display:none}.burger{display:flex}}
 
 /* ============ SECTION 1 — HERO ============ */
@@ -97,9 +102,10 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .lede{margin-top:clamp(30px,4.5vh,48px);max-width:56ch;font-size:clamp(15px,1.45vw,19px);font-weight:300;line-height:1.8;opacity:0;animation:fade 1s var(--ease) .95s forwards}
 .lede .dim{color:var(--gray)}
 @keyframes fade{to{opacity:1}}
-.cta{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:19px 40px;
+.cta{display:inline-flex;align-items:center;gap:16px;background:var(--ink);color:#fff;padding:19px 40px;
   border-radius:100px;font-size:14px;letter-spacing:.1em;box-shadow:0 22px 45px -22px rgba(20,27,36,.7);transition:box-shadow .5s}
-.cta .arw{width:16px;height:16px;transform:rotate(-45deg);transition:transform .4s var(--ease)}
+.cta .arw{width:20px;height:20px;flex:none;margin-inline-start:2px;
+  transform:rotate(-45deg);transition:transform .4s var(--ease)}
 .cta:hover .arw{transform:rotate(-45deg) translate(4px,0)}
 .cta:hover{box-shadow:0 28px 55px -20px rgba(20,27,36,.5)}
 .hero .cta{margin-top:clamp(38px,5.5vh,60px);opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
@@ -154,23 +160,40 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
    ו-background-size:contain מבטיח שהוא לעולם לא נמתח.
    הרוחב נגזר מהציר הגדול (max) — כך הוא תמיד גולש מעבר לקצוות בלי להימעך. */
 .hero .orb-bg{z-index:1;position:absolute;inset:0;margin:auto;
-  width:max(88vw,104vh);   /* הוקטן — פחות מציף */
+  width:max(112vw,118vh);   /* רחב יותר — ממלא את הצדדים */
   aspect-ratio:2600/2639;
   background-image:url('assets/orb-arcs.png');
   background-size:contain;background-position:center;background-repeat:no-repeat;
   opacity:1}
 @media(max-width:900px){
-  .hero .orb-bg{width:max(150vw,84vh)}
+  .hero .orb-bg{width:max(178vw,92vh)}
 }
 
 /* ============ מחוון סקשנים בתחתית ============ */
-.sec-nav{position:fixed;bottom:26px;left:50%;translate:-50% 0;z-index:45;display:flex;align-items:flex-end;
-  gap:14px;height:26px}
-.sec-nav button{width:1px;height:16px;background:rgba(20,27,36,.35);border:0;padding:0;cursor:pointer;
-  transition:height .4s var(--ease),background .4s var(--ease);position:relative}
-.sec-nav button::after{content:"";position:absolute;inset:-8px -6px;}   /* אזור לחיצה גדול יותר */
-.sec-nav button.active{height:26px;background:var(--ink)}
-@media(max-width:900px){.sec-nav{bottom:18px;gap:11px}}
+/* ===== מחוון הסקשנים התחתון ===== */
+.bars-indicator{
+  position:fixed; left:50%; bottom:2.5rem; z-index:7;
+  transform:translate(-50%,0);
+  pointer-events:auto; user-select:none;
+  transition:opacity 1s ease-out;
+  width:129px; height:30px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+}
+.bars-indicator .bar{
+  width:2px; height:40%;                       /* לא-פעיל: 40% מ-30px */
+  background:var(--color-black-dark);
+  opacity:.35;
+  cursor:pointer;
+  transition:height .5s var(--ease), opacity .5s var(--ease);
+}
+/* הפס הפעיל נקבע לפי data-active-bar על ההורה */
+.bars-indicator[data-active-bar="1"] .bar-1,
+.bars-indicator[data-active-bar="2"] .bar-2,
+.bars-indicator[data-active-bar="3"] .bar-3,
+.bars-indicator[data-active-bar="4"] .bar-4{
+  height:100%; opacity:1;                      /* פעיל: מלוא 30px */
+}
+@media(max-width:900px){.bars-indicator{bottom:1.5rem;width:104px}}
 
 /* ============ SECTION 3 ============ */
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
@@ -206,7 +229,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   <div class="right">
     <a href="#contact" class="talk">בוא נדבר
       <svg class="arw" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h14M12 6l6 6-6 6"/></svg></a>
-    <span class="divider"></span>
+    <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
   </div>
 </nav>
@@ -256,10 +279,11 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 </section>
 
 <!-- מחוון הסקשנים — הפס הגבוה = הסקשן הנוכחי -->
-<div class="sec-nav" id="secNav">
-  <button data-go="#hero" class="active" aria-label="סקשן 1"></button>
-  <button data-go="#about" aria-label="סקשן 2"></button>
-  <button data-go="#services" aria-label="סקשן 3"></button>
+<div class="bars-indicator" id="secNav" data-active-bar="1">
+  <div class="bar bar-1" data-go="#hero"></div>
+  <div class="bar bar-2" data-go="#about"></div>
+  <div class="bar bar-3" data-go="#services"></div>
+  <div class="bar bar-4" data-go="#contact"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -368,19 +392,26 @@ function start(){
   /* ניווט דביק */
   addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>60));
 
-  /* ===== מחוון הסקשנים בתחתית ===== */
-  const secIds=['#hero','#about','#services'];
-  const secBtns=[...document.querySelectorAll('#secNav button')];
-  const secEls=secIds.map(id=>document.querySelector(id));
-  secBtns.forEach(b=>b.addEventListener('click',()=>{
-    const t=document.querySelector(b.dataset.go);
-    lenis?lenis.scrollTo(t):t.scrollIntoView({behavior:'smooth'});
-  }));
+  /* ===== מחוון הסקשנים בתחתית =====
+     המצב הפעיל נקבע ע"י data-active-bar על ההורה, וה-CSS מגיב לו.
+     הפס הפעיל = הסקשן שנמצא כרגע במסך. */
+  const indicator=document.getElementById('secNav');
+  const bars=[...indicator.querySelectorAll('.bar')];
+  bars.forEach(b=>{
+    b.style.pointerEvents='auto';
+    b.addEventListener('click',()=>{
+      const t=document.querySelector(b.dataset.go);
+      if(t) lenis?lenis.scrollTo(t):t.scrollIntoView({behavior:'smooth'});
+    });
+  });
   function updateSecNav(){
     const mid=scrollY+innerHeight/2;
-    let cur=0;
-    secEls.forEach((el,i)=>{ if(el && el.offsetTop<=mid) cur=i; });
-    secBtns.forEach((b,i)=>b.classList.toggle('active',i===cur));
+    let cur=1;                                  // 1-based, תואם ל-data-active-bar
+    bars.forEach((b,i)=>{
+      const el=document.querySelector(b.dataset.go);
+      if(el && el.offsetTop<=mid) cur=i+1;
+    });
+    indicator.setAttribute('data-active-bar',cur);
   }
   addEventListener('scroll',updateSecNav); updateSecNav();
 
