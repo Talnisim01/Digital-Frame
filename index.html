@@ -59,7 +59,7 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 
 /* ============ SECTION 1 — HERO ============ */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;text-align:center;padding:150px 24px 100px;overflow:hidden}
+  justify-content:center;text-align:center;padding:clamp(150px,20vh,220px) 24px clamp(110px,16vh,170px);overflow:hidden}
 .hero::after{content:"";position:absolute;z-index:4;left:0;right:0;bottom:0;height:22vh;pointer-events:none;
   background:linear-gradient(180deg,transparent 0%,rgba(241,239,237,.6) 60%,var(--paper) 100%)}
 .light{display:none;position:absolute;z-index:0;top:-8%;left:50%;translate:-50% 0;width:84vw;height:118%;border-radius:50%;background:var(--light);filter:blur(26px)}
@@ -76,20 +76,20 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .grain{position:absolute;z-index:2;inset:0;pointer-events:none;opacity:.45;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")}
 .content{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center}
-h1{font-weight:200;font-size:clamp(38px,7.2vw,104px);line-height:1.08;letter-spacing:-.02em;max-width:16ch}
+h1{font-weight:200;font-size:clamp(38px,6.6vw,96px);line-height:1.22;letter-spacing:-.015em;max-width:17ch}
 h1 strong{font-weight:700}
 h1 .ln{display:block;overflow:hidden}
 h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:rise 1.2s var(--ease) forwards}
 .ln:nth-child(1)>span{animation-delay:.25s}.ln:nth-child(2)>span{animation-delay:.4s}
 @keyframes rise{to{transform:none;opacity:1}}
-.lede{margin-top:34px;max-width:60ch;font-size:clamp(15px,1.5vw,20px);font-weight:300;line-height:1.65;opacity:0;animation:fade 1s var(--ease) .95s forwards}
+.lede{margin-top:clamp(30px,4.5vh,48px);max-width:56ch;font-size:clamp(15px,1.45vw,19px);font-weight:300;line-height:1.8;opacity:0;animation:fade 1s var(--ease) .95s forwards}
 .lede .dim{color:var(--gray)}
 @keyframes fade{to{opacity:1}}
 .cta{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;padding:19px 40px;
   border-radius:100px;font-size:14px;letter-spacing:.1em;box-shadow:0 22px 45px -22px rgba(20,27,36,.7);transition:box-shadow .5s}
 .cta svg{width:15px;height:15px;stroke:var(--orange);transition:transform .4s var(--ease)}
 .cta:hover{box-shadow:0 28px 55px -20px rgba(20,27,36,.5)}.cta:hover svg{transform:translate(-4px,-4px)}
-.hero .cta{margin-top:44px;opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
+.hero .cta{margin-top:clamp(38px,5.5vh,60px);opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
 .ticks{position:absolute;z-index:3;bottom:34px;left:50%;translate:-50% 0;display:flex;gap:26px}
 .ticks i{width:1px;height:22px;background:rgba(20,27,36,.35);animation:blink 2.4s infinite}
 .ticks i:nth-child(2){animation-delay:.2s}.ticks i:nth-child(3){animation-delay:.4s}.ticks i:nth-child(4){animation-delay:.6s}
@@ -136,13 +136,18 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 /* ============ עיגולי רקע (glow orbs) — PNG עם שקיפות אמיתית, בלי blend mode ============ */
 .orb-bg{position:absolute;pointer-events:none;background-size:contain;background-repeat:no-repeat;
   background-position:center;z-index:0;will-change:transform}
-/* סקשן 1 — אליפסה רחבה שגולשת מעבר לקצוות.
-   ממורכזת עם inset+margin:auto ולא עם translate — כדי ש-GSAP לא יילחם על ה-transform */
+/* סקשן 1 — העיגול.
+   התיקון הקריטי: aspect-ratio נועל את היחס המקורי של הנכס (ריבועי),
+   ו-background-size:contain מבטיח שהוא לעולם לא נמתח.
+   הרוחב נגזר מהציר הגדול (max) — כך הוא תמיד גולש מעבר לקצוות בלי להימעך. */
 .hero .orb-bg{z-index:1;position:absolute;inset:0;margin:auto;
-  width:min(120vw,2000px);height:125vh;
-  background-image:url('assets/orb-arcs.png');background-size:100% 100%;opacity:1}
+  width:max(104vw,122vh);
+  aspect-ratio:2600/2639;
+  background-image:url('assets/orb-arcs.png');
+  background-size:contain;background-position:center;background-repeat:no-repeat;
+  opacity:1}
 @media(max-width:900px){
-  .hero .orb-bg{width:200vw;height:88vh}
+  .hero .orb-bg{width:max(150vw,84vh)}
 }
 
 /* ============ מחוון סקשנים בתחתית ============ */
