@@ -42,8 +42,10 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .logo b{color:var(--orange)}
 .divider{width:1px;height:20px;background:rgba(20,27,36,.2)}
 /* מפריד אנכי בין ה-CTA להמבורגר */
-.nav-sep{width:1px;height:26px;background:var(--color-black-opacity);
-  background-color:rgba(17,24,34,.25);margin-inline:6px}
+/* מפריד: בדיוק 1x13px, #111822, ממורכז אנכית */
+.nav-sep{flex:0 0 auto;width:1px;height:13px;
+  background-color:var(--color-black-dark);
+  align-self:center;margin-inline:10px}
 .dash{width:42px;height:42px;border:1px solid rgba(20,27,36,.22);border-radius:50%;display:grid;place-items:center;transition:.4s var(--ease)}
 .dash i{width:12px;height:1px;background:var(--ink);display:block}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
@@ -159,11 +161,17 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
    התיקון הקריטי: aspect-ratio נועל את היחס המקורי של הנכס (ריבועי),
    ו-background-size:contain מבטיח שהוא לעולם לא נמתח.
    הרוחב נגזר מהציר הגדול (max) — כך הוא תמיד גולש מעבר לקצוות בלי להימעך. */
-.hero .orb-bg{z-index:1;position:absolute;inset:0;margin:auto;
-  width:max(112vw,118vh);   /* רחב יותר — ממלא את הצדדים */
+/* עוטף שממרכז: grid מטפל נכון בילד שגדול מהמכולה — הוא גולש
+   סימטרית לשני הצדדים. inset+margin:auto נכשל כאן כי במצב over-constrained
+   ב-RTL הדפדפן מתעלם מ-left ומעגן ל-right, וזה הסיט את העיגול שמאלה. */
+.hero .orb-wrap{position:absolute;inset:0;z-index:1;
+  display:grid;place-items:center;
+  overflow:hidden;pointer-events:none}
+.hero .orb-bg{position:relative;
+  width:max(112vw,118vh);
   aspect-ratio:2600/2639;
   background-image:url('assets/orb-arcs.png');
-  background-size:contain;background-position:center;background-repeat:no-repeat;
+  background-size:contain;background-position:center center;background-repeat:no-repeat;
   opacity:1}
 @media(max-width:900px){
   .hero .orb-bg{width:max(178vw,92vh)}
@@ -235,7 +243,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 </nav>
 
 <section class="hero" id="hero">
-  <div class="orb-bg"></div>
+  <div class="orb-wrap"><div class="orb-bg"></div></div>
   <div class="blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
   <div class="grain"></div>
   <div class="content">
