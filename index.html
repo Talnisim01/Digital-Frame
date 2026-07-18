@@ -136,9 +136,12 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 /* ============ עיגולי רקע (glow orbs) — PNG עם שקיפות אמיתית, בלי blend mode ============ */
 .orb-bg{position:absolute;pointer-events:none;background-size:contain;background-repeat:no-repeat;
   background-position:center;z-index:0;will-change:transform}
-/* סקשן 1 — העיגול עם שתי הקשתות, גדול וממלא */
-.hero .orb-bg{z-index:1;width:min(96vw,1250px);aspect-ratio:1;top:48%;left:50%;translate:-50% -50%;
-  background-image:url('assets/orb-arcs.png');opacity:1}
+/* סקשן 1 — אליפסה גבוהה שנחתכת מלמעלה ומלמטה, פרוסה על רוב המסך */
+.hero .orb-bg{z-index:1;width:min(98vw,1700px);height:132vh;top:50%;left:50%;translate:-50% -50%;
+  background-image:url('assets/orb-arcs.png');background-size:100% 100%;opacity:1}
+@media(max-width:900px){
+  .hero .orb-bg{width:170vw;height:96vh;top:46%}
+}
 
 /* ============ מחוון סקשנים בתחתית ============ */
 .sec-nav{position:fixed;bottom:26px;left:50%;translate:-50% 0;z-index:45;display:flex;align-items:flex-end;
@@ -370,10 +373,10 @@ function start(){
       orbs.forEach(o=>gsap.to(o,{x:x*30,y:y*24,duration:1.6,ease:'power2.out'}));
     });
   }
-  /* סיבוב איטי ומתמשך של העיגולים — תחושה "חיה" */
+  /* תנועה עדינה של העיגולים — בלי סיבוב, כי הם נמתחים לאליפסה והסיבוב היה מעוות אותם */
   document.querySelectorAll('.orb-bg').forEach((o,i)=>{
-    gsap.to(o,{rotation:i%2?-360:360,duration:400+i*80,repeat:-1,ease:'none'});
-    gsap.to(o,{scale:1.06,duration:9+i*2,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to(o,{scale:1.05,duration:14+i*3,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to(o,{xPercent:i%2?2:-2,duration:20+i*4,yoyo:true,repeat:-1,ease:'sine.inOut'});
   });
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
