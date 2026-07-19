@@ -51,15 +51,22 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
-.talk{display:inline-flex;align-items:center;gap:8px;font-size:16px;border-bottom:1px solid var(--ink);
-  direction:rtl;   /* הטקסט העברי עצמו נשאר RTL */
-  padding-bottom:2px;transition:.35s var(--ease)}
-/* החץ: הנכס מצביע ימינה; rotate(-45deg) מפנה אותו ימינה-למעלה.
-   הצבע נקבע ב-stroke (SVG inline) — חד בכל רזולוציה, בלי filter */
+.talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
+  border-bottom:1px solid var(--ink);direction:rtl;
+  padding-bottom:4px;transition:border-color .35s var(--ease)}
+/* ── החץ: מצביע שמאלה-למעלה (↖) — "קדימה" ב-RTL.
+   הצורה מצוירת ישירות ב-path (בלי rotate), כדי שההחלקה תהיה translate נקי.
+   שני עותקים בתוך מסגרת overflow:hidden:
+   A1 מחליק החוצה לשמאל-למעלה, A2 נכנס במקומו מימין-למטה. */
 .arw{stroke:var(--orange);fill:none}
-.talk .arw{width:16px;height:16px;transform:rotate(-45deg);
-  transition:transform .4s var(--ease)}
-.talk:hover .arw{transform:rotate(-45deg) translate(4px,0)}   /* עולה ימינה-למעלה */
+.arw-box{position:relative;display:inline-block;flex:none;overflow:hidden}
+.arw-box .arw{position:absolute;top:0;left:0;width:100%;height:100%;
+  transition:transform .5s var(--ease)}
+.arw-box .a1{transform:translate(0,0)}
+.arw-box .a2{transform:translate(115%,115%)}                      /* ממתין מחוץ למסגרת */
+.talk:hover .a1,.cta:hover .a1{transform:translate(-115%,-115%)}  /* יוצא */
+.talk:hover .a2,.cta:hover .a2{transform:translate(0,0)}          /* נכנס */
+.talk .arw-box{width:19px;height:19px}
 .talk:hover{border-color:var(--orange)}
 
 /* ההמבורגר — שני קווים באותו אורך, מוסטים אופקית (מדורג). בהובר מתיישרים לאותו קו */
@@ -104,11 +111,10 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .lede{margin-top:clamp(30px,4.5vh,48px);max-width:56ch;font-size:clamp(15px,1.45vw,19px);font-weight:300;line-height:1.8;opacity:0;animation:fade 1s var(--ease) .95s forwards}
 .lede .dim{color:var(--gray)}
 @keyframes fade{to{opacity:1}}
-.cta{display:inline-flex;align-items:center;gap:16px;background:var(--ink);color:#fff;padding:19px 40px;
+.cta{display:inline-flex;align-items:center;gap:18px;background:var(--ink);color:#fff;padding:20px 46px;font-size:17px;
   border-radius:100px;font-size:14px;letter-spacing:.1em;box-shadow:0 22px 45px -22px rgba(20,27,36,.7);transition:box-shadow .5s}
-.cta .arw{width:20px;height:20px;flex:none;margin-inline-start:2px;
-  transform:rotate(-45deg);transition:transform .4s var(--ease)}
-.cta:hover .arw{transform:rotate(-45deg) translate(4px,0)}
+.cta .arw-box{width:22px;height:22px}
+
 .cta:hover{box-shadow:0 28px 55px -20px rgba(20,27,36,.5)}
 .hero .cta{margin-top:clamp(38px,5.5vh,60px);opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
 .ticks{position:absolute;z-index:3;bottom:34px;left:50%;translate:-50% 0;display:flex;gap:26px}
@@ -185,24 +191,24 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   user-select:none;
   transition:opacity 1s ease-out;
   display:flex;
-  align-items:flex-end;          /* בסיס תחתון משותף */
-  gap:18px;
-  height:23px;                   /* = גובה פס בודד */
+  align-items:flex-end;
+  gap:32px;
+  height:23px;
 }
 
-/* כל הפסים זהים לחלוטין. ההבדל היחיד הוא המיקום האנכי. */
+/* כל הפסים זהים לחלוטין — משתנה רק המיקום האנכי */
 .bars-indicator .bar{
-  width:1px;
+  width:2px;
   height:23px;
-  background-color:var(--color-black-dark);   /* #111822 */
+  background-color:var(--color-black-dark);
   cursor:pointer;
-  transform:translateY(10px);    /* לא-פעיל — דחוף מטה */
-  opacity:.45;
+  transform:translateY(10px);
+  opacity:.4;
   transition:transform .5s var(--ease), opacity .5s var(--ease);
   will-change:transform;
 }
 
-/* הפס הפעיל עולה למעלה — הגובה לא משתנה */
+/* הפס הפעיל עולה — הגובה לא משתנה */
 .bars-indicator[data-active-bar="1"] .bar-1,
 .bars-indicator[data-active-bar="2"] .bar-2,
 .bars-indicator[data-active-bar="3"] .bar-3,
@@ -211,7 +217,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   opacity:1;
 }
 
-@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:15px}}
+@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 3 ============ */
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
@@ -246,7 +252,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   </div>
   <div class="right">
     <a href="#contact" class="talk">בוא נדבר
-      <svg class="arw" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h14M12 6l6 6-6 6"/></svg></a>
+      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
   </div>
@@ -264,7 +270,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
     <p class="lede">אנחנו משלבים אסטרטגיה, קריאייטיב ואוטומציה כדי לבנות לעסק שלך נוכחות דיגיטלית
       <span class="dim">שמביאה לקוחות — ולא רק לייקים.</span></p>
     <a href="#about" class="cta">קצת עלינו
-      <svg class="arw" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h14M12 6l6 6-6 6"/></svg></a>
+      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
   </div>
 </section>
 
@@ -275,7 +281,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
       <h2><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
       <p>סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
       <a href="#contact" class="cta">בוא נדבר
-        <svg class="arw" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h14M12 6l6 6-6 6"/></svg></a>
+        <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     </div>
     <div class="s-side" data-r>
       <p>בין אם דרך קמפיין ממוקד, אוטומציה בוואטסאפ או מערכת שמנהלת את ההזמנה עד הסוף —
