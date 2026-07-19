@@ -161,19 +161,20 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
    התיקון הקריטי: aspect-ratio נועל את היחס המקורי של הנכס (ריבועי),
    ו-background-size:contain מבטיח שהוא לעולם לא נמתח.
    הרוחב נגזר מהציר הגדול (max) — כך הוא תמיד גולש מעבר לקצוות בלי להימעך. */
-/* העוטף נושא את המירכוז (top/left 50% + translate -50%,-50%).
-   הוא עובד זהה ב-RTL וב-LTR ולא מושפע מרוחב גדול מהמסך.
-   המירכוז יושב על העוטף ולא על .orb-bg כי GSAP כותב transform ל-.orb-bg
-   (פרלקסה + דהיית גלילה) והיה מוחק את המירכוז. */
-.hero .orb-wrap{position:absolute;z-index:1;pointer-events:none;
-  top:50%;left:50%;transform:translate(-50%,-50%);
-  width:112vw;height:120vh}
-.hero .orb-bg{width:100%;height:100%;
+/* ── עיגול הרקע ──────────────────────────────────────────────
+   העוטף פשוט ממלא את ההירו (inset:0) — אין גבהים קבועים בכלל.
+   העיגול מצויר כרקע עם background-size:cover: הוא ממלא את הרוחב,
+   שומר על היחס המקורי (בלי מתיחה), וגולש מעבר לקצוות — "מרחף" מאחורי התוכן.
+   background-position ממסגר אנכית כך ששתי הקשתות נשארות בתוך המסך. */
+.hero .orb-wrap{position:absolute;inset:0;z-index:1;
+  pointer-events:none;overflow:hidden}
+.hero .orb-bg{position:absolute;inset:0;
   background-image:url('assets/orb-arcs.png');
-  background-size:100% 100%;background-position:center center;background-repeat:no-repeat;
-  opacity:1}
+  background-size:cover;
+  background-position:center 45%;
+  background-repeat:no-repeat}
 @media(max-width:900px){
-  .hero .orb-wrap{width:180vw;height:78vh}
+  .hero .orb-bg{background-position:center 42%}
 }
 
 /* ============ מחוון סקשנים בתחתית ============ */
@@ -183,27 +184,27 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   transform:translate(-50%,0);
   user-select:none;
   transition:opacity 1s ease-out;
-  height:24px;                       /* גובה הפס הפעיל */
-  display:flex; align-items:flex-end; /* כולם יושבים על אותו בסיס תחתון */
-  gap:14px;
+  display:flex;
+  align-items:flex-end;        /* כולם על אותו בסיס תחתון */
+  gap:18px;                    /* מרווח נדיב */
 }
 .bars-indicator .bar{
   width:2px;
-  height:12px;                       /* לא-פעיל */
-  background:var(--color-black-dark); /* #111822 */
-  opacity:.4;
+  height:14px;                 /* לא-פעיל */
+  background:var(--color-black-dark);
+  opacity:.35;
   cursor:pointer;
   transition:height .45s var(--ease), opacity .45s var(--ease);
 }
-/* הפס הפעיל נקבע לפי data-active-bar על ההורה */
+/* הגובה נקבע אך ורק לפי data-active-bar על ההורה */
 .bars-indicator[data-active-bar="1"] .bar-1,
 .bars-indicator[data-active-bar="2"] .bar-2,
 .bars-indicator[data-active-bar="3"] .bar-3,
 .bars-indicator[data-active-bar="4"] .bar-4{
-  height:24px;                       /* פעיל — גבוה פי 2 */
+  height:30px;                 /* פעיל */
   opacity:1;
 }
-@media(max-width:900px){.bars-indicator{bottom:1.5rem;gap:11px}}
+@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:14px}}
 
 /* ============ SECTION 3 ============ */
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
@@ -414,16 +415,24 @@ function start(){
       if(t) lenis?lenis.scrollTo(t):t.scrollIntoView({behavior:'smooth'});
     });
   });
+  /* offsetTop לא אמין כאן: סקשן 2 מוצמד (pin) ו-ScrollTrigger עוטף אותו
+     ב-pin-spacer ומזיז אותו בטרנספורם, ו-Lenis גורם ל-scrollY לפגר.
+     getBoundingClientRect משקף את המיקום המצויר בפועל — לכן הוא הנכון. */
   function updateSecNav(){
-    const mid=scrollY+innerHeight/2;
-    let cur=1;                                  // 1-based, תואם ל-data-active-bar
+    const mid = innerHeight / 2;
+    let cur = 1;                                // 1-based, תואם ל-data-active-bar
     bars.forEach((b,i)=>{
-      const el=document.querySelector(b.dataset.go);
-      if(el && el.offsetTop<=mid) cur=i+1;
+      const el = document.querySelector(b.dataset.go);
+      if(!el) return;                           // מדלג על סקשן שעדיין לא קיים
+      const r = el.getBoundingClientRect();
+      if(r.top <= mid && r.bottom >= mid) cur = i + 1;   // הסקשן שחוצה את אמצע המסך
     });
-    indicator.setAttribute('data-active-bar',cur);
+    indicator.setAttribute('data-active-bar', cur);
   }
-  addEventListener('scroll',updateSecNav); updateSecNav();
+  /* מתעדכן בכל פריים של ScrollTrigger — מסונכרן עם ה-pin ועם Lenis */
+  ScrollTrigger.addEventListener('refresh', updateSecNav);
+  gsap.ticker.add(updateSecNav);
+  updateSecNav();
 
   /* עכבר (דסקטופ בלבד): פרלקסה עדינה על הכתמים, הפריים והעיגולים */
   if(matchMedia('(hover:hover)').matches){
