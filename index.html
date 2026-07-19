@@ -277,7 +277,9 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 /* ── מכולת הרקע: פלקסבוקס ממרכז את השכבות ────────────────
    בלי top ובלי translate — ואז ScrollTrigger לא יכול לשבור
    את המיקום, כי אין ערך מיקום שתלוי בגלילה. */
-.ideas-bg{position:absolute;inset:0;pointer-events:none;
+/* בלי pointer-events:none — כדי שאפשר יהיה לבחור את השכבות ב-DevTools.
+   הטקסט מעליהן בסדר ה-DOM ולכן נשאר לחיץ. */
+.ideas-bg{position:absolute;inset:0;
   display:flex;justify-content:center;align-items:center}
 
 /* כל השכבות זו על גבי זו במרכז — position:absolute בתוך פלקס
@@ -300,28 +302,11 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 html.debug-layers .ideas-layer{outline:2px dashed rgba(255,0,0,.8);mix-blend-mode:normal !important}
 html.debug-layers .ideas-layer--css{outline-color:rgba(255,0,0,.9)}
 html.debug-layers .ideas-layer--glow{outline-color:rgba(0,120,255,.9)}
-html.debug-layers .ideas-layer--arc{outline-color:rgba(0,180,60,.9);
-  background:rgba(0,180,60,.28) !important}
-html.debug-layers .ideas-layer--rim{outline-color:rgba(200,0,200,.9);
-  background:rgba(200,0,200,.25) !important}
+html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
-/* 3א — מילוי הכיפה: שטיפת אור עדינה.
-   לבן קריר ולא לבן טהור: מול קרם חם הוא נותן 18 יחידות בערוץ הכחול
-   מול 5 באדום, כלומר ניגודיות כרומטית ולא רק הפרש בהירות. */
-.ideas-layer--arc{width:min(150vw,2100px);aspect-ratio:1798/1800;
-  background:#F6FAFF;
-  opacity:.9;
-  -webkit-mask:url('/assets/arc-mask.png') center/contain no-repeat;
-          mask:url('/assets/arc-mask.png') center/contain no-repeat}
-
-/* 3ב — קצה הכיפה. זה מה שהופך את הצורה לקריאה:
-   מילוי רחב על קרם מוגבל ל-14/255 ונבלע, אבל קו דק באותה עוצמה
-   נקרא היטב — העין מזהה גבולות לפני שהיא מזהה הפרשי שטח. */
-.ideas-layer--rim{width:min(150vw,2100px);aspect-ratio:1798/1800;
-  background:#FFFFFF;
-  opacity:1;
-  -webkit-mask:url('/assets/arc-rim.png') center/contain no-repeat;
-          mask:url('/assets/arc-rim.png') center/contain no-repeat}
+/* 3 — הכיפה: התמונה כמו שהיא.
+   בלי מסכה, בלי mix-blend-mode, בלי opacity, בלי filter. */
+.ideas-layer--dome{width:min(150vw,2100px);height:auto;display:block}
 
 /* ── שכבה 4: התוכן — מעל לפי סדר DOM ────────────────────── */
 .ideas-grid{position:relative;
@@ -349,12 +334,7 @@ html.debug-layers .ideas-layer--rim{outline-color:rgba(200,0,200,.9);
   .ideas{padding-bottom:max(18vh,150px)}
   .ideas-layer--css{width:72vw;filter:blur(120px)}
   .ideas-layer--glow{width:88vw}
-  .ideas-layer--arc{width:190vw;
-    -webkit-mask-image:url('/assets/arc-mask-mobile.png');
-            mask-image:url('/assets/arc-mask-mobile.png')}
-  .ideas-layer--rim{width:190vw;
-    -webkit-mask-image:url('/assets/arc-rim-mobile.png');
-            mask-image:url('/assets/arc-rim-mobile.png')}
+  .ideas-layer--dome{width:190vw}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
 }
 </style>
@@ -423,8 +403,7 @@ html.debug-layers .ideas-layer--rim{outline-color:rgba(200,0,200,.9);
   <div class="ideas-bg" aria-hidden="true">
     <div class="ideas-layer ideas-layer--css"></div>    <!-- 1: עיגול CSS מטושטש -->
     <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
-    <div class="ideas-layer ideas-layer--arc"></div>    <!-- 3א: מילוי הכיפה -->
-    <div class="ideas-layer ideas-layer--rim"></div>    <!-- 3ב: קצה הכיפה -->
+    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="">   <!-- 3: הכיפה, נקייה -->
   </div>
 
   <!-- 4: התוכן -->
@@ -628,7 +607,7 @@ function start(){
      שתיהן על yPercent/scale בלבד — נשארות ב-compositor. */
   const ideas = document.querySelector('.ideas');
   if(ideas){
-    gsap.fromTo('.ideas-layer--arc, .ideas-layer--rim',{yPercent:-8},{yPercent:8,ease:'none',
+    gsap.fromTo('.ideas-layer--dome',{yPercent:-8},{yPercent:8,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
