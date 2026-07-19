@@ -293,9 +293,14 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   filter:blur(230px);
   opacity:1}
 
-/* 2 — הזוהר התמונתי */
-.ideas-layer--glow{width:min(620px,52vw);aspect-ratio:1;
-  background:url('/assets/orange-glow.png') center/contain no-repeat;
+/* 2 — הזוהר התמונתי.
+   ערכים מה-DevTools של הרפרנס: 500x450 (יחס 10:9, לא ריבוע),
+   top 72.7px = 8vh, ממורכז אופקית, mix-blend-mode:multiply.
+   cover ולא contain — כך הזוהר ממלא את המלבן במקום להצטמצם
+   לריבוע בתוכו ולהשאיר רצועות ריקות בצדדים. */
+.ideas-layer--glow{top:8vh;
+  width:min(26vw,500px);aspect-ratio:10/9;
+  background:url('/assets/orange-glow.png') center/cover no-repeat;
   mix-blend-mode:multiply;
   opacity:1}
 /* מצב אבחון — html.debug-layers מפעיל אותו מהקונסול */
@@ -337,7 +342,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
   .ideas-layer--css{width:72vw;filter:blur(120px)}
-  .ideas-layer--glow{width:88vw}
+  .ideas-layer--glow{top:7vh;width:min(72vw,420px)}
   .ideas-layer--dome{top:18vh;width:min(104vw,760px)}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
 }
