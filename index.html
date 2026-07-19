@@ -134,11 +134,29 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .lede{margin-top:clamp(30px,4.5vh,48px);max-width:56ch;font-size:clamp(15px,1.45vw,19px);font-weight:300;line-height:1.8;opacity:0;animation:fade 1s var(--ease) .95s forwards}
 .lede .dim{color:var(--gray)}
 @keyframes fade{to{opacity:1}}
-.cta{display:inline-flex;align-items:center;gap:18px;background:var(--ink);color:#fff;padding:20px 46px;font-size:17px;
-  border-radius:100px;font-size:14px;letter-spacing:.1em;box-shadow:0 22px 45px -22px rgba(20,27,36,.7);transition:box-shadow .5s}
+/* ── הכפתור הראשי ──────────────────────────────────────────
+   אין טרנספורם בסיס, אז scale בהובר לא מתנגש בכלום.
+   הצל מתהדק יחד עם הכיווץ — כמו עצם שנלחץ אל המשטח. */
+.cta{display:inline-flex;align-items:center;gap:18px;
+  background:var(--ink);color:#fff;padding:20px 46px;
+  font-size:15px;letter-spacing:.1em;
+  border-radius:100px;
+  box-shadow:0 22px 45px -22px rgba(20,27,36,.7);
+  transform:scale(1);
+  transition:transform .45s cubic-bezier(.76,0,.24,1),
+             box-shadow .45s cubic-bezier(.76,0,.24,1);
+  will-change:transform}
 .cta .arw-box{width:22px;height:22px}
 
-.cta:hover{box-shadow:0 28px 55px -20px rgba(20,27,36,.5)}
+.cta:hover{transform:scale(.96);
+  box-shadow:0 12px 26px -16px rgba(20,27,36,.55)}
+.cta:active{transform:scale(.935);
+  box-shadow:0 8px 18px -14px rgba(20,27,36,.6);
+  transition-duration:.12s}
+
+@media(prefers-reduced-motion:reduce){
+  .cta,.cta:hover,.cta:active{transform:none}
+}
 .hero .cta{margin-top:clamp(38px,5.5vh,60px);opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
 .ticks{position:absolute;z-index:3;bottom:34px;left:50%;translate:-50% 0;display:flex;gap:26px}
 .ticks i{width:1px;height:22px;background:rgba(20,27,36,.35);animation:blink 2.4s infinite}
