@@ -306,7 +306,10 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 /* 3 — הכיפה: התמונה כמו שהיא.
    בלי מסכה, בלי mix-blend-mode, בלי opacity, בלי filter. */
-.ideas-layer--dome{width:min(150vw,2100px);height:auto;display:block}
+/* top:0 ולא מירכוז — זה היה הבאג.
+   הכיפה תופסת רק 48% מגובה הנכס, ולכן מירכוז התמונה דחף
+   את הכתר המעוקל ל-601px מעל המסך והשאיר רק את הזנב הדהוי. */
+.ideas-layer--dome{top:0;width:min(130vw,2600px);height:auto;display:block}
 
 /* ── שכבה 4: התוכן — מעל לפי סדר DOM ────────────────────── */
 .ideas-grid{position:relative;
@@ -334,7 +337,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .ideas{padding-bottom:max(18vh,150px)}
   .ideas-layer--css{width:72vw;filter:blur(120px)}
   .ideas-layer--glow{width:88vw}
-  .ideas-layer--dome{width:190vw}
+  .ideas-layer--dome{top:0;width:190vw}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
 }
 </style>
