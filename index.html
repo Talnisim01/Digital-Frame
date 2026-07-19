@@ -268,39 +268,44 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 3 — IDEAS ============ */
+/* isolation:isolate יוצר את קבוצת המיזוג. זה לא פתרון z-index —
+   זה המנגנון שמגדיר מול מה השכבות מתמזגות: רקע הסקשן. */
 .ideas{position:relative;min-height:100svh;
   display:grid;place-items:center;
   padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
   overflow:hidden;background:var(--paper);
-  isolation:isolate}   /* קבוצת המיזוג — השכבות מתמזגות מול רקע הסקשן */
+  isolation:isolate}
 
 /* ── שכבה 0: מכולת הרקע ──────────────────────────────────
-   grid + place-items:center נועל את השכבות במרכז המת של הסקשן.
-   אין כאן z-index בכוונה: z-index על אלמנט ממוקם יוצר stacking context
-   חדש, וזה היה כולא את ה-mix-blend-mode בתוך המכולה במקום לתת לו
-   להתמזג עם הקרם של הסקשן. */
+   בלי z-index בכוונה: z-index על אלמנט ממוקם היה יוצר stacking
+   context וכולא את המיזוג בתוך המכולה. סדר הציור נקבע ע"י סדר
+   ה-DOM — .ideas-grid מופיע אחריה ולכן מצויר מעליה. */
 .ideas-bg{position:absolute;inset:0;pointer-events:none;
   display:grid;place-items:center}
 
-/* בסיס משותף — שתי השכבות הן פריטי grid ממורכזים.
-   אין translate ואין transform למירכוז, אז GSAP חופשי לגמרי. */
+/* שתי השכבות באותו תא גריד — מירכוז בלי translate,
+   כך שערוץ ה-transform שמור כולו ל-GSAP */
 .ideas-blur{grid-area:1/1;
   will-change:transform;backface-visibility:hidden}
 
-/* שכבה 1: הזוהר — multiply שומר על הרוויה על רקע בהיר */
+/* שכבה 1: הזוהר — multiply שומר רוויה על רקע בהיר */
 .ideas-blur--glow{width:min(88vw,1100px);aspect-ratio:1;
   background:url('/assets/orange-glow.png') center/contain no-repeat;
   mix-blend-mode:multiply;
   opacity:.7;
   filter:blur(30px)}
 
-/* שכבה 2: הקשת — overlay מרים צורה כמעט-לבנה לאור רך */
+/* שכבה 2: הקשת — overlay מרים צורה כמעט-לבנה לאור רך.
+   האלפא רוככה כבר בנכס; המסכה הרדיאלית היא רשת ביטחון
+   שמבטיחה שההיקף החיצוני נמס גם אם הנכס יוחלף. */
 .ideas-blur--arc{width:min(126vw,1800px);line-height:0;
-  mix-blend-mode:overlay}
+  mix-blend-mode:overlay;
+  -webkit-mask-image:radial-gradient(closest-side circle at 50% 50%,#000 62%,transparent 100%);
+          mask-image:radial-gradient(closest-side circle at 50% 50%,#000 62%,transparent 100%)}
 .ideas-blur--arc img{width:100%;height:auto;display:block}
 
-/* ── הגריד: התוכן, מעל שכבות הרקע ───────────────────────── */
-.ideas-grid{position:relative;z-index:1;
+/* ── התוכן — position:relative בלבד, בלי z-index ────────── */
+.ideas-grid{position:relative;
   display:grid;justify-items:center;
   width:100%;max-width:min(94vw,1150px);
   text-align:center}
