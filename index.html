@@ -272,10 +272,12 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   display:flex;align-items:center;justify-content:center;text-align:center;
   padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
   overflow:hidden;background:var(--paper);
-  isolation:isolate}   /* מאפשר ל-z-index:-1 להישאר בתוך הסקשן */
+  isolation:isolate}   /* הקשר ערימה נקי לסקשן */
 
 /* ── שכבת הרקע ───────────────────────────────────────────── */
-.next-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+/* z-index:0 ולא -1 — שכבה שלילית תלויה ב-isolation וב-stacking context
+   ונוטה להיעלם מאחורי רקע הסקשן. חיובי + z-index:1 על התוכן = חסין. */
+.next-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
 
 /* הצורה והזוהר חולקים אותה נקודת עיגון -> הזוהר תמיד ממורכז בקשת */
 .next-shape,.next-glow{position:absolute;top:50%;left:50%;
@@ -285,9 +287,9 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .next-shape{width:min(126vw,1800px);aspect-ratio:1129/1130;
   background-image:url('/assets/arc-desktop.png')}
 
-.next-glow{width:min(74vw,900px);aspect-ratio:1;
+.next-glow{width:min(88vw,1100px);aspect-ratio:1;
   background-image:url('/assets/orange-glow.png');
-  opacity:.55}
+  opacity:.85}
 
 /* ── טיפוגרפיה ───────────────────────────────────────────── */
 .next-inner{position:relative;z-index:1;
@@ -314,7 +316,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   .next-sec{padding-bottom:max(18vh,150px)}
   .next-shape{width:172vw;aspect-ratio:574/575;
     background-image:url('/assets/arc-mobile.png')}
-  .next-glow{width:126vw;opacity:.5}
+  .next-glow{width:132vw;opacity:.8}
   .next-sec h2{font-size:clamp(34px,10vw,60px)}
 }
 }
