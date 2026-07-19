@@ -468,22 +468,12 @@ function fit(){
 }
 const FRAME_SCALE = 0.9;          // 90% — הפריים יושב מעט פנימה
 
-/* צבע הקצה משתנה בין פריים לפריים (מדדתי טווח #DEE0E8..#EAE6E6),
-   אז מילוי קבוע יוצר מדרגה בצדדים. דוגמים כל פריים פעם אחת
-   ושומרים במטמון — drawImage לקנבס 1x1 מחזיר את ממוצע הרצועה. */
-const edgeCache = new Array(FRAME_COUNT);
-const _samp = document.createElement('canvas'); _samp.width=_samp.height=1;
-const _sctx = _samp.getContext('2d',{willReadFrequently:true});
-
-function edgeColor(img,i){
-  if(edgeCache[i]) return edgeCache[i];
-  try{
-    _sctx.drawImage(img, 0,0, img.naturalWidth, 6, 0,0, 1,1);
-    const d=_sctx.getImageData(0,0,1,1).data;
-    edgeCache[i] = `rgb(${d[0]},${d[1]},${d[2]})`;
-  }catch(e){ edgeCache[i] = '#E1E0E3'; }
-  return edgeCache[i];
-}
+/* מילוי הצדדים: במקום צבע שטוח, מציירים את הפריים עצמו לקנבס
+   זעיר (32x18) ומותחים אותו לגודל מלא. האינטרפולציה נותנת מריחה
+   רכה שנגזרת מאותו פריים, ולכן הצדדים תמיד מתאימים — כולל מדרג
+   אנכי, מה שצבע אחיד לא יכול לתת. עלות: drawImage אחד קטן. */
+const _amb  = document.createElement('canvas'); _amb.width=32; _amb.height=18;
+const _ambx = _amb.getContext('2d');
 
 function draw(i){
   const img = images[i];
@@ -491,10 +481,9 @@ function draw(i){
   const cw=canvas.width, ch=canvas.height;
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
 
-  /* ממלאים בצבע הקצה של הפריים הזה — לא בערך קבוע.
-     בלי זה ההקטנה ל-90% חושפת רצועות בגוון שונה בצדדים. */
-  ctx.fillStyle = edgeColor(img,i);
-  ctx.fillRect(0,0,cw,ch);
+  /* רקע אמביינטי מהפריים עצמו — ממלא את 95px שבכל צד */
+  _ambx.drawImage(img, 0,0, 32,18);
+  ctx.drawImage(_amb, 0,0, cw,ch);
 
   const s = Math.max(cw/img.naturalWidth, ch/img.naturalHeight) * FRAME_SCALE;
   const w=img.naturalWidth*s, h=img.naturalHeight*s;
