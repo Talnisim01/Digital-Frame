@@ -291,7 +291,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .ideas-layer--css{width:min(37vw,760px);aspect-ratio:1;
   background:#ffaa52;border-radius:50%;
   filter:blur(230px);
-  opacity:1}
+  opacity:.7}
 
 /* 2 — הזוהר התמונתי.
    ערכים מה-DevTools של הרפרנס: 500x450 (יחס 10:9, לא ריבוע),
@@ -308,6 +308,15 @@ html.debug-layers .ideas-layer{outline:2px dashed rgba(255,0,0,.8);mix-blend-mod
 html.debug-layers .ideas-layer--css{outline-color:rgba(255,0,0,.9)}
 html.debug-layers .ideas-layer--glow{outline-color:rgba(0,120,255,.9)}
 html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
+
+/* דהייה בקצה העליון.
+   הטשטוש של עיגול ה-CSS מגיע 132px מעבר לראש הסקשן ונקטם שם
+   שטוח ע"י overflow:hidden — זה מה שיצר את הקו מול הסקשן הקודם.
+   השכבה הזו מחזירה את צבע הדף בהדרגה ומוחקת את החיתוך.
+   בלי mix-blend-mode, ולכן היא לא משפיעה על המיזוג של השכבות שמתחת. */
+.ideas-fade{position:absolute;top:0;left:0;right:0;height:30vh;
+  background:linear-gradient(180deg,var(--paper) 0%,rgba(241,239,237,.55) 45%,transparent 100%);
+  pointer-events:none}
 
 /* 3 — הכיפה: התמונה כמו שהיא.
    בלי מסכה, בלי mix-blend-mode, בלי opacity, בלי filter. */
@@ -413,6 +422,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     <div class="ideas-layer ideas-layer--css"></div>    <!-- 1: עיגול CSS מטושטש -->
     <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
     <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="">   <!-- 3: הכיפה, נקייה -->
+    <div class="ideas-fade" aria-hidden="true"></div>            <!-- 4: דהייה בקצה העליון -->
   </div>
 
   <!-- 4: התוכן -->
