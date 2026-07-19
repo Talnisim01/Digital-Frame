@@ -286,32 +286,36 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   will-change:transform;backface-visibility:hidden}
 
 /* ── שכבה 1: עיגול CSS טהור, מטושטש ───────────────────── */
-.ideas-layer--css{width:min(71rem,124vw);aspect-ratio:1;
+/* מוארך אנכית (82vh מדוד) ומוסט למעלה כך שהליבה נוחתת ב-~22% */
+.ideas-layer--css{width:min(46rem,64vw);height:min(60rem,92vh);
   background:#ffaa52;border-radius:100%;
-  filter:blur(250px);
-  opacity:.42}
+  filter:blur(190px);
+  opacity:.5;
+  translate:0 -22vh}
 
 /* ── שכבה 2: הזוהר PNG — multiply שומר רוויה על רקע בהיר ── */
-.ideas-layer--glow{width:min(88vw,1100px);aspect-ratio:1;
-  background:url('/assets/orange-glow.png') center/contain no-repeat;
+.ideas-layer--glow{width:min(58vw,760px);height:min(86vh,900px);
+  background:url('/assets/orange-glow.png') center/100% 100% no-repeat;
   mix-blend-mode:multiply;
-  opacity:.62;
-  filter:blur(24px)}
+  opacity:.72;
+  filter:blur(18px);
+  translate:0 -22vh}
 
 /* ── שכבה 3: הקשת — מסכה על משטח אור ──────────────────────
    הנכס כהה, אז לא צובעים אותו אלא משתמשים בצורתו כמסכה על לבן.
    האור נצבע ישירות במקום להסתמך על מצב מיזוג הופך, שנכשל על רקע
    בהיר (screen מחזיר חמימות 13, color-dodge מחזיר 0). */
-.ideas-layer--arc{width:min(126vw,1800px);aspect-ratio:1798/1800;
+.ideas-layer--arc{width:min(150vw,2100px);aspect-ratio:1798/1800;
   background:#FFFFFF;
-  opacity:.5;
+  opacity:.55;
+  translate:0 -14vh;
   -webkit-mask:url('/assets/arc-mask.png') center/contain no-repeat;
           mask:url('/assets/arc-mask.png') center/contain no-repeat}
 
 /* ── שכבה 4: התוכן — מעל לפי סדר DOM ────────────────────── */
 .ideas-grid{position:relative;
   display:grid;justify-items:center;
-  width:100%;max-width:min(94vw,1150px);
+  width:100%;max-width:min(95vw,1560px);
   text-align:center}
 
 /* ── טיפוגרפיה ──────────────────────────────────────────── */
@@ -333,9 +337,9 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
   /* blur(250px) יקר מאוד — מקטינים במובייל */
-  .ideas-layer--css{width:132vw;filter:blur(120px);opacity:.38}
-  .ideas-layer--glow{width:132vw;opacity:.58;filter:blur(16px)}
-  .ideas-layer--arc{width:172vw;
+  .ideas-layer--css{width:96vw;height:70vh;filter:blur(100px);opacity:.46;translate:0 -16vh}
+  .ideas-layer--glow{width:104vw;height:64vh;opacity:.68;filter:blur(12px);translate:0 -16vh}
+  .ideas-layer--arc{width:190vw;translate:0 -10vh;
     -webkit-mask-image:url('/assets/arc-mask-mobile.png');
             mask-image:url('/assets/arc-mask-mobile.png')}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
