@@ -268,44 +268,44 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 3 — IDEAS ============ */
-/* isolation:isolate מגדיר את קבוצת המיזוג — מול מה השכבות מתמזגות */
-.ideas{position:relative;min-height:100svh;
-  display:grid;place-items:center;
+.ideas{position:relative;min-height:100vh;
+  display:flex;justify-content:center;align-items:center;
   padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
   overflow:hidden;background:var(--paper);
-  isolation:isolate}
+  isolation:isolate}   /* קבוצת המיזוג */
 
-/* ── מכולת הרקע — שומרת על פרופורציות המסך ומגינה מזליגות ── */
-.ideas-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+/* ── מכולת הרקע: פלקסבוקס ממרכז את השכבות ────────────────
+   בלי top ובלי translate — ואז ScrollTrigger לא יכול לשבור
+   את המיקום, כי אין ערך מיקום שתלוי בגלילה. */
+.ideas-bg{position:absolute;inset:0;pointer-events:none;
+  display:flex;justify-content:center;align-items:center}
 
-/* בסיס משותף לכל השכבות.
-   translate ממרכז רק בציר X — ציר Y נשאר נקי ל-transform של GSAP. */
-.ideas-layer{position:absolute;left:50%;translate:-50% 0;
+/* כל השכבות זו על גבי זו במרכז — position:absolute בתוך פלקס
+   ממורכז, כך שאף אחת לא דוחפת את השנייה */
+.ideas-layer{position:absolute;
   will-change:transform;backface-visibility:hidden}
 
-/* 1 — עיגול CSS: תופס את השליש העליון */
-/* 37vw ואטום — הרפרנס משיג ליבה חמה דרך עיגול קטן ומטושטש חזק,
-   לא דרך עיגול גדול ושקוף (ששטחו כפול ולכן מדלל את הצבע). */
-.ideas-layer--css{top:10%;
-  width:min(37vw,760px);aspect-ratio:1;
+/* 1 — עיגול CSS: ליבה חמה ורוויה */
+.ideas-layer--css{width:min(37vw,760px);aspect-ratio:1;
   background:#ffaa52;border-radius:50%;
   filter:blur(230px);
   opacity:1}
 
-/* 2 — הזוהר התמונתי: עוטף את הכותרת */
-.ideas-layer--glow{top:12%;
-  width:min(620px,52vw);aspect-ratio:1;
+/* 2 — הזוהר התמונתי */
+.ideas-layer--glow{width:min(620px,52vw);aspect-ratio:1;
   background:url('/assets/orange-glow.png') center/contain no-repeat;
   mix-blend-mode:multiply;
   opacity:1}
 
-/* 3 — הקשת: מסכה על משטח לבן.
-   שם הקובץ הוא arc-mask.png — הנכס שנגזר מהכיפה השחורה
-   (אלפא מבהירות + ריכוך קצה). dome.png לא קיים בריפו. */
-.ideas-layer--arc{top:5%;
-  width:min(150vw,2100px);aspect-ratio:1798/1800;
-  background:#FFFFFF;
-  opacity:.95;
+/* 3 — הקשת: מסכה על משטח אור.
+   גרדיאנט ולא לבן שטוח: לבן על קרם נבדל ב-18/255 לכל היותר,
+   אז מה שהופך את הצורה לקריאה הוא הדעיכה שמגדירה את הקצה. */
+.ideas-layer--arc{width:min(150vw,2100px);aspect-ratio:1798/1800;
+  background:linear-gradient(180deg,
+    #FFFFFF 0%, #FFFFFF 34%,
+    rgba(255,255,255,.55) 62%,
+    rgba(255,255,255,0) 92%);
+  opacity:1;
   -webkit-mask:url('/assets/arc-mask.png') center/contain no-repeat;
           mask:url('/assets/arc-mask.png') center/contain no-repeat}
 
@@ -333,9 +333,9 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
-  .ideas-layer--css{top:8%;width:72vw;filter:blur(120px);opacity:1}
-  .ideas-layer--glow{top:11%;width:88vw;opacity:1}
-  .ideas-layer--arc{top:4%;width:190vw;
+  .ideas-layer--css{width:72vw;filter:blur(120px)}
+  .ideas-layer--glow{width:88vw}
+  .ideas-layer--arc{width:190vw;
     -webkit-mask-image:url('/assets/arc-mask-mobile.png');
             mask-image:url('/assets/arc-mask-mobile.png')}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
@@ -402,7 +402,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 <!-- ============ SECTION 3 (placeholder) ============ -->
 <section class="ideas" id="services">
 
-  <!-- מכולה אחת, גריד: כל שכבות הרקע באותו תא -> מיושרות תמיד -->
+  <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
     <div class="ideas-layer ideas-layer--css"></div>    <!-- 1: עיגול CSS מטושטש -->
     <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
