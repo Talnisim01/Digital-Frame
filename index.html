@@ -185,26 +185,33 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   user-select:none;
   transition:opacity 1s ease-out;
   display:flex;
-  align-items:flex-end;        /* כולם על אותו בסיס תחתון */
-  gap:18px;                    /* מרווח נדיב */
+  align-items:flex-end;          /* בסיס תחתון משותף */
+  gap:18px;
+  height:23px;                   /* = גובה פס בודד */
 }
+
+/* כל הפסים זהים לחלוטין. ההבדל היחיד הוא המיקום האנכי. */
 .bars-indicator .bar{
-  width:2px;
-  height:14px;                 /* לא-פעיל */
-  background:var(--color-black-dark);
-  opacity:.35;
+  width:1px;
+  height:23px;
+  background-color:var(--color-black-dark);   /* #111822 */
   cursor:pointer;
-  transition:height .45s var(--ease), opacity .45s var(--ease);
+  transform:translateY(10px);    /* לא-פעיל — דחוף מטה */
+  opacity:.45;
+  transition:transform .5s var(--ease), opacity .5s var(--ease);
+  will-change:transform;
 }
-/* הגובה נקבע אך ורק לפי data-active-bar על ההורה */
+
+/* הפס הפעיל עולה למעלה — הגובה לא משתנה */
 .bars-indicator[data-active-bar="1"] .bar-1,
 .bars-indicator[data-active-bar="2"] .bar-2,
 .bars-indicator[data-active-bar="3"] .bar-3,
 .bars-indicator[data-active-bar="4"] .bar-4{
-  height:30px;                 /* פעיל */
+  transform:translateY(0);
   opacity:1;
 }
-@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:14px}}
+
+@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:15px}}
 
 /* ============ SECTION 3 ============ */
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
