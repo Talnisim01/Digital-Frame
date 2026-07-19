@@ -272,44 +272,49 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   display:grid;place-items:center;
   padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
   overflow:hidden;background:var(--paper);
-  isolation:isolate}
+  isolation:isolate}   /* קבוצת המיזוג — השכבות מתמזגות מול רקע הסקשן */
 
-/* ── שכבה 0: מכולת הרקע ───────────────────────────────── */
-.ideas-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+/* ── שכבה 0: מכולת הרקע ──────────────────────────────────
+   grid + place-items:center נועל את השכבות במרכז המת של הסקשן.
+   אין כאן z-index בכוונה: z-index על אלמנט ממוקם יוצר stacking context
+   חדש, וזה היה כולא את ה-mix-blend-mode בתוך המכולה במקום לתת לו
+   להתמזג עם הקרם של הסקשן. */
+.ideas-bg{position:absolute;inset:0;pointer-events:none;
+  display:grid;place-items:center}
 
-/* בסיס משותף לשכבות 1-2 — אותה נקודת עיגון, כך שהן תמיד מיושרות.
-   המירכוז ב-translate (מאפיין נפרד) ולא ב-transform, כי GSAP כותב
-   transform לצורך הפרלקסה והיה מוחק את המירכוז. השניים מצטברים. */
-.ideas-blur{position:absolute;top:50%;left:50%;
-  translate:-50% -50%;
-  will-change:transform;        /* מרים לשכבת compositor נפרדת */
-  backface-visibility:hidden}
+/* בסיס משותף — שתי השכבות הן פריטי grid ממורכזים.
+   אין translate ואין transform למירכוז, אז GSAP חופשי לגמרי. */
+.ideas-blur{grid-area:1/1;
+  will-change:transform;backface-visibility:hidden}
 
-/* שכבה 1: הזוהר */
+/* שכבה 1: הזוהר — multiply שומר על הרוויה על רקע בהיר */
 .ideas-blur--glow{width:min(88vw,1100px);aspect-ratio:1;
   background:url('/assets/orange-glow.png') center/contain no-repeat;
-  opacity:.85}
+  mix-blend-mode:multiply;
+  opacity:.7;
+  filter:blur(30px)}
 
-/* שכבה 2: הקשת (<picture> מחליף את המקור בעצמו) */
-.ideas-blur--arc{width:min(126vw,1800px);line-height:0}
+/* שכבה 2: הקשת — overlay מרים צורה כמעט-לבנה לאור רך */
+.ideas-blur--arc{width:min(126vw,1800px);line-height:0;
+  mix-blend-mode:overlay}
 .ideas-blur--arc img{width:100%;height:auto;display:block}
 
-/* ── הגריד: התוכן, מופרד מהרקע ────────────────────────── */
+/* ── הגריד: התוכן, מעל שכבות הרקע ───────────────────────── */
 .ideas-grid{position:relative;z-index:1;
   display:grid;justify-items:center;
-  gap:0;
   width:100%;max-width:min(94vw,1150px);
   text-align:center}
 
-/* ── טיפוגרפיה — יחידות vw, line-height הדוק ──────────── */
+/* ── טיפוגרפיה ──────────────────────────────────────────── */
 .ideas .eyebrow{margin:0 0 clamp(20px,3vh,34px);
   color:var(--orange);
   font-size:clamp(10px,.8vw,12px);font-weight:500;letter-spacing:.24em}
 
-.ideas-title{font-weight:200;
+.ideas-title{font-weight:200;margin:0;
   font-size:clamp(38px,7.4vw,116px);
-  line-height:1.05;letter-spacing:-.03em;
-  text-wrap:balance;margin:0}
+  line-height:1.05;
+  letter-spacing:-.03em;
+  text-wrap:balance}
 .ideas-title strong{font-weight:700}
 
 .ideas-lede{margin:clamp(24px,3.4vh,42px) 0 0;
@@ -321,7 +326,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
   .ideas-blur--arc{width:172vw}
-  .ideas-blur--glow{width:132vw;opacity:.8}
+  .ideas-blur--glow{width:132vw;opacity:.62;filter:blur(22px)}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
 }
 </style>
@@ -606,7 +611,7 @@ function start(){
     gsap.fromTo('.ideas-blur--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
-    gsap.to('.ideas-blur--glow',{opacity:.72,duration:7,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to('.ideas-blur--glow',{opacity:.56,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
   }
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
