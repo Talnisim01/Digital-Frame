@@ -51,9 +51,13 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
+/* הקו התחתון יושב על ה-span של הטקסט בלבד — לא על הקונטיינר,
+   כדי שלא יימשך גם מתחת לחץ. */
 .talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
-  border-bottom:1px solid var(--ink);direction:rtl;
-  padding-bottom:4px;transition:border-color .35s var(--ease)}
+  direction:rtl}
+.talk-txt{border-bottom:1px solid var(--ink);padding-bottom:4px;
+  transition:border-color .35s var(--ease)}
+.talk:hover .talk-txt{border-color:var(--orange)}
 /* ── החץ: מצביע שמאלה-למעלה (↖) — "קדימה" ב-RTL.
    הצורה מצוירת ישירות ב-path (בלי rotate), כדי שההחלקה תהיה translate נקי.
    שני עותקים בתוך מסגרת overflow:hidden:
@@ -67,7 +71,7 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .talk:hover .a1,.cta:hover .a1{transform:translate(-115%,-115%)}  /* יוצא */
 .talk:hover .a2,.cta:hover .a2{transform:translate(0,0)}          /* נכנס */
 .talk .arw-box{width:19px;height:19px}
-.talk:hover{border-color:var(--orange)}
+
 
 /* ההמבורגר — שני קווים באותו אורך, מוסטים אופקית (מדורג). בהובר מתיישרים לאותו קו */
 /* ההמבורגר — מידות מדויקות: 60x3px, #111822.
@@ -84,6 +88,8 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 @media(max-width:920px){.nav-c{display:none}.burger{display:flex}}
 
 /* ============ SECTION 1 — HERO ============ */
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24vh;z-index:2;
+  pointer-events:none;background:linear-gradient(180deg,transparent 0%,#E1E0E3 100%)}
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;padding:clamp(150px,20vh,220px) 24px clamp(110px,16vh,170px);overflow:hidden}
 .hero::after{content:"";position:absolute;z-index:4;left:0;right:0;bottom:0;height:22vh;pointer-events:none;
@@ -123,12 +129,12 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
 
 /* ============ SECTION 2 — FRAME SEQUENCE ============ */
-.sphere-sec{position:relative;min-height:100svh;overflow:hidden;background:#E1E1E3;display:flex}
+.sphere-sec{position:relative;min-height:100svh;overflow:hidden;background:#E1E0E3;display:flex}
 /* הקנבס — full-bleed, ממלא את כל הסקשן כמו רקע */
 #seq{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
 /* דהיות עדינות למעלה ולמטה — למיזוג עם הסקשנים השכנים, בלי סקרים על הצדדים */
 .sphere-sec::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(180deg,var(--paper) 0%,transparent 14%,transparent 80%,var(--silver) 100%)}
+  background:linear-gradient(180deg,#E1E0E3 0%,transparent 16%,transparent 78%,var(--silver) 100%)}
 /* שני בלוקי טקסט על הפריים — כמו ברפרנס: כותרת שמאל-למטה, משני ימין-למטה */
 .sphere-grid{position:relative;z-index:3;width:100%;min-height:100svh;
   display:grid;grid-template-columns:1fr 1fr;align-items:end;
@@ -172,8 +178,12 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
    העיגול מצויר כרקע עם background-size:cover: הוא ממלא את הרוחב,
    שומר על היחס המקורי (בלי מתיחה), וגולש מעבר לקצוות — "מרחף" מאחורי התוכן.
    background-position ממסגר אנכית כך ששתי הקשתות נשארות בתוך המסך. */
+/* המסכה מדהה את תחתית העיגול, כך ש-overflow:hidden של ההירו
+   לא קוטם אותו בקו ישר בגבול הסקשנים. */
 .hero .orb-wrap{position:absolute;inset:0;z-index:1;
-  pointer-events:none;overflow:hidden}
+  pointer-events:none;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 68%,transparent 96%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 68%,transparent 96%)}
 .hero .orb-bg{position:absolute;inset:0;
   background-image:url('assets/orb-arcs.png');
   background-size:cover;
@@ -251,7 +261,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
     <a href="#" class="dash" aria-label="תפריט"><i></i></a>
   </div>
   <div class="right">
-    <a href="#contact" class="talk">בוא נדבר
+    <a href="#contact" class="talk"><span class="talk-txt">בוא נדבר</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
