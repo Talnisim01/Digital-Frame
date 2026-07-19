@@ -268,43 +268,47 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 3 — IDEAS ============ */
-/* isolation:isolate יוצר את קבוצת המיזוג. זה לא פתרון z-index —
-   זה המנגנון שמגדיר מול מה השכבות מתמזגות: רקע הסקשן. */
+/* isolation:isolate מגדיר את קבוצת המיזוג — מול מה השכבות מתמזגות */
 .ideas{position:relative;min-height:100svh;
   display:grid;place-items:center;
   padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
   overflow:hidden;background:var(--paper);
   isolation:isolate}
 
-/* ── שכבה 0: מכולת הרקע ──────────────────────────────────
-   בלי z-index בכוונה: z-index על אלמנט ממוקם היה יוצר stacking
-   context וכולא את המיזוג בתוך המכולה. סדר הציור נקבע ע"י סדר
-   ה-DOM — .ideas-grid מופיע אחריה ולכן מצויר מעליה. */
+/* ── מכולת הרקע ──────────────────────────────────────────
+   בלי z-index: הוא היה יוצר stacking context וכולא את המיזוג בפנים.
+   סדר הציור נקבע לפי סדר ה-DOM. */
 .ideas-bg{position:absolute;inset:0;pointer-events:none;
   display:grid;place-items:center}
 
-/* שתי השכבות באותו תא גריד — מירכוז בלי translate,
-   כך שערוץ ה-transform שמור כולו ל-GSAP */
-.ideas-blur{grid-area:1/1;
+/* כל השכבות באותו תא — מירכוז בלי transform, GSAP נשאר חופשי */
+.ideas-layer{grid-area:1/1;
   will-change:transform;backface-visibility:hidden}
 
-/* שכבה 1: הזוהר — multiply שומר רוויה על רקע בהיר */
-.ideas-blur--glow{width:min(88vw,1100px);aspect-ratio:1;
+/* ── שכבה 1: עיגול CSS טהור, מטושטש ───────────────────── */
+.ideas-layer--css{width:min(71rem,124vw);aspect-ratio:1;
+  background:#ffaa52;border-radius:100%;
+  filter:blur(250px);
+  opacity:.42}
+
+/* ── שכבה 2: הזוהר PNG — multiply שומר רוויה על רקע בהיר ── */
+.ideas-layer--glow{width:min(88vw,1100px);aspect-ratio:1;
   background:url('/assets/orange-glow.png') center/contain no-repeat;
   mix-blend-mode:multiply;
-  opacity:.7;
-  filter:blur(30px)}
+  opacity:.62;
+  filter:blur(24px)}
 
-/* שכבה 2: הקשת — overlay מרים צורה כמעט-לבנה לאור רך.
-   האלפא רוככה כבר בנכס; המסכה הרדיאלית היא רשת ביטחון
-   שמבטיחה שההיקף החיצוני נמס גם אם הנכס יוחלף. */
-.ideas-blur--arc{width:min(126vw,1800px);line-height:0;
-  mix-blend-mode:overlay;
-  -webkit-mask-image:radial-gradient(closest-side circle at 50% 50%,#000 62%,transparent 100%);
-          mask-image:radial-gradient(closest-side circle at 50% 50%,#000 62%,transparent 100%)}
-.ideas-blur--arc img{width:100%;height:auto;display:block}
+/* ── שכבה 3: הקשת — מסכה על משטח אור ──────────────────────
+   הנכס כהה, אז לא צובעים אותו אלא משתמשים בצורתו כמסכה על לבן.
+   האור נצבע ישירות במקום להסתמך על מצב מיזוג הופך, שנכשל על רקע
+   בהיר (screen מחזיר חמימות 13, color-dodge מחזיר 0). */
+.ideas-layer--arc{width:min(126vw,1800px);aspect-ratio:1798/1800;
+  background:#FFFFFF;
+  opacity:.5;
+  -webkit-mask:url('/assets/arc-mask.png') center/contain no-repeat;
+          mask:url('/assets/arc-mask.png') center/contain no-repeat}
 
-/* ── התוכן — position:relative בלבד, בלי z-index ────────── */
+/* ── שכבה 4: התוכן — מעל לפי סדר DOM ────────────────────── */
 .ideas-grid{position:relative;
   display:grid;justify-items:center;
   width:100%;max-width:min(94vw,1150px);
@@ -317,21 +321,23 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 .ideas-title{font-weight:200;margin:0;
   font-size:clamp(38px,7.4vw,116px);
-  line-height:1.05;
-  letter-spacing:-.03em;
+  line-height:1.05;letter-spacing:-.03em;
   text-wrap:balance}
 .ideas-title strong{font-weight:700}
 
-.ideas-lede{margin:clamp(24px,3.4vh,42px) 0 0;
-  max-width:500px;
+.ideas-lede{margin:clamp(24px,3.4vh,42px) 0 0;max-width:500px;
   color:#6E6E76;font-weight:300;
   font-size:clamp(15px,1.3vw,18px);line-height:1.7}
 .ideas-lede .dim{color:#9A9AA2}
 
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
-  .ideas-blur--arc{width:172vw}
-  .ideas-blur--glow{width:132vw;opacity:.62;filter:blur(22px)}
+  /* blur(250px) יקר מאוד — מקטינים במובייל */
+  .ideas-layer--css{width:132vw;filter:blur(120px);opacity:.38}
+  .ideas-layer--glow{width:132vw;opacity:.58;filter:blur(16px)}
+  .ideas-layer--arc{width:172vw;
+    -webkit-mask-image:url('/assets/arc-mask-mobile.png');
+            mask-image:url('/assets/arc-mask-mobile.png')}
   .ideas-title{font-size:clamp(34px,10vw,60px)}
 }
 </style>
@@ -394,23 +400,16 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 </section>
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="next-sec ideas" id="services">
+<section class="ideas" id="services">
 
-  <!-- שכבה 0: המכולה. שכבות 1-2 נעות בקצב שונה -> עומק. -->
+  <!-- מכולה אחת, גריד: כל שכבות הרקע באותו תא -> מיושרות תמיד -->
   <div class="ideas-bg" aria-hidden="true">
-
-    <!-- שכבה 1: הזוהר -->
-    <div class="ideas-blur ideas-blur--glow"></div>
-
-    <!-- שכבה 2: הקשת / העיגול — החלפה אמיתית של מקור לפי רוחב -->
-    <picture class="ideas-blur ideas-blur--arc">
-      <source media="(max-width:768px)" srcset="/assets/arc-mobile.png">
-      <img src="/assets/arc-desktop.png" alt="" decoding="async" loading="eager">
-    </picture>
-
+    <div class="ideas-layer ideas-layer--css"></div>    <!-- 1: עיגול CSS מטושטש -->
+    <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
+    <div class="ideas-layer ideas-layer--arc"></div>    <!-- 3: הקשת כמסכה -->
   </div>
 
-  <!-- הגריד מפריד בין התוכן לשכבות הרקע -->
+  <!-- 4: התוכן -->
   <div class="ideas-grid">
     <p class="eyebrow" data-r>מה אנחנו עושים</p>
     <h2 class="ideas-title" data-r>שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
@@ -611,12 +610,12 @@ function start(){
      שתיהן על yPercent/scale בלבד — נשארות ב-compositor. */
   const ideas = document.querySelector('.ideas');
   if(ideas){
-    gsap.fromTo('.ideas-blur--arc',{yPercent:-8},{yPercent:8,ease:'none',
+    gsap.fromTo('.ideas-layer--arc',{yPercent:-8},{yPercent:8,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
-    gsap.fromTo('.ideas-blur--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
+    gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
-    gsap.to('.ideas-blur--glow',{opacity:.56,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to('.ideas-layer--glow',{opacity:.56,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
   }
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
