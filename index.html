@@ -51,13 +51,30 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
-/* הקו התחתון יושב על ה-span של הטקסט בלבד — לא על הקונטיינר,
-   כדי שלא יימשך גם מתחת לחץ. */
 .talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
   direction:rtl}
-.talk-txt{border-bottom:1px solid var(--ink);padding-bottom:4px;
+
+/* ── אפקט הטקסט המתגלגל ──────────────────────────────────
+   העוטף חותך (overflow:hidden) בגובה שורה אחת בדיוק.
+   כל תו הוא span עם ::after שמחזיק עותק זהה ב-top:100% —
+   כלומר בדיוק שורה אחת מתחת, מחוץ לאזור הנראה.
+   בהובר כל התווים עולים ב--100%: המקור יוצא למעלה והעותק נכנס תחתיו.
+   ה-stagger מגיע מ-transition-delay שנגזר מ---i של כל תו. */
+.wave-text{display:inline-block;overflow:hidden;line-height:1.35;
+  vertical-align:bottom}
+.wave-text .char{display:inline-block;position:relative;
+  transition:transform .55s cubic-bezier(.76,0,.24,1);
+  transition-delay:calc(var(--i) * .02s)}
+.wave-text .char::after{content:attr(data-char);
+  position:absolute;inset-inline-start:0;top:100%;
+  width:100%;text-align:center}
+.talk:hover .wave-text .char,
+.cta:hover  .wave-text .char{transform:translateY(-100%)}
+
+/* הקו התחתון על ה-.wave-text בלבד — החץ יושב מחוצה לו */
+.talk .wave-text{border-bottom:1px solid var(--ink);
   transition:border-color .35s var(--ease)}
-.talk:hover .talk-txt{border-color:var(--orange)}
+.talk:hover .wave-text{border-color:var(--orange)}
 /* ── החץ: מצביע שמאלה-למעלה (↖) — "קדימה" ב-RTL.
    הצורה מצוירת ישירות ב-path (בלי rotate), כדי שההחלקה תהיה translate נקי.
    שני עותקים בתוך מסגרת overflow:hidden:
@@ -261,7 +278,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
     <a href="#" class="dash" aria-label="תפריט"><i></i></a>
   </div>
   <div class="right">
-    <a href="#contact" class="talk"><span class="talk-txt">בוא נדבר</span>
+    <a href="#contact" class="talk"><span class="wave-text">בוא נדבר</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
@@ -279,7 +296,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
     </h1>
     <p class="lede">אנחנו משלבים אסטרטגיה, קריאייטיב ואוטומציה כדי לבנות לעסק שלך נוכחות דיגיטלית
       <span class="dim">שמביאה לקוחות — ולא רק לייקים.</span></p>
-    <a href="#about" class="cta">קצת עלינו
+    <a href="#about" class="cta"><span class="wave-text">קצת עלינו</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
   </div>
 </section>
@@ -290,7 +307,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
     <div class="s-head" data-r>
       <h2><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
       <p>סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
-      <a href="#contact" class="cta">בוא נדבר
+      <a href="#contact" class="cta"><span class="wave-text">בוא נדבר</span>
         <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     </div>
     <div class="s-side" data-r>
@@ -370,6 +387,32 @@ function preload(done){
     if(loaded===FRAME_COUNT) done();
   }
 }
+
+/* ============ פיצול טקסט לתווים (אפקט הגלגול) ============
+   כל תו הופך ל-span עם data-char (ממנו ה-::after שואב את העותק)
+   ו---i לצורך ה-stagger. Array.from מפצל נכון גם תווים מרובי-בייטים. */
+function splitWaveText(root=document){
+  root.querySelectorAll('.wave-text').forEach(el=>{
+    if(el.dataset.split) return;                 // לא לפצל פעמיים
+    const text = el.textContent.trim();
+    el.textContent = '';
+    Array.from(text).forEach((ch,i)=>{
+      const span = document.createElement('span');
+      span.className = 'char';
+      span.style.setProperty('--i', i);
+      if(ch === ' '){
+        span.innerHTML = '&nbsp;';
+        span.setAttribute('data-char','\u00A0');
+      }else{
+        span.textContent = ch;
+        span.setAttribute('data-char', ch);
+      }
+      el.appendChild(span);
+    });
+    el.dataset.split = 'true';
+  });
+}
+splitWaveText();
 
 /* ============ אתחול ============ */
 let lenis=null;
