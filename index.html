@@ -291,7 +291,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .ideas-layer--css{width:min(37vw,760px);aspect-ratio:1;
   background:#ffaa52;border-radius:50%;
   filter:blur(230px);
-  opacity:.7}
+  opacity:1}
 
 /* 2 — הזוהר התמונתי.
    ערכים מה-DevTools של הרפרנס: 500x450 (יחס 10:9, לא ריבוע),
@@ -464,14 +464,21 @@ function fit(){
   canvas.width = canvas.clientWidth*r;
   canvas.height = canvas.clientHeight*r;
 }
+const FRAME_SCALE = 0.9;          // 90% — הפריים יושב מעט פנימה
+const FRAME_BG    = '#E1E0E3';    // צבע הרקע שאליו נורמלו כל הפריימים
+
 function draw(i){
   const img = images[i];
   if(!img || !img.complete || !img.naturalWidth) return;
   const cw=canvas.width, ch=canvas.height;
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
-  ctx.clearRect(0,0,cw,ch);
-  // cover — הפריים ממלא את כל הסקשן כמו background-size:cover
-  const s = Math.max(cw/img.naturalWidth, ch/img.naturalHeight);
+
+  /* ממלאים ברקע של הפריים לפני הציור. בלי זה ההקטנה ל-90%
+     הייתה חושפת רצועות בקצוות; כך המעבר בלתי-נראה. */
+  ctx.fillStyle = FRAME_BG;
+  ctx.fillRect(0,0,cw,ch);
+
+  const s = Math.max(cw/img.naturalWidth, ch/img.naturalHeight) * FRAME_SCALE;
   const w=img.naturalWidth*s, h=img.naturalHeight*s;
   ctx.drawImage(img,(cw-w)/2,(ch-h)/2, w, h);
 }
