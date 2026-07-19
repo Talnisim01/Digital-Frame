@@ -284,18 +284,20 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   will-change:transform;backface-visibility:hidden}
 
 /* 1 — עיגול CSS: תופס את השליש העליון */
+/* 37vw ואטום — הרפרנס משיג ליבה חמה דרך עיגול קטן ומטושטש חזק,
+   לא דרך עיגול גדול ושקוף (ששטחו כפול ולכן מדלל את הצבע). */
 .ideas-layer--css{top:10%;
-  width:min(64vw,1000px);aspect-ratio:1;
+  width:min(37vw,760px);aspect-ratio:1;
   background:#ffaa52;border-radius:50%;
-  filter:blur(150px);
-  opacity:.6}
+  filter:blur(230px);
+  opacity:1}
 
 /* 2 — הזוהר התמונתי: עוטף את הכותרת */
-.ideas-layer--glow{top:15%;
-  width:min(760px,70vw);aspect-ratio:1;
+.ideas-layer--glow{top:12%;
+  width:min(620px,52vw);aspect-ratio:1;
   background:url('/assets/orange-glow.png') center/contain no-repeat;
   mix-blend-mode:multiply;
-  opacity:.85}
+  opacity:1}
 
 /* 3 — הקשת: מסכה על משטח לבן.
    שם הקובץ הוא arc-mask.png — הנכס שנגזר מהכיפה השחורה
@@ -331,8 +333,8 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 @media(max-width:768px){
   .ideas{padding-bottom:max(18vh,150px)}
-  .ideas-layer--css{top:8%;width:96vw;filter:blur(90px);opacity:.55}
-  .ideas-layer--glow{top:13%;width:104vw;opacity:.8}
+  .ideas-layer--css{top:8%;width:72vw;filter:blur(120px);opacity:1}
+  .ideas-layer--glow{top:11%;width:88vw;opacity:1}
   .ideas-layer--arc{top:4%;width:190vw;
     -webkit-mask-image:url('/assets/arc-mask-mobile.png');
             mask-image:url('/assets/arc-mask-mobile.png')}
@@ -613,7 +615,7 @@ function start(){
     gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
-    gsap.to('.ideas-layer--glow',{opacity:.56,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
   }
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
