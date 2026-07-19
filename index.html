@@ -269,17 +269,49 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 /* ============ SECTION 3 ============ */
 .next-sec{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:120px clamp(24px,5vw,72px);overflow:hidden;background:var(--paper)}
-/* סקשן 3 — זוהר ענק ורך, ממוקם גבוה, + קשת עדינה מעליו (כמו ברפרנס) */
-.next-sec .orb3{position:absolute;inset:0;margin:auto;width:min(150vw,1900px);height:150vh;
-  background-image:url('assets/glow.png');opacity:.62;filter:blur(20px)}
-.next-sec .orb-dome{position:absolute;inset:0;margin:auto;width:min(110vw,1400px);height:110vh;
-  background-image:url('assets/dome.png');opacity:.5}
-.next-inner{position:relative;z-index:2;max-width:60ch}
-.next-sec .eyebrow{justify-content:center;color:var(--orange)}
-.next-sec h2{font-weight:200;font-size:clamp(34px,6vw,84px);line-height:1.04;letter-spacing:-.02em}
+  text-align:center;padding:clamp(110px,14vh,180px) clamp(20px,5vw,72px);
+  overflow:hidden;background:var(--paper);isolation:isolate}
+
+/* ── שכבת הרקע ─────────────────────────────────────────────
+   z-index:-1 מציב אותה מאחורי הטקסט בלי להשפיע על הזרימה.
+   isolation:isolate על הסקשן מונע מה--1 לצנוח מאחורי הסקשן עצמו. */
+.next-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  display:grid;place-items:center}
+
+/* הצורה — הקשת בדסקטופ, עיגול מלא במובייל (מתחלף ב-<source>) */
+.next-shape{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(122vw,1750px);line-height:0}
+.next-shape img{width:100%;height:auto;display:block}
+
+/* הזוהר הכתום — ממורכז בדיוק באותה נקודה כמו הצורה */
+.next-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(96vw,1250px);aspect-ratio:1;
+  background:url('assets/orange-glow.png') center/contain no-repeat;
+  opacity:.9}
+
+/* ── טיפוגרפיה ───────────────────────────────────────────── */
+.next-inner{position:relative;z-index:1;max-width:22ch;margin-inline:auto}
+
+.next-sec .eyebrow{display:block;margin:0 0 clamp(22px,3.4vh,38px);
+  color:var(--orange);font-size:clamp(11px,.85vw,13px);
+  font-weight:500;letter-spacing:.22em}
+
+/* כותרת ענקית — נגזרת מרוחב המסך, שורות צמודות */
+.next-sec h2{font-weight:200;
+  font-size:clamp(40px,8.4vw,124px);
+  line-height:1.06;letter-spacing:-.03em}
 .next-sec h2 strong{font-weight:700}
-.next-lede{margin:26px auto 0;max-width:46ch;color:var(--gray);font-weight:300;font-size:clamp(15px,1.4vw,19px);line-height:1.6}
+
+.next-lede{margin:clamp(26px,3.6vh,44px) auto 0;max-width:46ch;
+  color:#6E6E76;font-weight:300;
+  font-size:clamp(15px,1.35vw,19px);line-height:1.7}
+.next-lede .dim{color:#9A9AA2}
+
+@media(max-width:900px){
+  .next-shape{width:150vw}
+  .next-glow{width:118vw}
+  .next-inner{max-width:100%}
+}
 </style>
 </head>
 <body>
@@ -341,12 +373,20 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
 <section class="next-sec" id="services">
-  <div class="orb-bg orb3"></div>
-  <div class="orb-bg orb-dome"></div>
+  <!-- שכבת הרקע: הצורה מתחלפת לפי רוחב המסך, הזוהר ממורכז בתוכה -->
+  <div class="next-bg" aria-hidden="true">
+    <picture class="next-shape">
+      <source media="(max-width:900px)" srcset="assets/arc-mobile.png">
+      <img src="assets/arc-desktop.png" alt="" decoding="async">
+    </picture>
+    <span class="next-glow"></span>
+  </div>
+
   <div class="next-inner">
-    <div class="eyebrow" data-r>מה אנחנו עושים</div>
+    <p class="eyebrow" data-r>מה אנחנו עושים</p>
     <h2 data-r>שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
-    <p class="next-lede" data-r>קמפיינים שמביאים פניות, אוטומציה שמסננת אותן, ומערכת שסוגרת את העסקה — הכול מחובר, הכול נמדד.</p>
+    <p class="next-lede" data-r>קמפיינים שמביאים פניות, אוטומציה שמסננת אותן,
+      <span class="dim">ומערכת שסוגרת את העסקה — הכול מחובר, הכול נמדד.</span></p>
   </div>
 </section>
 
@@ -534,10 +574,8 @@ function start(){
       orbs.forEach(o=>gsap.to(o,{y:y*18,duration:1.6,ease:'power2.out'}));
     });
   }
-  /* תנועה עדינה של העיגולים — בלי סיבוב, כי הם נמתחים לאליפסה והסיבוב היה מעוות אותם */
-  document.querySelectorAll('.next-sec .orb-bg').forEach((o,i)=>{
-    gsap.to(o,{scale:1.04,duration:16+i*3,yoyo:true,repeat:-1,ease:'sine.inOut'});
-  });
+  /* נשימה עדינה לרקע של סקשן 3 */
+  gsap.to('.next-glow',{scale:1.05,duration:18,yoyo:true,repeat:-1,ease:'sine.inOut'});
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
 }
