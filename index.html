@@ -370,13 +370,27 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   /* ── סקשן הפריימים ─────────────────────────────────────
      הדהייה הייתה 240px קבועים בכל קצה. במסך 800px זה 480px
      מתוך 800 — הסרטון היה שם אבל כמעט שקוף לכל אורכו. */
-  /* רצועה ולא מסך מלא: סקשן לאורך מכריח פריים 16:9 להתנפח פי 4.5
-     כדי לכסות אותו לגובה. רצועה של 40vh מורידה את זה לפי ~1.2. */
-  #seq{inset:auto 0 auto 0;top:50%;height:40vh;
-    transform:translateY(-50%);
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5vh,#000 calc(100% - 5vh),transparent 100%);
-            mask-image:linear-gradient(180deg,transparent 0,#000 5vh,#000 calc(100% - 5vh),transparent 100%)}
-  .sphere-sec{align-items:center}
+  /* רצועה מעוגנת למעלה. 44svh במקום 62svh: סקשן לאורך מכריח פריים
+     16:9 להתנפח כדי לכסות לגובה, ורצועה נמוכה יותר מחזירה חדות
+     (x1.32 במקום x4.5). הטקסט יושב מתחתיה, לא עליה. */
+  #seq{top:0;bottom:auto;height:44svh;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4svh,#000 calc(100% - 7svh),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 4svh,#000 calc(100% - 7svh),transparent 100%)}
+  .sphere-sec::after{background:linear-gradient(180deg,transparent 0%,transparent 34%,var(--paper) 52%)}
+  .sphere-grid{padding:calc(44svh + 10px) 20px 88px;gap:26px;align-items:start}
+
+  /* ── טיפוגרפיה ומרווחים ─────────────────────────────── */
+  .s-head h2{font-size:clamp(26px,7.6vw,36px);line-height:1.18;text-shadow:none}
+  .s-head p{font-size:15px;line-height:1.6;margin-top:14px;max-width:none}
+  .s-head .cta{margin-top:24px}
+  .s-side{margin-top:4px}
+  .s-side p{font-size:14px;line-height:1.65}
+
+  /* ── מטרות מגע: 48px מינימום לכפתור, 40px לצ'יפ ──────── */
+  .cta{padding:0 26px;min-height:48px;font-size:14px;gap:12px}
+  .chips{gap:8px;margin-top:18px}
+  .chip{min-height:40px;display:inline-flex;align-items:center;
+    padding:0 15px;font-size:11px}
 
   /* ── הירו ───────────────────────────────────────────── */
   .hero{padding:clamp(96px,16vh,130px) 20px clamp(80px,12vh,110px)}
