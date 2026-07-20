@@ -370,9 +370,13 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   /* ── סקשן הפריימים ─────────────────────────────────────
      הדהייה הייתה 240px קבועים בכל קצה. במסך 800px זה 480px
      מתוך 800 — הסרטון היה שם אבל כמעט שקוף לכל אורכו. */
-  #seq{
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 9vh,#000 calc(100% - 9vh),transparent 100%);
-            mask-image:linear-gradient(180deg,transparent 0,#000 9vh,#000 calc(100% - 9vh),transparent 100%)}
+  /* רצועה ולא מסך מלא: סקשן לאורך מכריח פריים 16:9 להתנפח פי 4.5
+     כדי לכסות אותו לגובה. רצועה של 40vh מורידה את זה לפי ~1.2. */
+  #seq{inset:auto 0 auto 0;top:50%;height:40vh;
+    transform:translateY(-50%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 5vh,#000 calc(100% - 5vh),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 5vh,#000 calc(100% - 5vh),transparent 100%)}
+  .sphere-sec{align-items:center}
 
   /* ── הירו ───────────────────────────────────────────── */
   .hero{padding:clamp(96px,16vh,130px) 20px clamp(80px,12vh,110px)}
@@ -517,7 +521,7 @@ const _ambx = _amb.getContext('2d');
    מול 3.2 בראשון), כי אז המריחה שמתחת לא יכולה להתאים לו. */
 const _sh  = document.createElement('canvas');
 const _shx = _sh.getContext('2d');
-let _shGrad = null, _shW = 0;
+
 
 function draw(i){
   const img = images[i];
@@ -532,29 +536,38 @@ function draw(i){
   const s = Math.max(cw/img.naturalWidth, ch/img.naturalHeight) * FRAME_SCALE;
   const w=img.naturalWidth*s, h=img.naturalHeight*s;
 
-  /* מציירים את הפריים לקנבס עזר, מרככים את שני הקצוות האנכיים
-     ורק אז מרכיבים. destination-in משאיר את הפיקסלים לפי אלפא
-     של הגרדיאנט, כך שהקצה נמס במקום להיחתך. */
-  if(_sh.width!==cw || _sh.height!==ch){ _sh.width=cw; _sh.height=ch; _shGrad=null; }
-  if(!_shGrad || _shW!==w){
-    const fade = Math.max(40, w*0.055);          // רוחב הריכוך
-    const x0 = (cw-w)/2, x1 = x0+w;
-    _shGrad = _shx.createLinearGradient(0,0,cw,0);
-    _shGrad.addColorStop(0,'rgba(0,0,0,0)');
-    _shGrad.addColorStop(Math.max(0,(x0)/cw),'rgba(0,0,0,0)');
-    _shGrad.addColorStop(Math.min(1,(x0+fade)/cw),'rgba(0,0,0,1)');
-    _shGrad.addColorStop(Math.max(0,(x1-fade)/cw),'rgba(0,0,0,1)');
-    _shGrad.addColorStop(Math.min(1,(x1)/cw),'rgba(0,0,0,0)');
-    _shGrad.addColorStop(1,'rgba(0,0,0,0)');
-    _shW = w;
-  }
+  /* מציירים את הפריים לקנבס עזר ומרככים את הקצוות שבהם יש פער.
+     בדסקטופ הפער אופקי, במובייל אנכי — אז בודקים כל ציר בנפרד. */
+  if(_sh.width!==cw || _sh.height!==ch){ _sh.width=cw; _sh.height=ch; }
   _shx.globalCompositeOperation='source-over';
   _shx.clearRect(0,0,cw,ch);
   _shx.imageSmoothingEnabled=true; _shx.imageSmoothingQuality='high';
   _shx.drawImage(img,(cw-w)/2,(ch-h)/2, w, h);
+
   _shx.globalCompositeOperation='destination-in';
-  _shx.fillStyle=_shGrad;
-  _shx.fillRect(0,0,cw,ch);
+  const gapX=(cw-w)/2, gapY=(ch-h)/2;
+  if(gapX>1){
+    const f=Math.max(30,w*0.055), x0=(cw-w)/2, x1=x0+w;
+    const g=_shx.createLinearGradient(0,0,cw,0);
+    g.addColorStop(0,'rgba(0,0,0,0)');
+    g.addColorStop(Math.max(0,x0/cw),'rgba(0,0,0,0)');
+    g.addColorStop(Math.min(1,(x0+f)/cw),'rgba(0,0,0,1)');
+    g.addColorStop(Math.max(0,(x1-f)/cw),'rgba(0,0,0,1)');
+    g.addColorStop(Math.min(1,x1/cw),'rgba(0,0,0,0)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    _shx.fillStyle=g; _shx.fillRect(0,0,cw,ch);
+  }
+  if(gapY>1){
+    const f=Math.max(30,h*0.055), y0=(ch-h)/2, y1=y0+h;
+    const g=_shx.createLinearGradient(0,0,0,ch);
+    g.addColorStop(0,'rgba(0,0,0,0)');
+    g.addColorStop(Math.max(0,y0/ch),'rgba(0,0,0,0)');
+    g.addColorStop(Math.min(1,(y0+f)/ch),'rgba(0,0,0,1)');
+    g.addColorStop(Math.max(0,(y1-f)/ch),'rgba(0,0,0,1)');
+    g.addColorStop(Math.min(1,y1/ch),'rgba(0,0,0,0)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    _shx.fillStyle=g; _shx.fillRect(0,0,cw,ch);
+  }
 
   ctx.drawImage(_sh,0,0);
 }
