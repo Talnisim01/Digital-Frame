@@ -332,7 +332,10 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 /* ============ מנוע האנימציה ============ */
 /* .w הוא החלון החותך, .w-i הוא מה שנע בתוכו.
    ה-padding/margin מונע חיתוך של אותיות יורדות בעברית (ק, ן, ך). */
+/* max-width מונע מ-inline-block לגלוש: inline-block לא נשבר באמצע
+   מילה, ומילה ארוכה מהמיכל הייתה יוצאת ממנו במקום להתקפל. */
 .w{display:inline-block;overflow:hidden;vertical-align:top;
+   max-width:100%;
    padding-bottom:.14em;margin-bottom:-.14em}
 .w-i{display:inline-block;will-change:transform}
 [data-animate]{will-change:transform,opacity}
@@ -544,7 +547,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 </section>
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="ideas" id="services" data-snap data-pin="+=55%">
+<section class="ideas" id="services" data-snap>
 
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
@@ -837,10 +840,11 @@ function start(){
         scrollTrigger:st
       });
     } else if(kind === 'clip-in'){
-      /* נפתח מ-8% ל-0% — הצורה של הרפרנס במצב מנוחה */
+      /* scrub ולא once: הצורה קשורה למיקום הגלילה ולכן היא נפתחת
+         ונסגרת עם התנועה, במקום להינעל על 0% אחרי הפעלה אחת. */
       gsap.fromTo(el,{clipPath:'inset(8% round 3rem)'},
-        {clipPath:'inset(0% round 3rem)', duration:1.6, ease:'expo.out',
-         immediateRender:false, scrollTrigger:{trigger:sec, start:'top 72%', once:true}});
+        {clipPath:'inset(0% round 3rem)', ease:'none', immediateRender:false,
+         scrollTrigger:{trigger:sec, start:'top 88%', end:'top 12%', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
@@ -868,68 +872,6 @@ function start(){
       scrollTrigger:{trigger:el.closest('section')||el,
         start:'bottom 65%', end:'bottom top', scrub:true}});
   });
-
-  /* ═══════════ ארכיטקטורת גלילה ═══════════
-       data-snap            הסקשן משתתף בעגינה
-       data-pin="+=60%"     הסקשן ננעל למשך המרחק שצוין
-     ───────────────────────────────────────── */
-
-  const touch = matchMedia('(pointer:coarse)').matches;
-
-  /* ── 1. הצמדת סקשנים ──
-     נבנה לפני העגינה: pin מוסיף pin-spacer ומשנה את גובה המסמך,
-     ולכן כל מיקום שנחשב לפניו יהיה שגוי. */
-  document.querySelectorAll('[data-pin]').forEach(sec=>{
-    ScrollTrigger.create({
-      trigger: sec, start:'top top', end: sec.dataset.pin || '+=60%',
-      pin:true, pinSpacing:true, anticipatePin:1
-    });
-  });
-
-  /* ── 2. עגינה מגנטית ──
-     עגינת קרבה ולא mandatory: נמשכת רק בתוך הסף, ומחוצה לו
-     משחררת. mandatory לוכד את המשתמש, שובר חיפוש-בדף ויכול
-     להפוך תוכן לבלתי-נגיש בסקשן שגבוה ממסך אחד. */
-  const SNAP_TOL = .055;
-  let snapAt = [], deadZones = [];
-
-  function buildSnap(){
-    const max = ScrollTrigger.maxScroll(window);
-    if(!max) return;
-    const y = ScrollTrigger.scroll(window);
-    snapAt = [...document.querySelectorAll('[data-snap]')]
-      .map(sec => gsap.utils.clamp(0, max, sec.getBoundingClientRect().top + y) / max)
-      .sort((a,b)=>a-b);
-
-    /* אזורים שבהם pin מריץ scrub — שם העגינה תילחם בסקראב
-       ותקפיץ את המשתמש באמצע רצף הפריימים. */
-    deadZones = ScrollTrigger.getAll()
-      .filter(t => t.pin && t.scrub)
-      .map(t => [t.start/max, t.end/max]);
-  }
-
-  const inDeadZone = v => deadZones.some(([a,b]) => v > a - .02 && v < b + .02);
-
-  if(!touch && !reduce){
-    ScrollTrigger.create({
-      trigger: document.documentElement,
-      start: 0, end: () => ScrollTrigger.maxScroll(window),
-      snap:{
-        snapTo(value){
-          if(inDeadZone(value) || !snapAt.length) return value;
-          const near = snapAt.reduce((a,b)=>
-            Math.abs(b-value) < Math.abs(a-value) ? b : a);
-          return Math.abs(near - value) < SNAP_TOL ? near : value;
-        },
-        duration:{min:.25, max:.6},
-        delay:.1,
-        ease:'power2.inOut'
-      }
-    });
-  }
-
-  ScrollTrigger.addEventListener('refresh', buildSnap);
-  buildSnap();
 
   /* ── משיכה מגנטית על כפתור הניגון ──
      רק במכשירי מצביע: במגע אין ריחוף, וזה היה נתקע במצב "נמשך".
@@ -975,7 +917,7 @@ function start(){
   const seq={f:0};
   let lastDrawn=-1;
   const pinLen = isMobile ? '+=240%' : '+=340%';
-  gsap.to(seq,{f:FRAME_COUNT-1,ease:'none',
+  const seqTween = gsap.to(seq,{f:FRAME_COUNT-1,ease:'none',
     scrollTrigger:{trigger:'.sphere-sec',start:'top top',end:pinLen,
       pin:true,scrub:1,anticipatePin:1,
       onUpdate:()=>{
@@ -1019,6 +961,60 @@ function start(){
   ScrollTrigger.addEventListener('refresh', updateSecNav);
   gsap.ticker.add(updateSecNav);
   updateSecNav();
+
+  /* ═══════════ תזמור גלילה ═══════════
+     נבנה כאן, בסוף, ולא באמצע: ScrollTrigger.getAll() חייב לראות
+     את כל הטריגרים — ובראשם רצף הפריימים — לפני מדידת העגינה.
+     ───────────────────────────────────────── */
+
+  const touch = matchMedia('(pointer:coarse)').matches;
+
+  /* הטריגר של הפריימים נשמר במפורש. הגרסה הקודמת זיהתה אותו
+     דרך t.scrub, שלא קיים על מופע ScrollTrigger (הוא ב-t.vars),
+     ולכן רשימת האזורים המוגנים הייתה ריקה תמיד והעגינה נלחמה
+     בסקראב לאורך כל הרצף. */
+  const seqST = seqTween.scrollTrigger || null;
+
+  let snapAt = [];
+  const SNAP_TOL = .055;
+
+  function buildSnap(){
+    const max = ScrollTrigger.maxScroll(window);
+    if(!max) return;
+    const y = ScrollTrigger.scroll(window);
+    snapAt = [...document.querySelectorAll('[data-snap]')]
+      .map(sec => gsap.utils.clamp(0, max, sec.getBoundingClientRect().top + y) / max)
+      .sort((a,b)=>a-b);
+  }
+
+  /* אזור מוגן: כל טווח ה-pin של הפריימים, בתוספת שוליים.
+     בתוכו הגלילה חופשית לחלוטין ואיש לא נוגע בה. */
+  function protectedZone(v){
+    if(!seqST) return false;
+    const max = ScrollTrigger.maxScroll(window);
+    if(!max) return false;
+    return v > seqST.start/max - .03 && v < seqST.end/max + .03;
+  }
+
+  if(!touch && !reduce){
+    ScrollTrigger.create({
+      trigger: document.documentElement,
+      start: 0, end: () => ScrollTrigger.maxScroll(window),
+      snap:{
+        snapTo(value){
+          if(protectedZone(value) || !snapAt.length) return value;
+          const near = snapAt.reduce((a,b)=>
+            Math.abs(b-value) < Math.abs(a-value) ? b : a);
+          return Math.abs(near - value) < SNAP_TOL ? near : value;
+        },
+        duration:{min:.25, max:.6}, delay:.1, ease:'power2.inOut'
+      }
+    });
+  }
+
+  ScrollTrigger.addEventListener('refresh', buildSnap);
+  ScrollTrigger.refresh();
+  buildSnap();
 
   /* עכבר (דסקטופ בלבד): פרלקסה עדינה על הכתמים, הפריים והעיגולים */
   if(matchMedia('(hover:hover)').matches){
