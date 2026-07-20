@@ -475,6 +475,14 @@ const FRAME_SCALE = 0.9;          // 90% — הפריים יושב מעט פני
 const _amb  = document.createElement('canvas'); _amb.width=32; _amb.height=18;
 const _ambx = _amb.getContext('2d');
 
+/* קנבס עזר לריכוך הקצה הצדדי של הפריים החד.
+   בלעדיו הפריים נגמר בקו אנכי חד — בעייתי במיוחד בפריימים
+   שבהם יש תוכן ממשי בקצה (מדדתי סטיית תקן 13.4 בפריים האחרון
+   מול 3.2 בראשון), כי אז המריחה שמתחת לא יכולה להתאים לו. */
+const _sh  = document.createElement('canvas');
+const _shx = _sh.getContext('2d');
+let _shGrad = null, _shW = 0;
+
 function draw(i){
   const img = images[i];
   if(!img || !img.complete || !img.naturalWidth) return;
@@ -487,7 +495,32 @@ function draw(i){
 
   const s = Math.max(cw/img.naturalWidth, ch/img.naturalHeight) * FRAME_SCALE;
   const w=img.naturalWidth*s, h=img.naturalHeight*s;
-  ctx.drawImage(img,(cw-w)/2,(ch-h)/2, w, h);
+
+  /* מציירים את הפריים לקנבס עזר, מרככים את שני הקצוות האנכיים
+     ורק אז מרכיבים. destination-in משאיר את הפיקסלים לפי אלפא
+     של הגרדיאנט, כך שהקצה נמס במקום להיחתך. */
+  if(_sh.width!==cw || _sh.height!==ch){ _sh.width=cw; _sh.height=ch; _shGrad=null; }
+  if(!_shGrad || _shW!==w){
+    const fade = Math.max(40, w*0.055);          // רוחב הריכוך
+    const x0 = (cw-w)/2, x1 = x0+w;
+    _shGrad = _shx.createLinearGradient(0,0,cw,0);
+    _shGrad.addColorStop(0,'rgba(0,0,0,0)');
+    _shGrad.addColorStop(Math.max(0,(x0)/cw),'rgba(0,0,0,0)');
+    _shGrad.addColorStop(Math.min(1,(x0+fade)/cw),'rgba(0,0,0,1)');
+    _shGrad.addColorStop(Math.max(0,(x1-fade)/cw),'rgba(0,0,0,1)');
+    _shGrad.addColorStop(Math.min(1,(x1)/cw),'rgba(0,0,0,0)');
+    _shGrad.addColorStop(1,'rgba(0,0,0,0)');
+    _shW = w;
+  }
+  _shx.globalCompositeOperation='source-over';
+  _shx.clearRect(0,0,cw,ch);
+  _shx.imageSmoothingEnabled=true; _shx.imageSmoothingQuality='high';
+  _shx.drawImage(img,(cw-w)/2,(ch-h)/2, w, h);
+  _shx.globalCompositeOperation='destination-in';
+  _shx.fillStyle=_shGrad;
+  _shx.fillRect(0,0,cw,ch);
+
+  ctx.drawImage(_sh,0,0);
 }
 
 /* טעינת כל הפריימים עם מד התקדמות + ספירת כשלונות */
