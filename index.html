@@ -269,6 +269,19 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
+/* ============ מנוע האנימציה ============ */
+/* .w הוא החלון החותך, .w-i הוא מה שנע בתוכו.
+   ה-padding/margin מונע חיתוך של אותיות יורדות בעברית (ק, ן, ך). */
+.w{display:inline-block;overflow:hidden;vertical-align:top;
+   padding-bottom:.14em;margin-bottom:-.14em}
+.w-i{display:inline-block;will-change:transform}
+[data-animate]{will-change:transform,opacity}
+
+@media(prefers-reduced-motion:reduce){
+  .w-i{transform:none !important}
+  [data-animate]{opacity:1 !important;transform:none !important}
+}
+
 /* ============ SECTION 3 — IDEAS ============ */
 .ideas{position:relative;min-height:100vh;
   display:flex;justify-content:center;align-items:center;
@@ -456,16 +469,16 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 <section class="sphere-sec" id="about">
   <canvas id="seq"></canvas>
   <div class="sphere-grid">
-    <div class="s-head" data-r>
-      <h2><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
-      <p>סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
-      <a href="#contact" class="cta"><span class="wave-text">בוא נדבר</span>
+    <div class="s-head">
+      <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
+      <p data-animate="fade-up">סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
+      <a href="#contact" class="cta" data-animate="fade-up"><span class="wave-text">בוא נדבר</span>
         <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     </div>
-    <div class="s-side" data-r>
-      <p>בין אם דרך קמפיין ממוקד, אוטומציה בוואטסאפ או מערכת שמנהלת את ההזמנה עד הסוף —
+    <div class="s-side">
+      <p data-animate="fade-up">בין אם דרך קמפיין ממוקד, אוטומציה בוואטסאפ או מערכת שמנהלת את ההזמנה עד הסוף —
         <span class="dim">אנחנו בונים רגעים שלקוחות לא רק רואים, אלא פועלים בהם.</span></p>
-      <div class="chips"><span class="chip">קמפיינים</span><span class="chip">אוטומציה</span><span class="chip">מערכות</span><span class="chip">+</span></div>
+      <div class="chips" data-animate="fade-up"><span class="chip">קמפיינים</span><span class="chip">אוטומציה</span><span class="chip">מערכות</span><span class="chip">+</span></div>
     </div>
   </div>
 </section>
@@ -475,17 +488,17 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
-    <div class="ideas-layer ideas-layer--css"></div>    <!-- 1: עיגול CSS מטושטש -->
-    <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
-    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="">   <!-- 3: הכיפה, נקייה -->
+    <div class="ideas-layer ideas-layer--css" data-parallax="-0.16"></div>    <!-- 1: עיגול CSS מטושטש -->
+    <div class="ideas-layer ideas-layer--glow" data-parallax="0.10"></div>   <!-- 2: הזוהר PNG -->
+    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="" data-parallax="-0.05">   <!-- 3: הכיפה, נקייה -->
     <div class="ideas-fade" aria-hidden="true"></div>            <!-- 4: דהייה בקצה העליון -->
   </div>
 
   <!-- 4: התוכן -->
   <div class="ideas-grid">
-    <p class="eyebrow" data-r>מה אנחנו עושים</p>
-    <h2 class="ideas-title" data-r>שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
-    <p class="ideas-lede" data-r>קמפיינים שמביאים פניות, אוטומציה שמסננת אותן,
+    <p class="eyebrow" data-animate="fade">מה אנחנו עושים</p>
+    <h2 class="ideas-title" data-animate="title">שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
+    <p class="ideas-lede" data-animate="fade-up">קמפיינים שמביאים פניות, אוטומציה שמסננת אותן,
       <span class="dim">ומערכת שסוגרת את העסקה — הכול מחובר, הכול נמדד.</span></p>
   </div>
 
@@ -667,23 +680,106 @@ function start(){
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
   gsap.to('.blobs',{scale:1.25,opacity:.5,ease:'none',
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-  /* כל אלמנט נחשף מול הסקשן שלו עצמו, לא מול טריגר גלובלי אחד.
-     בגרסה הקודמת כל [data-r] באתר היה תלוי ב-.sphere-sec ב-top 55%;
-     כשהטריגר לא נורה במובייל, gsap.from השאיר אותם על opacity:0 לתמיד.
-     fromTo עם immediateRender:false לא מסתיר עד שהטריגר מוכן,
-     ו-once:true מבטיח שהם נשארים גלויים. */
-  document.querySelectorAll('[data-r]').forEach((el,i)=>{
-    const sec = el.closest('section') || el;
-    gsap.fromTo(el,{y:40,opacity:0},{y:0,opacity:1,duration:1,ease:'expo.out',
-      delay:(i%3)*.08, immediateRender:false,
-      scrollTrigger:{trigger:sec,start:'top 80%',once:true}});
+  /* ═══════════ מנוע אנימציה אחיד ═══════════
+     נשלט דרך data attributes בלבד:
+       data-animate="title"    חשיפה ממוסכת, מילה-מילה, מקובצת לפי שורה
+       data-animate="fade-up"  הרמה + דהייה
+       data-animate="fade"     דהייה בלבד
+       data-parallax="0.18"    פרלקסה; ערך שלילי = כיוון הפוך
+       data-exit               יציאה קשורה לגלילה
+     ───────────────────────────────────────── */
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* מפצל טקסט למילים עטופות, ומכבד תגיות פנימיות: אנחנו נכנסים
+     לתוך <strong> ו-<span class="dim"> במקום לשטח אותן, כך שהעיצוב
+     שלהן שורד את הפיצול. */
+  function splitWords(el){
+    if(el.dataset.split) return [...el.querySelectorAll('.w-i')];
+    const walk = node => {
+      [...node.childNodes].forEach(n=>{
+        if(n.nodeType === 3){
+          const parts = n.textContent.split(/(\s+)/);
+          if(!parts.some(t=>t.trim())) return;
+          const frag = document.createDocumentFragment();
+          parts.forEach(t=>{
+            if(!t) return;
+            if(!t.trim()){ frag.appendChild(document.createTextNode(t)); return; }
+            const outer = document.createElement('span'); outer.className='w';
+            const inner = document.createElement('span'); inner.className='w-i';
+            inner.textContent = t;
+            outer.appendChild(inner); frag.appendChild(outer);
+          });
+          n.replaceWith(frag);
+        } else if(n.nodeType === 1 && n.tagName !== 'BR' && !n.classList.contains('w')){
+          walk(n);                       // <strong>, <span class="dim"> וכו'
+        }
+      });
+    };
+    walk(el);
+    el.dataset.split = '1';
+    return [...el.querySelectorAll('.w-i')];
+  }
+
+  /* מקבץ מילים לשורות לפי המיקום האנכי בפועל — כך שכל שורה
+     עולה כיחידה אחת, וזה מה שנקרא כחשיפת-שורה ולא כריקוד מילים. */
+  function lineIndex(words){
+    const tops = words.map(w=>Math.round(w.parentElement.getBoundingClientRect().top));
+    const uniq = [...new Set(tops)].sort((a,b)=>a-b);
+    return tops.map(t=>uniq.indexOf(t));
+  }
+
+  document.querySelectorAll('[data-animate]').forEach(el=>{
+    const kind = el.dataset.animate;
+    const sec  = el.closest('section') || el;
+    const st   = {trigger:sec, start:'top 78%', once:true};
+
+    if(reduce){ gsap.set(el,{opacity:1,y:0}); return; }
+
+    if(kind === 'title'){
+      const words = splitWords(el);
+      if(!words.length) return;
+      const li = lineIndex(words);
+      gsap.set(el,{opacity:1});
+      gsap.fromTo(words,{yPercent:100,opacity:0},{
+        yPercent:0, opacity:1,
+        duration:1.35, ease:'expo.out',
+        immediateRender:false,
+        stagger:(i)=>li[i]*0.09 + i*0.012,
+        scrollTrigger:st
+      });
+    } else {
+      const from = kind === 'fade' ? {opacity:0} : {y:44, opacity:0};
+      gsap.fromTo(el, from, {y:0, opacity:1,
+        duration:1.25, ease:'power4.out', immediateRender:false, scrollTrigger:st});
+    }
   });
 
-  /* רשת ביטחון: אם ScrollTrigger נכשל מסיבה כלשהי, אף אלמנט
-     לא נשאר בלתי-נראה. */
-  setTimeout(()=>document.querySelectorAll('[data-r]').forEach(el=>{
-    if(getComputedStyle(el).opacity === '0'){ el.style.opacity=''; el.style.transform=''; }
-  }), 4000);
+  /* ── פרלקסה: כל שכבה בקצב משלה, וזה מה שיוצר עומק ──
+     נכתב ל-yPercent (כלומר transform) ולכן לא מתנגש במירכוז
+     הפלקסבוקס ולא ב-top של הכיפה — אלה מאפייני פריסה נפרדים. */
+  if(!reduce) document.querySelectorAll('[data-parallax]').forEach(el=>{
+    const f = parseFloat(el.dataset.parallax) || 0;
+    gsap.fromTo(el,{yPercent:-f*100},{yPercent:f*100, ease:'none',
+      scrollTrigger:{trigger:el.closest('section')||el,
+        start:'top bottom', end:'bottom top', scrub:1}});
+  });
+
+  /* ── יציאה קשורה לגלילה ── */
+  if(!reduce) document.querySelectorAll('[data-exit]').forEach(el=>{
+    gsap.to(el,{y:-70, opacity:0, ease:'none',
+      scrollTrigger:{trigger:el.closest('section')||el,
+        start:'bottom 65%', end:'bottom top', scrub:true}});
+  });
+
+  /* רשת ביטחון: תוכן לא נשאר בלתי-נראה בשקט אם טריגר כלשהו נכשל. */
+  setTimeout(()=>{
+    document.querySelectorAll('[data-animate]').forEach(el=>{
+      if(getComputedStyle(el).opacity === '0'){ el.style.opacity=''; el.style.transform=''; }
+      el.querySelectorAll('.w-i').forEach(w=>{
+        if(getComputedStyle(w).opacity === '0'){ w.style.opacity=''; w.style.transform=''; }
+      });
+    });
+  }, 5000);
 
   /* אם הפריימים לא נטענו (למשל תיקיית frames חסרה) — עוברים לגיבוי מצויר */
   const framesReady = ok > 0;
