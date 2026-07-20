@@ -745,6 +745,68 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .bars-indicator[data-active-bar="7"]{opacity:0;pointer-events:none}
 }
 
+
+/* ════════════ שכבת הגלולות מעל הקנבס — OPTION B ════════════
+   שכבה חדשה בלבד. הקנבס, ה-pin, ה-protectedZone והטקסט הקיים
+   לא נגעו. הריחוף מונע ע"י @keyframes ולא ע"י GSAP —
+   שום טווין חדש לא נכנס לטיימליין הראשי.
+
+   שכבות בסקשן:  #seq(1) → ::after(2) → .services-container(3)
+                 → .sphere-grid(3, מנצח לפי סדר DOM) */
+.services-container{position:absolute;inset:0;z-index:3;
+  pointer-events:none}
+.services-container a{position:absolute;pointer-events:auto;
+  text-decoration:none;color:inherit}
+
+.services-button{display:inline-flex;align-items:center;
+  min-height:clamp(44px,3.6vw,56px);
+  padding-inline:clamp(18px,1.8vw,28px);
+  border-radius:100px;
+  background:rgba(255,255,255,.86);
+  border:1px solid rgba(255,255,255,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 34px rgba(20,27,36,.10), 0 2px 6px rgba(20,27,36,.05);
+  color:var(--ink);font-weight:300;white-space:nowrap;
+  font-size:clamp(14px,1.15vw,19px);letter-spacing:-.005em;
+  transition:transform .5s var(--ease), box-shadow .5s var(--ease),
+             background .5s var(--ease)}
+.services-container a:hover .services-button{
+  transform:translateY(-3px);background:#fff;
+  box-shadow:0 16px 44px rgba(20,27,36,.16), 0 3px 8px rgba(20,27,36,.07)}
+.services-container a:focus-visible .services-button{
+  outline:2px solid var(--orange);outline-offset:4px}
+
+/* מיקום ארבע הפינות סביב הכדור.
+   אחוזים ולא פיקסלים — נשאר יחסי לכדור בכל רוחב.
+   inset-inline ולא left/right: ב-RTL הדפדפן מתעלם מ-left
+   על אלמנט over-constrained (‏HANDOFF באג 5). */
+.--is-uiux       {top:22%;inset-inline-start:8%}
+.--is-development{top:26%;inset-inline-end:8%}
+.--is-branding   {bottom:20%;inset-inline-start:12%}
+.--is-animation  {bottom:16%;inset-inline-end:10%}
+
+/* ריחוף — transform בלבד, נשאר ב-compositor ולא מפעיל layout */
+[data-floating]{animation:svc-float 7s ease-in-out infinite}
+.--is-branding[data-floating]{animation-duration:9s;animation-delay:-2.5s}
+@keyframes svc-float{
+  0%,100%{transform:translateY(0)}
+  50%    {transform:translateY(-10px)}
+}
+/* ההובר והריחוף שניהם על transform ומתנגשים.
+   ההובר מנצח ע"י עצירת האנימציה, לא ע"י מלחמה בה. */
+.services-container a:hover [data-floating]{animation-play-state:paused}
+
+/* מתחת ל-901px הקנבס הופך לרצועה עליונה (62svh, ואז 44svh)
+   והטקסט של .sphere-grid יושב מתחתיה. גלולות צפות היו נוחתות
+   עליו. הן יורדות, ו-.chips הקיימים ממשיכים למלא את התפקיד. */
+@media(max-width:900px){
+  .services-container{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-floating]{animation:none}
+}
+
 </style>
 </head>
 <body>
@@ -789,6 +851,16 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 <section class="sphere-sec" id="about" data-snap>
   <canvas id="seq"></canvas>
+
+  <!-- שכבת הגלולות. נוספה בין הקנבס לטקסט; שניהם לא שונו.
+       data-animate="fade" בלבד — דקלרטיבי, ללא טווין עצמאי. -->
+  <div class="services-container" data-animate="fade">
+    <a href="#services"><div class="services-button --is-uiux">אפיון ו-UI/UX</div></a>
+    <a href="#services"><div class="services-button --is-development" data-floating>פיתוח</div></a>
+    <a href="#services"><div class="services-button --is-branding" data-floating>מיתוג</div></a>
+    <a href="#services"><div class="services-button --is-animation">אוטומציה</div></a>
+  </div>
+
   <div class="sphere-grid">
     <div class="s-head">
       <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
