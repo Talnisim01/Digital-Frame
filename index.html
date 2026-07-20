@@ -71,7 +71,8 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
   position:absolute;inset-inline-start:0;top:100%;
   width:100%;text-align:center}
 .talk:hover .wave-text .char,
-.cta:hover  .wave-text .char{transform:translateY(-100%)}
+.cta:hover  .wave-text .char,
+.reel-play:hover .wave-text .char{transform:translateY(-100%)}
 
 /* הקו התחתון על ה-.wave-text בלבד — החץ יושב מחוצה לו */
 .talk .wave-text{border-bottom:1px solid var(--ink);
@@ -271,57 +272,61 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 /* ============ SECTION 4 — SHOWREEL ============ */
 .showreel{position:relative;min-height:100vh;
-  display:grid;place-items:center;
-  padding:clamp(60px,9vh,110px) clamp(16px,3.2vw,60px) max(14vh,130px);
-  background:var(--paper)}
+  display:grid;place-items:stretch;
+  padding:0;background:var(--paper);overflow:hidden}
 
-.reel-wrap{position:relative;width:min(94vw,1760px);
-  aspect-ratio:5/2;max-height:78vh;
-  border-radius:clamp(12px,1.1vw,20px);overflow:hidden;
+/* clip-path ולא border-radius+width: הצורה נחתכת מתוך בלוק מלא,
+   ולכן אפשר להנפיש אותה מ-8% ל-0% והווידאו נפתח החוצה.
+   8% הוא ברירת המחדל, כך שגם בלי JS הצורה נכונה. */
+.reel-wrap{position:relative;width:100%;min-height:100vh;
+  clip-path:inset(8% round 3rem);
   background:var(--color-black-soft);
-  box-shadow:0 40px 90px -50px rgba(20,27,36,.55);
-  transform-origin:center}
+  will-change:clip-path}
 
 .reel-video{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;display:block}
 
-/* שכבת הכהיה — הכפתור לבן, וסרטון בהיר היה בולע אותו */
 .reel-scrim{position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.42) 0%,rgba(0,0,0,.18) 60%,rgba(0,0,0,.3) 100%)}
+  background:radial-gradient(58% 58% at 50% 50%,rgba(0,0,0,.46) 0%,rgba(0,0,0,.2) 62%,rgba(0,0,0,.34) 100%)}
 
 /* ── כפתור הניגון ── */
 .reel-play{position:absolute;inset:0;margin:auto;
   width:max-content;height:max-content;
-  display:flex;align-items:center;gap:clamp(14px,1.4vw,22px);
-  padding:14px 18px;border:0;background:none;color:#fff;
-  font-family:inherit;cursor:pointer;
-  -webkit-tap-highlight-color:transparent}
+  display:flex;align-items:center;gap:clamp(16px,1.8vw,30px);
+  padding:16px 20px;border:0;background:none;color:#fff;
+  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 
-.reel-ring{display:grid;place-items:center;flex:none;
-  width:clamp(48px,4.2vw,66px);aspect-ratio:1;
-  border:1px solid rgba(255,255,255,.75);border-radius:50%;
-  transition:background .5s var(--ease),border-color .5s var(--ease),transform .5s var(--ease)}
-.reel-ring svg{width:42%;height:42%;margin-inline-start:6%;
-  transition:color .5s var(--ease)}
+.reel-label{font-size:clamp(22px,2.6vw,46px);font-weight:200;
+  letter-spacing:.005em;line-height:1.25;
+  text-shadow:0 2px 26px rgba(0,0,0,.4)}
 
-.reel-bar{flex:none;width:1px;height:clamp(16px,1.4vw,22px);
-  background:rgba(255,255,255,.5)}
+.reel-bar{flex:none;width:1px;height:clamp(20px,1.8vw,30px);
+  background:rgba(255,255,255,.55)}
 
-.reel-label{font-size:clamp(15px,1.5vw,26px);font-weight:400;
-  letter-spacing:.02em;white-space:nowrap;
-  text-shadow:0 2px 24px rgba(0,0,0,.45)}
+/* ── האייקון: שני משולשים בתוך מסגרת חותכת ──
+   אותו דפוס כמו .arw-box בניווט — עותק אחד יוצא, השני נכנס. */
+.reel-ico{position:relative;flex:none;display:grid;overflow:hidden;
+  width:clamp(52px,4.6vw,74px);aspect-ratio:1;
+  border:1px solid rgba(255,255,255,.7);border-radius:50%;
+  transition:background .55s var(--ease),border-color .55s var(--ease),transform .55s var(--ease)}
+.reel-ico .ply{grid-area:1/1;place-self:center;
+  width:36%;height:36%;margin-inline-start:5%;
+  transition:transform .55s var(--ease),color .55s var(--ease)}
+.reel-ico .p2{transform:translateX(-170%)}          /* ממתין מחוץ למסגרת */
 
-.reel-play:hover .reel-ring{background:#fff;border-color:#fff;transform:scale(1.06)}
-.reel-play:hover .reel-ring svg{color:var(--ink)}
-.reel-play:active .reel-ring{transform:scale(.97)}
-.reel-play:focus-visible{outline:2px solid var(--orange);outline-offset:6px;border-radius:8px}
+.reel-play:hover .p1{transform:translateX(170%)}    /* יוצא */
+.reel-play:hover .p2{transform:translateX(0)}       /* נכנס */
+.reel-play:hover .reel-ico{background:#fff;border-color:#fff}
+.reel-play:hover .reel-ico .ply{color:var(--ink)}
+.reel-play:active .reel-ico{transform:scale(.96)}
+.reel-play:focus-visible{outline:2px solid var(--orange);outline-offset:8px;border-radius:10px}
 
 @media(max-width:768px){
-  .showreel{min-height:auto;padding:clamp(40px,7vh,70px) 16px clamp(80px,12vh,110px)}
-  .reel-wrap{width:100%;aspect-ratio:4/3;max-height:none;border-radius:12px}
-  .reel-play{gap:12px;padding:10px 14px}
-  .reel-ring{width:46px}
-  .reel-label{font-size:15px}
+  .showreel{min-height:auto}
+  .reel-wrap{min-height:78vh;clip-path:inset(4% round 1.4rem)}
+  .reel-play{gap:14px;padding:10px 14px}
+  .reel-label{font-size:19px}
+  .reel-ico{width:50px}
 }
 
 /* ============ מנוע האנימציה ============ */
@@ -563,9 +568,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 <!-- ============ SECTION 4 — SHOWREEL ============ -->
 <section class="showreel" id="showreel" data-snap>
 
-  <div class="reel-wrap" data-animate="scale-in">
+  <div class="reel-wrap" data-animate="clip-in">
 
-    <!-- החלף במקור שלך. זהו נכס בדיקה ציבורי, לא לפרודקשן. -->
+    <!-- החלף במקור שלך. נכס בדיקה ציבורי, לא לפרודקשן. -->
     <video class="reel-video" autoplay muted loop playsinline preload="metadata"
            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%232A2A2E'/%3E%3C/svg%3E">
       <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
@@ -574,11 +579,14 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     <div class="reel-scrim" aria-hidden="true"></div>
 
     <button class="reel-play" type="button" aria-label="נגן את הסרטון">
-      <span class="reel-ring" aria-hidden="true">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5v11l9-5.5z" fill="currentColor"/></svg>
-      </span>
+      <span class="reel-label wave-text">צפו בשואוריל</span>
       <span class="reel-bar" aria-hidden="true"></span>
-      <span class="reel-label">צפו בשואוריל</span>
+      <span class="reel-ico" aria-hidden="true">
+        <svg class="ply p1" viewBox="0 0 24 24"><path d="M9.5 6.6v10.8L18 12z"
+          fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <svg class="ply p2" viewBox="0 0 24 24"><path d="M9.5 6.6v10.8L18 12z"
+          fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      </span>
     </button>
 
   </div>
@@ -765,6 +773,7 @@ function start(){
        data-animate="fade-up"  הרמה + דהייה
        data-animate="fade"     דהייה בלבד
        data-animate="scale-in" התקרבות מ-0.9 + דהייה (בלוקי מדיה)
+       data-animate="clip-in"  פתיחת clip-path מ-8% ל-0%
        data-parallax="0.18"    פרלקסה; ערך שלילי = כיוון הפוך
        data-exit               יציאה קשורה לגלילה
      ───────────────────────────────────────── */
@@ -827,6 +836,11 @@ function start(){
         stagger:(i)=>li[i]*0.09 + i*0.012,
         scrollTrigger:st
       });
+    } else if(kind === 'clip-in'){
+      /* נפתח מ-8% ל-0% — הצורה של הרפרנס במצב מנוחה */
+      gsap.fromTo(el,{clipPath:'inset(8% round 3rem)'},
+        {clipPath:'inset(0% round 3rem)', duration:1.6, ease:'expo.out',
+         immediateRender:false, scrollTrigger:{trigger:sec, start:'top 72%', once:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
