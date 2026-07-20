@@ -505,7 +505,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   </div>
 </nav>
 
-<section class="hero" id="hero">
+<section class="hero" id="hero" data-snap>
   <div class="orb-wrap"><div class="orb-bg"></div></div>
   <div class="blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
   <div class="grain"></div>
@@ -521,7 +521,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   </div>
 </section>
 
-<section class="sphere-sec" id="about">
+<section class="sphere-sec" id="about" data-snap>
   <canvas id="seq"></canvas>
   <div class="sphere-grid">
     <div class="s-head">
@@ -539,7 +539,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 </section>
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="ideas" id="services">
+<section class="ideas" id="services" data-snap data-pin="+=55%">
 
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
@@ -561,7 +561,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 <!-- מחוון הסקשנים — הפס הגבוה = הסקשן הנוכחי -->
 <!-- ============ SECTION 4 — SHOWREEL ============ -->
-<section class="showreel" id="showreel">
+<section class="showreel" id="showreel" data-snap>
 
   <div class="reel-wrap" data-animate="scale-in">
 
@@ -854,6 +854,68 @@ function start(){
       scrollTrigger:{trigger:el.closest('section')||el,
         start:'bottom 65%', end:'bottom top', scrub:true}});
   });
+
+  /* ═══════════ ארכיטקטורת גלילה ═══════════
+       data-snap            הסקשן משתתף בעגינה
+       data-pin="+=60%"     הסקשן ננעל למשך המרחק שצוין
+     ───────────────────────────────────────── */
+
+  const touch = matchMedia('(pointer:coarse)').matches;
+
+  /* ── 1. הצמדת סקשנים ──
+     נבנה לפני העגינה: pin מוסיף pin-spacer ומשנה את גובה המסמך,
+     ולכן כל מיקום שנחשב לפניו יהיה שגוי. */
+  document.querySelectorAll('[data-pin]').forEach(sec=>{
+    ScrollTrigger.create({
+      trigger: sec, start:'top top', end: sec.dataset.pin || '+=60%',
+      pin:true, pinSpacing:true, anticipatePin:1
+    });
+  });
+
+  /* ── 2. עגינה מגנטית ──
+     עגינת קרבה ולא mandatory: נמשכת רק בתוך הסף, ומחוצה לו
+     משחררת. mandatory לוכד את המשתמש, שובר חיפוש-בדף ויכול
+     להפוך תוכן לבלתי-נגיש בסקשן שגבוה ממסך אחד. */
+  const SNAP_TOL = .055;
+  let snapAt = [], deadZones = [];
+
+  function buildSnap(){
+    const max = ScrollTrigger.maxScroll(window);
+    if(!max) return;
+    const y = ScrollTrigger.scroll(window);
+    snapAt = [...document.querySelectorAll('[data-snap]')]
+      .map(sec => gsap.utils.clamp(0, max, sec.getBoundingClientRect().top + y) / max)
+      .sort((a,b)=>a-b);
+
+    /* אזורים שבהם pin מריץ scrub — שם העגינה תילחם בסקראב
+       ותקפיץ את המשתמש באמצע רצף הפריימים. */
+    deadZones = ScrollTrigger.getAll()
+      .filter(t => t.pin && t.scrub)
+      .map(t => [t.start/max, t.end/max]);
+  }
+
+  const inDeadZone = v => deadZones.some(([a,b]) => v > a - .02 && v < b + .02);
+
+  if(!touch && !reduce){
+    ScrollTrigger.create({
+      trigger: document.documentElement,
+      start: 0, end: () => ScrollTrigger.maxScroll(window),
+      snap:{
+        snapTo(value){
+          if(inDeadZone(value) || !snapAt.length) return value;
+          const near = snapAt.reduce((a,b)=>
+            Math.abs(b-value) < Math.abs(a-value) ? b : a);
+          return Math.abs(near - value) < SNAP_TOL ? near : value;
+        },
+        duration:{min:.25, max:.6},
+        delay:.1,
+        ease:'power2.inOut'
+      }
+    });
+  }
+
+  ScrollTrigger.addEventListener('refresh', buildSnap);
+  buildSnap();
 
   /* ── משיכה מגנטית על כפתור הניגון ──
      רק במכשירי מצביע: במגע אין ריחוף, וזה היה נתקע במצב "נמשך".
