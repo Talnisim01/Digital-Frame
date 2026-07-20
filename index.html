@@ -609,12 +609,24 @@ function start(){
   document.getElementById('load').classList.add('done');
   fit(); draw(0);
 
-  if(window.Lenis){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* בנייד סרגל הכתובת משנה את גובה החלון תוך כדי גלילה, מה שמפעיל
+     refresh() באמצע ה-pin ומקפיץ את רצף הפריימים. */
+  ScrollTrigger.config({ignoreMobileResize:true});
+
+  /* Lenis רק במכשירי מצביע מדויק.
+     ב-Lenis 1.0.x האפשרות smoothTouch כבויה כברירת מחדל, ולכן במגע
+     הוא לא מיירט את הגלילה ואירוע ה-scroll שלו לא נורה — וזה היה
+     העדכון היחיד שהזין את ScrollTrigger. במובייל הגלילה עבדה,
+     ScrollTrigger לא התעדכן, וה-pin והפריימים קפאו.
+     בלי Lenis הגלילה היא מקורית ו-ScrollTrigger מאזין לה בעצמו. */
+  const useLenis = window.Lenis && matchMedia('(pointer:fine)').matches;
+  if(useLenis){
     lenis=new Lenis({duration:1.25,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))});
     (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})();
     lenis.on('scroll',()=>ScrollTrigger.update());
   }
-  gsap.registerPlugin(ScrollTrigger);
   document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
     const t=document.querySelector(a.getAttribute('href'));
     if(t){e.preventDefault();lenis?lenis.scrollTo(t):t.scrollIntoView({behavior:'smooth'})}
