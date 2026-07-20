@@ -269,6 +269,61 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
+/* ============ SECTION 4 — SHOWREEL ============ */
+.showreel{position:relative;min-height:100vh;
+  display:grid;place-items:center;
+  padding:clamp(60px,9vh,110px) clamp(16px,3.2vw,60px) max(14vh,130px);
+  background:var(--paper)}
+
+.reel-wrap{position:relative;width:min(94vw,1760px);
+  aspect-ratio:5/2;max-height:78vh;
+  border-radius:clamp(12px,1.1vw,20px);overflow:hidden;
+  background:var(--color-black-soft);
+  box-shadow:0 40px 90px -50px rgba(20,27,36,.55);
+  transform-origin:center}
+
+.reel-video{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block}
+
+/* שכבת הכהיה — הכפתור לבן, וסרטון בהיר היה בולע אותו */
+.reel-scrim{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.42) 0%,rgba(0,0,0,.18) 60%,rgba(0,0,0,.3) 100%)}
+
+/* ── כפתור הניגון ── */
+.reel-play{position:absolute;inset:0;margin:auto;
+  width:max-content;height:max-content;
+  display:flex;align-items:center;gap:clamp(14px,1.4vw,22px);
+  padding:14px 18px;border:0;background:none;color:#fff;
+  font-family:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+
+.reel-ring{display:grid;place-items:center;flex:none;
+  width:clamp(48px,4.2vw,66px);aspect-ratio:1;
+  border:1px solid rgba(255,255,255,.75);border-radius:50%;
+  transition:background .5s var(--ease),border-color .5s var(--ease),transform .5s var(--ease)}
+.reel-ring svg{width:42%;height:42%;margin-inline-start:6%;
+  transition:color .5s var(--ease)}
+
+.reel-bar{flex:none;width:1px;height:clamp(16px,1.4vw,22px);
+  background:rgba(255,255,255,.5)}
+
+.reel-label{font-size:clamp(15px,1.5vw,26px);font-weight:400;
+  letter-spacing:.02em;white-space:nowrap;
+  text-shadow:0 2px 24px rgba(0,0,0,.45)}
+
+.reel-play:hover .reel-ring{background:#fff;border-color:#fff;transform:scale(1.06)}
+.reel-play:hover .reel-ring svg{color:var(--ink)}
+.reel-play:active .reel-ring{transform:scale(.97)}
+.reel-play:focus-visible{outline:2px solid var(--orange);outline-offset:6px;border-radius:8px}
+
+@media(max-width:768px){
+  .showreel{min-height:auto;padding:clamp(40px,7vh,70px) 16px clamp(80px,12vh,110px)}
+  .reel-wrap{width:100%;aspect-ratio:4/3;max-height:none;border-radius:12px}
+  .reel-play{gap:12px;padding:10px 14px}
+  .reel-ring{width:46px}
+  .reel-label{font-size:15px}
+}
+
 /* ============ מנוע האנימציה ============ */
 /* .w הוא החלון החותך, .w-i הוא מה שנע בתוכו.
    ה-padding/margin מונע חיתוך של אותיות יורדות בעברית (ק, ן, ך). */
@@ -505,11 +560,35 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 </section>
 
 <!-- מחוון הסקשנים — הפס הגבוה = הסקשן הנוכחי -->
+<!-- ============ SECTION 4 — SHOWREEL ============ -->
+<section class="showreel" id="showreel">
+
+  <div class="reel-wrap" data-animate="scale-in">
+
+    <!-- החלף במקור שלך. זהו נכס בדיקה ציבורי, לא לפרודקשן. -->
+    <video class="reel-video" autoplay muted loop playsinline preload="metadata"
+           poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%232A2A2E'/%3E%3C/svg%3E">
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+    </video>
+
+    <div class="reel-scrim" aria-hidden="true"></div>
+
+    <button class="reel-play" type="button" aria-label="נגן את הסרטון">
+      <span class="reel-ring" aria-hidden="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5v11l9-5.5z" fill="currentColor"/></svg>
+      </span>
+      <span class="reel-bar" aria-hidden="true"></span>
+      <span class="reel-label">צפו בשואוריל</span>
+    </button>
+
+  </div>
+</section>
+
 <div class="bars-indicator" id="secNav" data-active-bar="1">
   <div class="bar bar-1" data-go="#hero"></div>
   <div class="bar bar-2" data-go="#about"></div>
   <div class="bar bar-3" data-go="#services"></div>
-  <div class="bar bar-4" data-go="#contact"></div>
+  <div class="bar bar-4" data-go="#showreel"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -685,6 +764,7 @@ function start(){
        data-animate="title"    חשיפה ממוסכת, מילה-מילה, מקובצת לפי שורה
        data-animate="fade-up"  הרמה + דהייה
        data-animate="fade"     דהייה בלבד
+       data-animate="scale-in" התקרבות מ-0.9 + דהייה (בלוקי מדיה)
        data-parallax="0.18"    פרלקסה; ערך שלילי = כיוון הפוך
        data-exit               יציאה קשורה לגלילה
      ───────────────────────────────────────── */
@@ -747,6 +827,10 @@ function start(){
         stagger:(i)=>li[i]*0.09 + i*0.012,
         scrollTrigger:st
       });
+    } else if(kind === 'scale-in'){
+      gsap.fromTo(el,{scale:.9, opacity:0, y:40},
+        {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
+         immediateRender:false, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
     } else {
       const from = kind === 'fade' ? {opacity:0} : {y:44, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
@@ -770,6 +854,27 @@ function start(){
       scrollTrigger:{trigger:el.closest('section')||el,
         start:'bottom 65%', end:'bottom top', scrub:true}});
   });
+
+  /* ── משיכה מגנטית על כפתור הניגון ──
+     רק במכשירי מצביע: במגע אין ריחוף, וזה היה נתקע במצב "נמשך".
+     quickTo מכין את הטווין מראש ולכן לא מקצה אובייקט בכל mousemove. */
+  const reel = document.querySelector('.reel-play');
+  if(reel && !reduce && matchMedia('(hover:hover) and (pointer:fine)').matches){
+    const xTo = gsap.quickTo(reel,'x',{duration:.55,ease:'power3'});
+    const yTo = gsap.quickTo(reel,'y',{duration:.55,ease:'power3'});
+    const zone = reel.closest('.reel-wrap');
+    const PULL = .22, RADIUS = 240;
+
+    zone.addEventListener('mousemove', e=>{
+      const r = reel.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width/2);
+      const dy = e.clientY - (r.top  + r.height/2);
+      const d  = Math.hypot(dx,dy);
+      const k  = d > RADIUS ? 0 : (1 - d/RADIUS) * PULL;
+      xTo(dx*k); yTo(dy*k);
+    });
+    zone.addEventListener('mouseleave', ()=>{ xTo(0); yTo(0); });
+  }
 
   /* רשת ביטחון: תוכן לא נשאר בלתי-נראה בשקט אם טריגר כלשהו נכשל. */
   setTimeout(()=>{
