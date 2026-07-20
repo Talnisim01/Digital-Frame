@@ -355,8 +355,8 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   /* ── ניווט ─────────────────────────────────────────────
      ברפרנס המובייל: לוגו, מפריד ועיגול בצד אחד, המבורגר בשני.
      ה-CTA הטקסטואלי יורד — אין לו מקום והוא זה שדחס את השורה. */
-  nav{padding:16px 18px}
-  nav.stuck{padding:12px 18px}
+  nav{padding:26px 20px}
+  nav.stuck{padding:16px 20px}
   .logo{font-size:15px;letter-spacing:.14em}
   .brand{gap:11px}
   .divider{height:14px}
@@ -667,8 +667,23 @@ function start(){
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
   gsap.to('.blobs',{scale:1.25,opacity:.5,ease:'none',
     scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-  gsap.from('[data-r]',{y:50,opacity:0,duration:1.1,stagger:.15,ease:'expo.out',
-    scrollTrigger:{trigger:'.sphere-sec',start:'top 55%'}});
+  /* כל אלמנט נחשף מול הסקשן שלו עצמו, לא מול טריגר גלובלי אחד.
+     בגרסה הקודמת כל [data-r] באתר היה תלוי ב-.sphere-sec ב-top 55%;
+     כשהטריגר לא נורה במובייל, gsap.from השאיר אותם על opacity:0 לתמיד.
+     fromTo עם immediateRender:false לא מסתיר עד שהטריגר מוכן,
+     ו-once:true מבטיח שהם נשארים גלויים. */
+  document.querySelectorAll('[data-r]').forEach((el,i)=>{
+    const sec = el.closest('section') || el;
+    gsap.fromTo(el,{y:40,opacity:0},{y:0,opacity:1,duration:1,ease:'expo.out',
+      delay:(i%3)*.08, immediateRender:false,
+      scrollTrigger:{trigger:sec,start:'top 80%',once:true}});
+  });
+
+  /* רשת ביטחון: אם ScrollTrigger נכשל מסיבה כלשהי, אף אלמנט
+     לא נשאר בלתי-נראה. */
+  setTimeout(()=>document.querySelectorAll('[data-r]').forEach(el=>{
+    if(getComputedStyle(el).opacity === '0'){ el.style.opacity=''; el.style.transform=''; }
+  }), 4000);
 
   /* אם הפריימים לא נטענו (למשל תיקיית frames חסרה) — עוברים לגיבוי מצויר */
   const framesReady = ok > 0;
