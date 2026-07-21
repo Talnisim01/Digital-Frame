@@ -576,11 +576,16 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .contact{position:relative;overflow:hidden;
   padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px) clamp(100px,14vh,160px)}
 
-.contact-bg{position:absolute;inset:0;pointer-events:none}
-.contact-bg span{position:absolute;border-radius:50%;filter:blur(140px);opacity:.5;
-  background:radial-gradient(circle,var(--orange) 0%,var(--orange-soft) 45%,transparent 72%)}
-.contact-bg .g1{width:40vw;height:40vw;top:-8vh;inset-inline-start:-12vw}
-.contact-bg .g2{width:34vw;height:34vw;bottom:-14vh;inset-inline-end:-10vw;opacity:.35}
+/* גרדיאנטים ישירות על השכבה, ולא אלמנטים מטושטשים.
+   filter:blur() בתוך .contact{overflow:hidden} נחתך בגבול החיתוך
+   והדפדפן מייצר שם קצה חד — זה היה הקו האנכי בצילום.
+   גרדיאנט נצבע ברזולוציית הפיקסל ולעולם לא נחתך כך. */
+.contact-bg{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(58vw 52vw at 92% 4%,
+      rgba(245,135,47,.28) 0%, rgba(255,184,120,.13) 44%, transparent 74%),
+    radial-gradient(46vw 42vw at 4% 98%,
+      rgba(245,135,47,.18) 0%, rgba(255,184,120,.09) 46%, transparent 76%)}
 
 .contact-grid{position:relative;display:grid;grid-template-columns:1fr 1fr;
   gap:clamp(40px,5vw,90px);align-items:start;
@@ -1034,7 +1039,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 <!-- ============ SECTION 6 — CONTACT ============ -->
 <section class="contact" id="contact" data-snap>
 
-  <div class="contact-bg" aria-hidden="true"><span class="g1"></span><span class="g2"></span></div>
+  <div class="contact-bg" aria-hidden="true"></div>
 
   <div class="contact-grid">
 
@@ -1420,9 +1425,15 @@ function start(){
     } else if(kind === 'clip-in'){
       /* scrub ולא once: הצורה קשורה למיקום הגלילה ולכן היא נפתחת
          ונסגרת עם התנועה, במקום להינעל על 0% אחרי הפעלה אחת. */
-      gsap.fromTo(el,{clipPath:'inset(8% round 3rem)'},
-        {clipPath:'inset(3% round 2rem)', ease:'none', immediateRender:false,
-         scrollTrigger:{trigger:sec, start:'top 88%', end:'top 12%', scrub:true}});
+      /* טיימליין אחד לכניסה, החזקה ויציאה. שני טריגרים נפרדים
+         על אותו clipPath היו נלחמים על אותו מאפיין בקצוות. */
+      const SHUT='inset(8% round 3rem)', OPEN='inset(3% round 2rem)';
+      gsap.timeline({scrollTrigger:{trigger:sec,
+          start:'top 88%', end:'bottom 12%', scrub:true}})
+        .fromTo(el,{clipPath:SHUT},
+                   {clipPath:OPEN, ease:'none', duration:35, immediateRender:false})
+        .to(el,    {clipPath:OPEN, ease:'none', duration:30})
+        .to(el,    {clipPath:SHUT, ease:'none', duration:35});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
@@ -1529,19 +1540,21 @@ function start(){
       /* ההזחות פנימה נמדדו משני הצילומים ומומרות ליחידות מסך,
          כך שהן נשמרות יחסיות בכל רוחב. פונקציות ולא ערכים
          קבועים — GSAP מחשב אותן מחדש בכל refresh. */
-      const vw = p => () => innerWidth  * p;
-      const vh = p => () => innerHeight * p;
-      const inward = [
-        ['.svc-pill--ux',  vw( .197), vh( .352)],
-        ['.svc-pill--dev', vw(-.179), vh( .365)],
-        ['.svc-pill--brd', vw( .180), vh( .048)],
-        ['.svc-pill--aut', vw(-.153), vh( .031)]
+      /* בלי נסיעה אופקית. ברפרנס הטקסט יושב בראש הסקשן ולכן
+         הגלולות חופשיות לנוע פנימה; אצלנו .s-head ו-.s-side
+         תופסים את הפס האמצעי בשני הצדדים, וכל תנועה פנימה
+         נחתה עליהם. נשארת הופעה אנכית עדינה בלבד. */
+      const drift = [
+        ['.svc-pill--ux',   40],
+        ['.svc-pill--dev',  40],
+        ['.svc-pill--brd', -40],
+        ['.svc-pill--aut', -40]
       ];
 
       /* מצב פתיחה. autoAlpha ולא opacity — מוסיף visibility
          ומונע מהקופי המרכזי לחטוף קליקים בזמן שהוא שקוף. */
       gsap.set(svcCopy, {autoAlpha:0});
-      inward.forEach(([sel,x,y]) => gsap.set(sel, {x, y}));
+      drift.forEach(([sel,y]) => gsap.set(sel, {autoAlpha:0, y, scale:.92}));
 
       const st = gsap.timeline({
         scrollTrigger:{
@@ -1551,13 +1564,13 @@ function start(){
       });
 
       st.to('.sphere-grid', {autoAlpha:0, y:-40, ease:'none'}, 0)
-        .to(inward.map(r=>r[0]), {x:0, y:0, ease:'none'}, .12)
+        .to(drift.map(r=>r[0]), {autoAlpha:1, y:0, scale:1, ease:'none'}, .30)
         .to(svcCopy,            {autoAlpha:1, ease:'none'}, .45);
 
       /* ניקוי כשחוצים את נקודת השבירה כלפי מטה */
       return () => {
         gsap.set([svcCopy, '.sphere-grid'], {clearProps:'all'});
-        gsap.set(inward.map(r=>r[0]), {clearProps:'transform'});
+        gsap.set(drift.map(r=>r[0]), {clearProps:'all'});
       };
     });
   }
