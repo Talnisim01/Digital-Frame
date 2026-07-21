@@ -786,6 +786,62 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    כי פסקה נשברת בין מילים, אבל הוא צר מהנדרש. */
 .s-side{max-width:min(100%,30rem)}
 
+
+/* ════════ סקשן 2 — שכבת הגלולות והקופי המרכזי ════════
+   שכבות: #seq(1) → ::after(2) → .svc-pills(3) → .svc-copy(3)
+           → .sphere-grid(3, מנצח לפי סדר DOM) */
+
+.svc-pills{position:absolute;inset:0;z-index:3;pointer-events:none}
+
+/* המיקום והאבסולוטיות על אותו אלמנט.
+   בסבב הקודם ה-position ישב על העוגן וה-offsets על ה-div הפנימי,
+   שהוא static — כל הארבע קרסו לנקודה אחת. */
+.svc-pill{position:absolute;pointer-events:auto;text-decoration:none;
+  display:inline-flex;align-items:center;
+  min-height:clamp(44px,3.6vw,56px);padding-inline:clamp(18px,1.8vw,28px);
+  border-radius:100px;
+  background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  box-shadow:0 10px 34px rgba(20,27,36,.10),0 2px 6px rgba(20,27,36,.05);
+  color:var(--ink);font-weight:300;white-space:nowrap;
+  font-size:clamp(14px,1.15vw,19px);letter-spacing:-.005em;
+  will-change:transform;
+  transition:box-shadow .5s var(--ease),background .5s var(--ease)}
+.svc-pill:hover{background:#fff;
+  box-shadow:0 16px 44px rgba(20,27,36,.16),0 3px 8px rgba(20,27,36,.07)}
+.svc-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+
+/* מיקומי מצב 2 (הפזורים) — נמדדו מהצילום השני.
+   left/right פיזיים ולא inset-inline: מיקום הגלולות סביב הכדור
+   אינו תלוי כיוון קריאה. רק אחד מהשניים מוגדר בכל כלל, ולכן
+   האלמנט אינו over-constrained ו-left לא מנוטרל ב-RTL.
+   GSAP מושך אותן פנימה ב-transform, שנשאר פנוי לחלוטין. */
+.svc-pill--ux  {top:17%;   left:9.5%}
+.svc-pill--dev {top:17%;   right:8.5%}
+.svc-pill--brd {bottom:14.5%; left:11%}
+.svc-pill--aut {bottom:13%; right:9%}
+
+/* הקופי המרכזי — מופיע רק במצב 2 */
+.svc-copy{position:absolute;inset:0;z-index:3;
+  display:grid;place-items:center;pointer-events:none;
+  padding-inline:clamp(20px,4vw,40px);text-align:center}
+.svc-copy>div{max-width:min(92vw,900px)}
+.svc-copy h3{margin:0;font-weight:200;
+  font-size:clamp(30px,5.6vw,84px);line-height:1.06;letter-spacing:-.03em;
+  text-wrap:balance}
+.svc-copy h3 strong{font-weight:700}
+.svc-copy p{margin:clamp(14px,2vh,24px) auto 0;max-width:46ch;
+  color:var(--ink);font-weight:300;
+  font-size:clamp(14px,1.2vw,18px);line-height:1.65}
+.svc-copy p span{color:#9A9AA2}
+
+/* מתחת ל-901px הקנבס הופך לרצועה עליונה והטקסט יושב מתחתיה.
+   הגלולות היו נוחתות עליו, ולכן כל המנגנון יורד שם —
+   גם ב-CSS וגם ב-matchMedia של הטיימליין. */
+@media(max-width:900px){
+  .svc-pills,.svc-copy{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -830,6 +886,25 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 <section class="sphere-sec" id="about" data-snap>
   <canvas id="seq"></canvas>
+
+  <!-- מצב 2: הגלולות. המיקום בקצוות הוא ברירת המחדל ב-CSS,
+       כך שכשל GSAP משאיר אותן פזורות וגלויות ולא נעלמות. -->
+  <div class="svc-pills">
+    <a class="svc-pill svc-pill--ux"  href="#services">אפיון ו-UI/UX</a>
+    <a class="svc-pill svc-pill--dev" href="#services">פיתוח</a>
+    <a class="svc-pill svc-pill--brd" href="#services">מיתוג</a>
+    <a class="svc-pill svc-pill--aut" href="#services">אוטומציה</a>
+  </div>
+
+  <!-- מצב 2: הקופי המרכזי. מוסתר ע"י gsap.set ולא ע"י CSS,
+       כדי שהיעדר GSAP ישאיר אותו גלוי במקום להעלים אותו בשקט. -->
+  <div class="svc-copy" aria-hidden="false">
+    <div>
+      <h3>אנחנו בונים <strong>חוויות</strong> שנושמות</h3>
+      <p>כי חוויה שנשארת לא נוצרת במקרה — <span>היא מעוצבת בכוונה.</span></p>
+    </div>
+  </div>
+
   <div class="sphere-grid">
     <div class="s-head">
       <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
@@ -1430,6 +1505,63 @@ function start(){
         framesReady ? draw(idx) : drawFallback(seq.f/(FRAME_COUNT-1));
       }}});
   if(!framesReady) drawFallback(0);
+
+  /* ═══════════ סקשן 2 — מעבר בין שני מצבי הסקשן ═══════════
+     מצב 1: הטקסט העליון גלוי, הגלולות אסופות סביב הכדור.
+     מצב 2: הטקסט העליון דוהה, הגלולות נפתחות לקצוות,
+             הקופי המרכזי נכנס.
+
+     חיבור בטוח למנוע הקיים:
+     · אין pin. ה-pin היחיד נשאר של seqTween. שני מצמידים על
+       אותו אלמנט שוברים את ScrollTrigger.
+     · אותם trigger/start/end בדיוק, כך ששני הטריגרים נפתרים
+       לאותם ערכי גלילה.
+     · refreshPriority:-1 — מתרענן אחרי המצמיד, אחרי שה-spacer קיים.
+     · protectedZone() נגזר מ-seqTween.scrollTrigger בלבד.
+       seqTween לא נגע, ולכן העגינה לא מושפעת.
+     · matchMedia: מתחת ל-901px שום דבר מזה לא נוצר כלל. */
+  const svcPills = document.querySelector('.svc-pills');
+  const svcCopy  = document.querySelector('.svc-copy');
+
+  if(svcPills && svcCopy){
+    gsap.matchMedia().add('(min-width: 901px)', () => {
+
+      /* ההזחות פנימה נמדדו משני הצילומים ומומרות ליחידות מסך,
+         כך שהן נשמרות יחסיות בכל רוחב. פונקציות ולא ערכים
+         קבועים — GSAP מחשב אותן מחדש בכל refresh. */
+      const vw = p => () => innerWidth  * p;
+      const vh = p => () => innerHeight * p;
+      const inward = [
+        ['.svc-pill--ux',  vw( .197), vh( .352)],
+        ['.svc-pill--dev', vw(-.179), vh( .365)],
+        ['.svc-pill--brd', vw( .180), vh( .048)],
+        ['.svc-pill--aut', vw(-.153), vh( .031)]
+      ];
+
+      /* מצב פתיחה. autoAlpha ולא opacity — מוסיף visibility
+         ומונע מהקופי המרכזי לחטוף קליקים בזמן שהוא שקוף. */
+      gsap.set(svcCopy, {autoAlpha:0});
+      inward.forEach(([sel,x,y]) => gsap.set(sel, {x, y}));
+
+      const st = gsap.timeline({
+        scrollTrigger:{
+          trigger:'.sphere-sec', start:'top top', end:pinLen,
+          scrub:1, refreshPriority:-1, id:'svc-states'
+        }
+      });
+
+      st.to('.sphere-grid', {autoAlpha:0, y:-40, ease:'none'}, 0)
+        .to(inward.map(r=>r[0]), {x:0, y:0, ease:'none'}, .12)
+        .to(svcCopy,            {autoAlpha:1, ease:'none'}, .45);
+
+      /* ניקוי כשחוצים את נקודת השבירה כלפי מטה */
+      return () => {
+        gsap.set([svcCopy, '.sphere-grid'], {clearProps:'all'});
+        gsap.set(inward.map(r=>r[0]), {clearProps:'transform'});
+      };
+    });
+  }
+
 
   /* ניווט דביק */
   addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>60));
