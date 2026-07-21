@@ -181,7 +181,11 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .sphere-grid{position:relative;z-index:3;width:100%;min-height:100svh;
   display:grid;grid-template-columns:1fr 1fr;align-items:end;
   padding:120px clamp(24px,5vw,72px) clamp(50px,7vh,84px);gap:40px}
-.s-head{grid-column:1;max-width:20ch}
+/* לא ch: היחידה נמדדת מול ה-font-size של האלמנט עצמו, ול-.s-head
+   אין כזה. 20ch נפתר מול ה-16px שנירשו מה-body ונתן טור של ~160px,
+   בעוד ה-h2 מרונדר ב-72px. כל מילה ארוכה מהטור נחתכה ע"י
+   .w{max-width:100%;overflow:hidden} במקום לגלוש. */
+.s-head{grid-column:1;max-width:min(100%,46rem)}
 .s-head h2{font-weight:200;font-size:clamp(32px,4.6vw,72px);line-height:1.05;letter-spacing:-.02em;
   text-shadow:0 2px 30px rgba(236,236,238,.6)}
 .s-head h2 strong{font-weight:700}
@@ -373,7 +377,12 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .ideas-layer--css{width:min(37vw,760px);aspect-ratio:1;
   background:#ffaa52;border-radius:50%;
   filter:blur(230px);
-  opacity:1}
+  opacity:1;
+  /* הזחה אנכית דרך margin ולא top/transform:
+     האלמנט ממורכז ע"י הפלקס ההורה, ו-top היה מבטל את המירכוז.
+     transform שמור ל-GSAP (data-parallax), ו-z-index היה לוכד
+     את ה-mix-blend-mode של השכבה השכנה בתוך stacking context. */
+  margin-top:15px}
 
 /* 2 — הזוהר התמונתי.
    ערכים מה-DevTools של הרפרנס: 500x450 (יחס 10:9, לא ריבוע),
@@ -1238,7 +1247,7 @@ function start(){
        data-animate="fade-up"  הרמה + דהייה
        data-animate="fade"     דהייה בלבד
        data-animate="scale-in" התקרבות מ-0.9 + דהייה (בלוקי מדיה)
-       data-animate="clip-in"  פתיחת clip-path מ-8% ל-0%
+       data-animate="clip-in"  פתיחת clip-path מ-8% ל-3% (לא 0% — כיסה את הניווט)
        data-parallax="0.18"    פרלקסה; ערך שלילי = כיוון הפוך
        data-exit               יציאה קשורה לגלילה
      ───────────────────────────────────────── */
@@ -1305,7 +1314,7 @@ function start(){
       /* scrub ולא once: הצורה קשורה למיקום הגלילה ולכן היא נפתחת
          ונסגרת עם התנועה, במקום להינעל על 0% אחרי הפעלה אחת. */
       gsap.fromTo(el,{clipPath:'inset(8% round 3rem)'},
-        {clipPath:'inset(0% round 3rem)', ease:'none', immediateRender:false,
+        {clipPath:'inset(3% round 2rem)', ease:'none', immediateRender:false,
          scrollTrigger:{trigger:sec, start:'top 88%', end:'top 12%', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
