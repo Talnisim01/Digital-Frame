@@ -569,136 +569,147 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 
 
+
 /* ════════════════ SECTION 6 — LET'S TALK ════════════════
-   שמות המחלקות לפי הרפרנס. .contact-card היא תוספת שלנו:
-   ברפרנס אין מחלקה של מסגרת, והפינות המעוגלות מגיעות מ-CSS
-   שלא נכלל בקובץ המקור. */
+   מדידות מגיליון הסגנון של הרפרנס. שם html{font-size:0.5208vw},
+   כלומר ב-1920px רוחב 1rem שווה בדיוק 10px — לפי זה הומרו
+   כל הערכים. עטפתי אותם ב-clamp כדי שיישארו במערכת שלנו
+   במקום לייבא את פריצת ה-rem-מבוסס-vw שלהם. */
 
-.contact{position:relative;padding-block:clamp(40px,6vh,80px)}
+.contact{position:relative;
+  padding:clamp(60px,10vh,100px) clamp(12px,2.6vw,50px) clamp(24px,4vh,40px)}
 
-.contact-card{position:relative;overflow:hidden;isolation:isolate;
-  border-radius:clamp(18px,2.4vw,44px);
-  margin-inline:clamp(10px,2.2vw,46px);
-  background:var(--paper);
-  padding:clamp(70px,11vh,140px) clamp(24px,3.4vw,64px) clamp(80px,12vh,150px)}
+/* המסגרת יושבת על מכולת ה-flex עצמה, לא על עטיפה נפרדת.
+   זו הייתה הטעות: המצאתי .contact-card כשהרפרנס נותן את
+   הרקע, הפינות והצל ל-.lets-talk-flex.
+   align-items:flex-end — שני הטורים מיושרים לתחתית. */
+.lets-talk-flex{position:relative;z-index:1;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:clamp(40px,6.8vw,130px);
+  padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
+  border-radius:clamp(20px,1.6vw,30px);
+  background:rgba(255,255,255,.25);
+  box-shadow:0 10px 36px rgba(16,24,32,.06),
+             0 0 0 1px rgba(230,236,242,.08);
+  max-width:1560px;margin-inline:auto}
 
-/* הזוהר כאלמנט ייעודי, לא כרקע על עטיפה.
-   גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
+/* הזוהר. גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
    נחתך בגבול והדפדפן משאיר שם קצה חד. */
 .lets-talk__ellipse{position:absolute;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(56vw 52vw at 96% 0%,
-      rgba(245,135,47,.26) 0%, rgba(248,158,86,.16) 26%,
-      rgba(255,184,120,.09) 48%, rgba(255,214,178,.02) 74%,
+      rgba(245,135,47,.24) 0%, rgba(248,158,86,.15) 26%,
+      rgba(255,184,120,.08) 48%, rgba(255,214,178,.02) 74%,
       rgba(255,214,178,0) 100%),
     radial-gradient(44vw 40vw at 0% 100%,
-      rgba(245,135,47,.16) 0%, rgba(255,184,120,.07) 46%,
+      rgba(245,135,47,.15) 0%, rgba(255,184,120,.06) 46%,
       rgba(255,214,178,0) 100%)}
 
-.lets-talk-flex{position:relative;z-index:1;
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:clamp(40px,5vw,90px);align-items:start;
-  max-width:1560px;margin-inline:auto}
-
 /* ── טור המידע ── */
-.lets-talk__info-connect{display:inline-flex;align-items:center;gap:10px;
-  margin:0 0 clamp(18px,2.6vh,30px);
-  color:var(--orange);font-size:clamp(11px,.9vw,13px);
-  font-weight:500;letter-spacing:.14em}
-.lets-talk__info-connect-icon{width:7px;height:7px;border-radius:50%;
+.lets-talk__info{display:grid;flex-shrink:0}
+
+.lets-talk__info-connect{display:flex;align-items:center;
+  gap:clamp(9px,.8vw,15px);margin:0 0 clamp(18px,1.5vw,28px);
+  color:var(--orange);font-weight:400;
+  font-size:clamp(12px,1.05vw,20px)}
+.lets-talk__info-connect-icon{width:10px;height:10px;border-radius:50%;
   background:var(--orange);flex:none}
 
 .lets-talk__info-heading{margin:0;font-weight:200;
-  font-size:clamp(32px,4.6vw,68px);line-height:1.08;
-  letter-spacing:-.028em;max-width:min(100%,15ch)}
+  font-size:clamp(32px,4.2vw,80px);line-height:1;
+  letter-spacing:-.01em;max-width:min(100%,800px)}
 .lets-talk__info-heading strong{font-weight:700}
 
-.lets-talk__info-divider{width:64px;height:1px;background:rgba(20,27,36,.3);
-  margin:clamp(30px,4.5vh,56px) 0 clamp(20px,2.6vh,30px)}
+.lets-talk__info-divider{width:71px;height:1px;background:#8a8f8d;
+  margin-block:clamp(28px,3.2vw,60px) clamp(16px,1.4vw,25px);
+  display:block;flex-shrink:0}
 
-.lets-talk__info-subheading{margin:0;max-width:min(100%,24rem);
-  color:#6E6E76;font-weight:300;
-  font-size:clamp(14px,1.15vw,17px);line-height:1.75}
+/* margin-bottom הגדול הוא מה שדוחף את הרשתות והמייל לתחתית
+   הטור, בשילוב עם align-items:flex-end על ההורה. */
+.lets-talk__info-subheading{margin:0 0 clamp(60px,11.5vw,220px);
+  color:#5b6871;font-weight:300;
+  font-size:clamp(14px,1vw,19px);line-height:1.2;
+  max-width:min(100%,34ch)}
 
-.lets-talk__socials{display:flex;gap:10px}
-.--is-desktop{margin-top:clamp(36px,6vh,74px)}
-.--is-mobile{display:none}
-.lets-talk__socials-link{width:38px;height:38px;border-radius:50%;
-  border:1px solid rgba(20,27,36,.24);display:grid;place-items:center;
-  color:var(--ink);transition:.4s var(--ease)}
+.lets-talk__socials{display:flex;align-items:center;gap:10px}
+.lets-talk__socials.--is-desktop{margin-bottom:clamp(16px,1.6vw,30px)}
+.lets-talk__socials.--is-mobile{display:none}
+.lets-talk__socials-link{position:relative;border-radius:50%;
+  width:clamp(30px,1.9vw,35px);height:clamp(30px,1.9vw,35px);
+  border:1px solid #5b6871;display:grid;place-items:center;
+  color:#5b6871;transition:.4s var(--ease)}
 .lets-talk__socials-link:hover{background:var(--ink);color:#fff;
   border-color:var(--ink)}
-.lets-talk__socials-link svg{width:16px;height:16px;fill:currentColor}
+.lets-talk__socials-link svg{width:17px;height:15px;fill:currentColor}
 
-.lets-talk__contact-Email{display:inline-flex;align-items:center;gap:11px;
-  margin-top:clamp(22px,3vh,34px);color:var(--ink);text-decoration:none;
-  font-size:clamp(14px,1.15vw,17px)}
-.lets-talk__info-connect-icon.--mail{width:auto;height:auto;background:none;
-  border-radius:0;display:grid;place-items:center}
-.lets-talk__contact-Email svg{width:17px;height:17px;fill:none;
-  stroke:currentColor;stroke-width:1.6}
-.lets-talk__contact-Email span:last-child{
-  border-bottom:1px solid rgba(20,27,36,.45);padding-bottom:2px;
-  transition:border-color .4s var(--ease)}
-.lets-talk__contact-Email:hover span:last-child{border-color:var(--orange)}
+.lets-talk__contact-Email{display:flex;align-items:center;gap:10px;
+  margin-top:clamp(16px,1.6vw,30px);
+  transition:opacity .3s ease-out}
+.lets-talk__contact-Email:hover{opacity:.8}
+.lets-talk__contact-Email svg{width:23px;height:25px;flex-shrink:0;
+  fill:none;stroke:currentColor;stroke-width:1.6}
+.lets-talk__contact-Email span:last-child{color:#5b6871;
+  font-size:clamp(13px,1.05vw,20px);text-decoration:underline}
+.lets-talk__info-connect-icon.--mail{width:auto;height:auto;
+  background:none;border-radius:0;display:grid;place-items:center;
+  color:#5b6871}
 
 /* ── הטופס ── */
-.lets-talk__form-title{margin:0 0 clamp(10px,1.6vh,20px);font-weight:200;
-  font-size:clamp(26px,3vw,44px);letter-spacing:-.02em}
-.lets-talk__form{display:grid;gap:clamp(6px,1vh,14px)}
+.lets-talk__form-wrapper{display:grid;height:100%;
+  gap:clamp(24px,2.6vw,50px);
+  min-width:min(100%,747px);flex:1}
+.lets-talk__form-title{margin:0;font-weight:500;
+  font-size:clamp(26px,2.4vw,45px);line-height:1.1;letter-spacing:.03em}
+.lets-talk__form{display:grid;gap:10px;width:100%}
 
-.form-group{display:grid;grid-template-columns:1fr 1fr;
-  gap:0 clamp(16px,2vw,34px)}
-.form-group.--is-submit{grid-template-columns:1fr;
-  margin-top:clamp(12px,2vh,24px)}
+.form-group{display:flex;gap:clamp(14px,1.3vw,25px);align-items:center}
+.form-group.--is-submit{margin-top:clamp(16px,1.3vw,25px);display:grid}
 
-/* ה-input לפני ה-label ב-DOM כדי ש-:not(:placeholder-shown)
-   יוכל לבחור אותה עם ~. placeholder=" " חובה בכל שדה. */
-.form-group-field{position:relative;padding-bottom:20px}
-.form-input{width:100%;background:transparent;border:0;
-  border-bottom:1px solid rgba(20,27,36,.25);
-  padding:24px 0 11px;font-family:inherit;
-  font-size:clamp(14px,1.1vw,17px);font-weight:300;color:var(--ink);
-  outline:none;border-radius:0;
+.form-group-field{position:relative;flex-grow:1}
+
+/* התוויות מוסתרות ויזואלית ונשארות לקוראי מסך.
+   הרפרנס מציג את שם השדה כ-placeholder, לא כתווית צפה —
+   ולכן כל מנגנון התווית הצפה שבניתי קודם הוסר. */
+.form-label{position:absolute;width:0;height:0;overflow:hidden;
+  margin:0;padding:0;clip-path:inset(50%)}
+
+.form-input{color:var(--ink);font-family:inherit;font-weight:300;
+  font-size:clamp(15px,.9vw,17px);line-height:1.3;
+  background-color:transparent;border:none;
+  border-bottom:1px solid rgba(20,27,36,.55);
+  padding-block:clamp(12px,.85vw,16px);width:100%;
+  border-radius:0;outline:none;
   transition:border-color .4s var(--ease)}
-.form-input.is--textarea{resize:vertical;min-height:96px;line-height:1.6}
+.form-input::placeholder{color:#8a8f8d}
 .form-input:focus{border-bottom-color:var(--orange)}
+.form-input.is--textarea{resize:none;width:100%;
+  min-height:min(146px,14.6vh)}
 
-.form-label{position:absolute;top:24px;inset-inline-start:0;
-  color:var(--gray);pointer-events:none;font-weight:300;margin:0;
-  font-size:clamp(14px,1.1vw,17px);
-  transition:top .35s var(--ease),font-size .35s var(--ease),
-             color .35s var(--ease)}
-.form-input:focus~.form-label,
-.form-input:not(:placeholder-shown)~.form-label{
-  top:2px;font-size:11px;letter-spacing:.1em;color:var(--orange)}
-.form-label.--is-static{position:static;color:var(--gray);
-  font-size:clamp(13px,1.05vw,16px);margin-bottom:12px}
-
-/* חריץ שגיאה לכל שדה בנפרד. הגובה שמור מראש כדי
-   שהופעת ההודעה לא תקפיץ את הפריסה. */
-.form-error{position:absolute;inset-inline-start:0;bottom:2px;
-  min-height:1em;font-size:12px;font-weight:300;color:#D24B2E;
-  opacity:0;transition:opacity .3s var(--ease)}
+/* חריץ שגיאה לכל שדה, בגובה שמור מראש כדי שהופעת
+   ההודעה לא תקפיץ את הפריסה. */
+.form-error{height:15px;margin-top:5px;width:100%;
+  font-size:13px;letter-spacing:.2px;color:#D24B2E;
+  opacity:0;transition:opacity .3s ease-out}
 .form-group-field.--has-error .form-error{opacity:1}
 .form-group-field.--has-error .form-input{border-bottom-color:#D24B2E}
 
-.form-group-field.--is-checkbox,
-.form-group-field.--is-textarea{padding-bottom:20px}
-.form-group-field.--is-checkbox{margin-top:clamp(6px,1vh,14px)}
+.form-group-field.--is-checkbox{margin-top:clamp(10px,1vw,18px)}
+.form-label.--is-static{all:unset;color:#8a8f8d;display:block;
+  font-family:inherit;font-size:clamp(14px,.9vw,17px);
+  margin-bottom:clamp(12px,1vw,20px)}
 
-.interest-options{display:flex;flex-wrap:wrap;gap:9px}
-.interest-option{border:1px solid rgba(20,27,36,.3);border-radius:100px;
-  padding:0 clamp(15px,1.4vw,22px);min-height:42px;
-  display:inline-flex;align-items:center;
-  background:transparent;color:var(--ink);font-family:inherit;
-  font-size:clamp(12px,.95vw,14px);font-weight:300;cursor:pointer;
-  transition:.4s var(--ease)}
-.interest-option:hover{border-color:var(--ink)}
-.interest-option[aria-pressed="true"]{background:var(--ink);color:#fff;
-  border-color:var(--ink)}
+.interest-options{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.interest-option{border-radius:30px;border:1px solid var(--color-black-soft);
+  overflow:hidden;background:transparent;color:var(--color-black-soft);
+  font-family:inherit;font-weight:300;line-height:1;
+  font-size:clamp(13px,.9vw,17px);
+  padding:clamp(9px,.65vw,12px) clamp(15px,1.3vw,25px);
+  cursor:pointer;transition:all .3s ease-out}
+.interest-option:hover{background:rgba(16,24,32,.06)}
+.interest-option[aria-pressed="true"]{background:var(--color-black-soft);
+  color:#fcfcfd}
 
-.cta-1{width:100%;min-height:clamp(54px,4.4vw,68px);
+.cta-1{width:100%;min-height:clamp(52px,3.6vw,68px);
   display:inline-flex;align-items:center;justify-content:center;gap:14px;
   border:0;border-radius:100px;background:var(--ink);color:#fff;
   font-family:inherit;font-size:clamp(14px,1.1vw,17px);letter-spacing:.06em;
@@ -709,26 +720,35 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .cta-1 .arw-box{width:19px;height:19px}
 .cta-1:hover .a1{transform:translate(-115%,-115%)}
 .cta-1:hover .a2{transform:translate(0,0)}
-.cta-1:disabled{opacity:.55;cursor:default;transform:none}
+.cta-1:disabled{pointer-events:none;opacity:.5;user-select:none}
 
-/* מצב גלובלי, נפרד משגיאות השדות */
-.form-status{min-height:1.4em;margin-top:10px;
-  font-size:13px;font-weight:300;color:#6E6E76}
+.form-status{height:15px;width:100%;margin-top:6px;
+  font-size:14px;letter-spacing:.2px;text-align:center;
+  transition:all .3s ease-out;color:#6E6E76}
 .form-status.--is-error{color:#D24B2E}
 .form-status.--is-success{color:#1F7A4D}
 
 @media(max-width:768px){
-  .contact{padding-block:16px}
-  .contact-card{margin-inline:10px;border-radius:18px;
-    padding:clamp(60px,9vh,90px) 20px clamp(70px,10vh,110px)}
-  .lets-talk-flex{grid-template-columns:1fr;gap:44px}
-  .lets-talk__info-heading{font-size:clamp(28px,8.4vw,42px);max-width:none}
-  /* שתי גרסאות נפרדות ולא הזזה של אחת — כמו ברפרנס */
-  .--is-desktop{display:none}
-  .--is-mobile{display:flex;margin:clamp(18px,3vh,28px) 0}
-  .form-group{grid-template-columns:1fr}
-  .lets-talk__form-title{font-size:28px}
-  .cta-1{min-height:54px}
+  .contact{padding:clamp(50px,9vh,95px) 10px clamp(30px,6vh,65px)}
+  .lets-talk-flex{flex-direction:column;align-items:flex-start;
+    justify-content:flex-start;
+    padding:clamp(40px,7vh,55px) 24px clamp(56px,10vh,80px);
+    border-radius:20px;gap:clamp(40px,8vh,85px)}
+  .lets-talk__info-heading{width:100%;max-width:none;font-size:clamp(28px,9vw,40px)}
+  .lets-talk__info-connect{margin-bottom:clamp(20px,4vh,35px)}
+  .lets-talk__info-divider{margin-block:clamp(28px,5vh,45px) clamp(18px,3vh,30px)}
+  /* הרפרנס מסתיר את תת-הכותרת במובייל לגמרי */
+  .lets-talk__info-subheading{display:none}
+  .lets-talk__socials.--is-desktop{display:none}
+  .lets-talk__socials.--is-mobile{display:flex;margin:clamp(16px,3vh,26px) 0}
+  .lets-talk__contact-Email{margin-bottom:0}
+  .lets-talk__form-wrapper{gap:clamp(22px,4vh,35px);min-width:0;width:100%}
+  .lets-talk__form-title{font-size:30px}
+  .form-group{flex-direction:column;gap:0;align-items:stretch}
+  .form-input{font-size:16px}
+  .form-input.is--textarea{min-height:90px;margin-top:10px}
+  .interest-option{font-size:13px;padding:8px 14px}
+  .form-error{font-size:11px}
 }
 
 /* ════════════════ SECTION 7 — FOOTER ════════════════ */
@@ -982,7 +1002,6 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
       <span class="dim">שמביאה לקוחות — ולא רק לייקים.</span></p>
     <a href="#about" class="cta"><span class="wave-text">קצת עלינו</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
-  </div>
 </section>
 
 <section class="sphere-sec" id="about" data-snap>
@@ -1156,9 +1175,8 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
      מבנה לפי הרפרנס: lets-talk__ellipse כאח נפרד,
      lets-talk-flex עם __info ו-__form-wrapper,
      form-group > form-group-field > label + input + form-error.
-     .contact-card היא תוספת שלנו — אין לה מקבילה ברפרנס. -->
+     המסגרת יושבת על .lets-talk-flex עצמה, כמו ברפרנס. -->
 <section class="contact" id="contact" data-snap>
-  <div class="contact-card">
 
     <div class="lets-talk__ellipse" aria-hidden="true"></div>
 
@@ -1200,12 +1218,12 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
           <div class="form-group">
             <div class="form-group-field">
-              <input class="form-input" id="f-name" name="name" type="text" placeholder=" " autocomplete="name" required>
+              <input class="form-input" id="f-name" name="name" type="text" placeholder="שם מלא" autocomplete="name" required>
               <label class="form-label" for="f-name">שם מלא</label>
               <div class="form-error" data-for="name"></div>
             </div>
             <div class="form-group-field">
-              <input class="form-input" id="f-co" name="company" type="text" placeholder=" " autocomplete="organization">
+              <input class="form-input" id="f-co" name="company" type="text" placeholder="חברה" autocomplete="organization">
               <label class="form-label" for="f-co">חברה</label>
               <div class="form-error" data-for="company"></div>
             </div>
@@ -1213,12 +1231,12 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
           <div class="form-group">
             <div class="form-group-field">
-              <input class="form-input" id="f-mail" name="email" type="email" placeholder=" " autocomplete="email" required>
+              <input class="form-input" id="f-mail" name="email" type="email" placeholder="אימייל" autocomplete="email" required>
               <label class="form-label" for="f-mail">אימייל</label>
               <div class="form-error" data-for="email"></div>
             </div>
             <div class="form-group-field">
-              <input class="form-input" id="f-tel" name="phone" type="tel" placeholder=" " autocomplete="tel" inputmode="tel">
+              <input class="form-input" id="f-tel" name="phone" type="tel" placeholder="טלפון" autocomplete="tel" inputmode="tel">
               <label class="form-label" for="f-tel">טלפון</label>
               <div class="form-error" data-for="phone"></div>
             </div>
@@ -1236,7 +1254,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
           </div>
 
           <div class="form-group-field --is-textarea">
-            <textarea class="form-input is--textarea" id="f-msg" name="message" placeholder=" " rows="3"></textarea>
+            <textarea class="form-input is--textarea" id="f-msg" name="message" placeholder="ספר לנו על הפרויקט" rows="3"></textarea>
             <label class="form-label" for="f-msg">ספר לנו על הפרויקט</label>
           </div>
 
