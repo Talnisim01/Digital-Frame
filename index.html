@@ -792,16 +792,52 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .s-side{max-width:min(100%,30rem)}
 
 
-/* ════════ סקשן 2 — שכבת הגלולות והקופי המרכזי ════════
-   שכבות: #seq(1) → ::after(2) → .svc-pills(3) → .svc-copy(3)
-           → .sphere-grid(3, מנצח לפי סדר DOM) */
 
-.svc-pills{position:absolute;inset:0;z-index:3;pointer-events:none}
 
-/* המיקום והאבסולוטיות על אותו אלמנט.
-   בסבב הקודם ה-position ישב על העוגן וה-offsets על ה-div הפנימי,
-   שהוא static — כל הארבע קרסו לנקודה אחת. */
-.svc-pill{position:absolute;pointer-events:auto;text-decoration:none;
+/* ════════════════ SERVICES / CRAFT — סקשן עצמאי ════════════════
+   שלוש שכבות באותו מרחב מוצמד:
+   .vimeo-bg(0) → .craft-pills(2) → .craft-flex ו-.craft-copy(3) */
+
+.craft{position:relative;overflow:hidden;
+  min-height:100svh;isolation:isolate;
+  padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px)}
+
+/* ── שכבה 0: הלופ ──
+   הרקע מתחת לווידאו הוא לא קישוט: אם הסרטון לא נטען,
+   הסקשן נראה מכוון במקום מלבן שחור. */
+.vimeo-bg{position:absolute;inset:0;z-index:0;overflow:hidden;
+  pointer-events:none;
+  background:
+    radial-gradient(46vw 44vw at 50% 52%,
+      rgba(255,214,178,.55) 0%, rgba(255,232,210,.28) 45%, transparent 74%),
+    var(--paper)}
+.vimeo-bg video{width:100%;height:100%;object-fit:cover;display:block}
+/* דהייה בארבעת הקצוות. mask פועל על אלפא ולכן הקצה באמת נעלם,
+   בניגוד ל-mix-blend-mode שפועל על צבע בלבד. */
+.vimeo-bg.is--loop{
+  -webkit-mask-image:radial-gradient(ellipse 70% 64% at 50% 50%,#000 40%,transparent 100%);
+          mask-image:radial-gradient(ellipse 70% 64% at 50% 50%,#000 40%,transparent 100%)}
+
+/* ── שכבה 3: הטקסט העליון ── */
+.craft-flex{position:relative;z-index:3;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:clamp(28px,5vw,90px);flex-wrap:wrap;
+  max-width:1560px;margin-inline:auto}
+.craft-heading{margin:0;font-weight:200;
+  font-size:clamp(28px,4.2vw,60px);line-height:1.1;letter-spacing:-.025em;
+  max-width:min(100%,34rem)}
+.craft-heading strong{font-weight:700}
+.craft-text{margin:0;max-width:min(100%,26rem);align-self:flex-start;
+  color:#9A9AA2;font-weight:300;
+  font-size:clamp(14px,1.15vw,17px);line-height:1.65}
+.craft-text span{color:var(--ink)}
+
+/* ── שכבה 2: הגלולות ── */
+.craft-pills{position:absolute;inset:0;z-index:2;pointer-events:none}
+
+/* ה-position וה-offsets על אותו אלמנט. כשהם היו מפוצלים בין
+   העוגן לילד ה-static, כל הארבע קרסו לנקודה אחת. */
+.craft-pill{position:absolute;pointer-events:auto;text-decoration:none;
   display:inline-flex;align-items:center;
   min-height:clamp(44px,3.6vw,56px);padding-inline:clamp(18px,1.8vw,28px);
   border-radius:100px;
@@ -812,39 +848,55 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   font-size:clamp(14px,1.15vw,19px);letter-spacing:-.005em;
   will-change:transform;
   transition:box-shadow .5s var(--ease),background .5s var(--ease)}
-.svc-pill:hover{background:#fff;
+.craft-pill:hover{background:#fff;
   box-shadow:0 16px 44px rgba(20,27,36,.16),0 3px 8px rgba(20,27,36,.07)}
-.svc-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+.craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
 
-/* מיקומי מצב 2 (הפזורים) — נמדדו מהצילום השני.
-   left/right פיזיים ולא inset-inline: מיקום הגלולות סביב הכדור
-   אינו תלוי כיוון קריאה. רק אחד מהשניים מוגדר בכל כלל, ולכן
-   האלמנט אינו over-constrained ו-left לא מנוטרל ב-RTL.
-   GSAP מושך אותן פנימה ב-transform, שנשאר פנוי לחלוטין. */
-.svc-pill--ux  {top:17%;   left:9.5%}
-.svc-pill--dev {top:17%;   right:8.5%}
-.svc-pill--brd {bottom:14.5%; left:11%}
-.svc-pill--aut {bottom:13%; right:9%}
+/* מיקומי מצב 2 (הפזורים), נמדדו מהצילום.
+   left/right פיזיים: מיקום סביב הווידאו אינו תלוי כיוון קריאה.
+   רק צד אחד מוגדר בכל כלל, ולכן האלמנט אינו over-constrained
+   ו-left לא מנוטרל ב-RTL. */
+.craft-pill--ux  {top:23%;    left:10%}
+.craft-pill--dev {top:28%;    right:10%}
+.craft-pill--brd {bottom:9%;  left:12.5%}
+.craft-pill--aut {bottom:8%;  right:9.5%}
 
-/* הקופי המרכזי — מופיע רק במצב 2 */
-.svc-copy{position:absolute;inset:0;z-index:3;
+/* ── שכבה 3: הקופי המרכזי ── */
+.craft-copy{position:absolute;inset:0;z-index:3;
   display:grid;place-items:center;pointer-events:none;
   padding-inline:clamp(20px,4vw,40px);text-align:center}
-.svc-copy>div{max-width:min(92vw,900px)}
-.svc-copy h3{margin:0;font-weight:200;
+.craft-copy>div{max-width:min(92vw,920px)}
+.craft-copy h3{margin:0;font-weight:200;
   font-size:clamp(30px,5.6vw,84px);line-height:1.06;letter-spacing:-.03em;
-  text-wrap:balance}
-.svc-copy h3 strong{font-weight:700}
-.svc-copy p{margin:clamp(14px,2vh,24px) auto 0;max-width:46ch;
+  text-wrap:balance;
+  /* הילה לבנה — הטקסט יושב מעל וידאו בעל ניגודיות משתנה.
+     text-shadow עוקב אחרי צורת האות במקום לצייר מלבן מטושטש. */
+  text-shadow:0 0 14px rgba(255,255,255,.9),
+              0 0 40px rgba(255,255,255,.7),
+              0 0 84px rgba(255,255,255,.5)}
+.craft-copy h3 strong{font-weight:700}
+.craft-copy p{margin:clamp(14px,2vh,24px) auto 0;max-width:46ch;
   color:var(--ink);font-weight:300;
-  font-size:clamp(14px,1.2vw,18px);line-height:1.65}
-.svc-copy p span{color:#9A9AA2}
+  font-size:clamp(14px,1.2vw,18px);line-height:1.65;
+  text-shadow:0 0 10px rgba(255,255,255,.95),
+              0 0 26px rgba(255,255,255,.72)}
+.craft-copy p span{color:#9A9AA2}
 
-/* מתחת ל-901px הקנבס הופך לרצועה עליונה והטקסט יושב מתחתיה.
-   הגלולות היו נוחתות עליו, ולכן כל המנגנון יורד שם —
-   גם ב-CSS וגם ב-matchMedia של הטיימליין. */
-@media(max-width:900px){
-  .svc-pills,.svc-copy{display:none}
+/* ── מובייל ──
+   הטקסט העליון נערם, והגלולות מתקרבות לקצוות כי 10% מ-390px
+   הם 39px בלבד והתווית הייתה נחתכת. */
+@media(max-width:768px){
+  .craft{padding:clamp(70px,10vh,110px) 20px}
+  .craft-flex{flex-direction:column;gap:16px}
+  .craft-heading{font-size:clamp(26px,7.6vw,38px)}
+  .craft-text{font-size:14px}
+  .craft-pill{min-height:38px;padding-inline:14px;font-size:13px}
+  .craft-pill--ux  {top:34%;   left:4%}
+  .craft-pill--dev {top:40%;   right:4%}
+  .craft-pill--brd {bottom:14%; left:4%}
+  .craft-pill--aut {bottom:8%;  right:4%}
+  .craft-copy h3{font-size:clamp(26px,8.2vw,40px)}
+  .craft-copy p{font-size:14px;max-width:34ch}
 }
 
 </style>
@@ -891,25 +943,6 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 <section class="sphere-sec" id="about" data-snap>
   <canvas id="seq"></canvas>
-
-  <!-- מצב 2: הגלולות. המיקום בקצוות הוא ברירת המחדל ב-CSS,
-       כך שכשל GSAP משאיר אותן פזורות וגלויות ולא נעלמות. -->
-  <div class="svc-pills">
-    <a class="svc-pill svc-pill--ux"  href="#services">אפיון ו-UI/UX</a>
-    <a class="svc-pill svc-pill--dev" href="#services">פיתוח</a>
-    <a class="svc-pill svc-pill--brd" href="#services">מיתוג</a>
-    <a class="svc-pill svc-pill--aut" href="#services">אוטומציה</a>
-  </div>
-
-  <!-- מצב 2: הקופי המרכזי. מוסתר ע"י gsap.set ולא ע"י CSS,
-       כדי שהיעדר GSAP ישאיר אותו גלוי במקום להעלים אותו בשקט. -->
-  <div class="svc-copy" aria-hidden="false">
-    <div>
-      <h3>אנחנו בונים <strong>חוויות</strong> שנושמות</h3>
-      <p>כי חוויה שנשארת לא נוצרת במקרה — <span>היא מעוצבת בכוונה.</span></p>
-    </div>
-  </div>
-
   <div class="sphere-grid">
     <div class="s-head">
       <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
@@ -976,6 +1009,45 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 
 <!-- ============ SECTION 5 — WORK / פרויקטים ============ -->
+<!-- ============ SERVICES — סקשן עצמאי ============
+     ממוקם אחרי השואוריל ולפני הפרויקטים.
+     id="craft" ולא "services": המזהה הזה כבר תפוס ע"י סקשן ה-Ideas.
+     בלי data-snap — הסקשן מוצמד, והעוגן יתנגש עם ה-pin. -->
+<section class="craft" id="craft">
+
+  <!-- הלופ המרכזי. שכבה 0. -->
+  <div class="vimeo-bg is--loop" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="metadata">
+      <source src="https://player.vimeo.com/video/1204394600?api=1&amp;background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;h=4a378f873f" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- מצב 1: הטקסט העליון -->
+  <div class="craft-flex">
+    <h2 class="craft-heading" data-animate="title">נבנה בכוונה.<br><strong>נועד להרגיש.</strong></h2>
+    <p class="craft-text" data-animate="fade-up">מהאופן שבו המילים נושמות ועד לתנועה של האנימציה, <span>כל פרט נועד להדהד.</span></p>
+  </div>
+
+  <!-- ארבע הגלולות. מיקומי הפינות הם ברירת המחדל ב-CSS,
+       ו-GSAP אוסף אותן פנימה — כך שכשל משאיר אותן פזורות. -->
+  <div class="craft-pills">
+    <a class="craft-pill craft-pill--ux"  href="#services">אפיון ו-UI/UX</a>
+    <a class="craft-pill craft-pill--dev" href="#services">פיתוח</a>
+    <a class="craft-pill craft-pill--brd" href="#services">מיתוג</a>
+    <a class="craft-pill craft-pill--aut" href="#services">אוטומציה</a>
+  </div>
+
+  <!-- מצב 2: הקופי המרכזי -->
+  <div class="craft-copy">
+    <div>
+      <h3>אנחנו בונים <strong>חוויות</strong> שנושמות</h3>
+      <p>כי חוויה שנשארת לא נוצרת במקרה — <span>היא מעוצבת בכוונה.</span></p>
+    </div>
+  </div>
+
+</section>
+
+
 <section class="work" id="work" data-snap>
 
   <div class="work-head">
@@ -1517,63 +1589,59 @@ function start(){
       }}});
   if(!framesReady) drawFallback(0);
 
-  /* ═══════════ סקשן 2 — מעבר בין שני מצבי הסקשן ═══════════
-     מצב 1: הטקסט העליון גלוי, הגלולות אסופות סביב הכדור.
-     מצב 2: הטקסט העליון דוהה, הגלולות נפתחות לקצוות,
+  /* ═══════════ CRAFT — טיימליין מוצמד עצמאי ═══════════
+     מצב 1: הווידאו מנגן, הטקסט העליון גלוי, הגלולות אסופות
+             סביבו, הקופי המרכזי שקוף.
+     מצב 2: הטקסט העליון דוהה, הגלולות נפתחות לפינות,
              הקופי המרכזי נכנס.
 
-     חיבור בטוח למנוע הקיים:
-     · אין pin. ה-pin היחיד נשאר של seqTween. שני מצמידים על
-       אותו אלמנט שוברים את ScrollTrigger.
-     · אותם trigger/start/end בדיוק, כך ששני הטריגרים נפתרים
-       לאותם ערכי גלילה.
-     · refreshPriority:-1 — מתרענן אחרי המצמיד, אחרי שה-spacer קיים.
-     · protectedZone() נגזר מ-seqTween.scrollTrigger בלבד.
-       seqTween לא נגע, ולכן העגינה לא מושפעת.
-     · matchMedia: מתחת ל-901px שום דבר מזה לא נוצר כלל. */
-  const svcPills = document.querySelector('.svc-pills');
-  const svcCopy  = document.querySelector('.svc-copy');
+     הסקשן הזה מוצמד בעצמו. הוא נפרד לחלוטין מ-seqTween:
+     טריגר משלו, טווח משלו, ואפס נגיעה במנוע הפריימים. */
+  let craftST = null;
+  const craft = document.querySelector('.craft');
 
-  if(svcPills && svcCopy){
-    gsap.matchMedia().add('(min-width: 901px)', () => {
+  if(craft){
+    gsap.matchMedia().add('(min-width: 769px)', () => {
 
-      /* ההזחות פנימה נמדדו משני הצילומים ומומרות ליחידות מסך,
-         כך שהן נשמרות יחסיות בכל רוחב. פונקציות ולא ערכים
-         קבועים — GSAP מחשב אותן מחדש בכל refresh. */
-      /* בלי נסיעה אופקית. ברפרנס הטקסט יושב בראש הסקשן ולכן
-         הגלולות חופשיות לנוע פנימה; אצלנו .s-head ו-.s-side
-         תופסים את הפס האמצעי בשני הצדדים, וכל תנועה פנימה
-         נחתה עליהם. נשארת הופעה אנכית עדינה בלבד. */
-      const drift = [
-        ['.svc-pill--ux',   40],
-        ['.svc-pill--dev',  40],
-        ['.svc-pill--brd', -40],
-        ['.svc-pill--aut', -40]
+      /* ההזחות פנימה נמדדו משני הצילומים (1918×907) ומומרות
+         ליחידות מסך. פונקציות ולא קבועים — GSAP מחשב אותן
+         מחדש בכל refresh במקום לקפוא על רוחב אחד. */
+      const vw = f => () => innerWidth  * f;
+      const vh = f => () => innerHeight * f;
+      const gather = [
+        ['.craft-pill--ux',  vw( .189), vh( .342)],
+        ['.craft-pill--dev', vw(-.166), vh( .316)],
+        ['.craft-pill--brd', vw( .165), vh( .036)],
+        ['.craft-pill--aut', vw(-.150), vh( .006)]
       ];
 
-      /* מצב פתיחה. autoAlpha ולא opacity — מוסיף visibility
-         ומונע מהקופי המרכזי לחטוף קליקים בזמן שהוא שקוף. */
-      gsap.set(svcCopy, {autoAlpha:0});
-      drift.forEach(([sel,y]) => gsap.set(sel, {autoAlpha:0, y, scale:.92}));
+      /* רק הקופי המרכזי מוסתר, ודרך gsap.set ולא CSS —
+         כך הוא נסתר רק כאשר GSAP באמת רץ. הגלולות והטקסט
+         העליון גלויים כברירת מחדל וכשל משאיר אותם על המסך. */
+      gsap.set('.craft-copy', {autoAlpha:0});
+      gather.forEach(([sel,x,y]) => gsap.set(sel, {x, y}));
 
-      const st = gsap.timeline({
+      const tl = gsap.timeline({
         scrollTrigger:{
-          trigger:'.sphere-sec', start:'top top', end:pinLen,
-          scrub:1, refreshPriority:-1, id:'svc-states'
+          trigger:'.craft', start:'top top', end:'+=220%',
+          pin:true, scrub:1, anticipatePin:1, id:'craft-states'
         }
       });
+      craftST = tl.scrollTrigger;
 
-      st.to('.sphere-grid', {autoAlpha:0, y:-40, ease:'none'}, 0)
-        .to(drift.map(r=>r[0]), {autoAlpha:1, y:0, scale:1, ease:'none'}, .30)
-        .to(svcCopy,            {autoAlpha:1, ease:'none'}, .45);
+      tl.to('.craft-flex',        {autoAlpha:0, y:-40, ease:'none'}, 0)
+        .to(gather.map(r=>r[0]),  {x:0, y:0, ease:'none'}, .15)
+        .to('.craft-copy',        {autoAlpha:1, ease:'none'}, .45);
 
-      /* ניקוי כשחוצים את נקודת השבירה כלפי מטה */
       return () => {
-        gsap.set([svcCopy, '.sphere-grid'], {clearProps:'all'});
-        gsap.set(drift.map(r=>r[0]), {clearProps:'all'});
+        craftST = null;
+        gsap.set(['.craft-copy','.craft-flex'], {clearProps:'all'});
+        gsap.set(gather.map(r=>r[0]), {clearProps:'all'});
       };
     });
   }
+
+
 
 
   /* ניווט דביק */
@@ -1638,10 +1706,12 @@ function start(){
   /* אזור מוגן: כל טווח ה-pin של הפריימים, בתוספת שוליים.
      בתוכו הגלילה חופשית לחלוטין ואיש לא נוגע בה. */
   function protectedZone(v){
-    if(!seqST) return false;
     const max = ScrollTrigger.maxScroll(window);
     if(!max) return false;
-    return v > seqST.start/max - .03 && v < seqST.end/max + .03;
+    /* שני טווחי pin נפרדים: הפריימים והסקשן החדש.
+       בתוך כל אחד מהם הגלילה חופשית ואיש לא נוגע בה. */
+    return [seqST, craftST].some(st =>
+      st && v > st.start/max - .03 && v < st.end/max + .03);
   }
 
   if(!touch && !reduce){
