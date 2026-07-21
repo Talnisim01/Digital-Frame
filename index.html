@@ -269,9 +269,7 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
 .bars-indicator[data-active-bar="2"] .bar-2,
 .bars-indicator[data-active-bar="3"] .bar-3,
 .bars-indicator[data-active-bar="4"] .bar-4,
-.bars-indicator[data-active-bar="5"] .bar-5,
-.bars-indicator[data-active-bar="6"] .bar-6,
-.bars-indicator[data-active-bar="7"] .bar-7{
+.bars-indicator[data-active-bar="5"] .bar-5{
   transform:translateY(0);
   opacity:1;
 }
@@ -573,8 +571,15 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* ════════════════ SECTION 6 — CONTACT ════════════════
    שני טורים: טקסט (ראשון ב-DOM = ימין ב-RTL) וטופס.
    הזוהר הכתום ברקע — שני כתמים מטושטשים בקצוות. */
-.contact{position:relative;overflow:hidden;
-  padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px) clamp(100px,14vh,160px)}
+/* הסקשן הוא עטיפה בלבד. החיתוך, הרקע והריפוד יושבים על
+   הכרטיס, כך שהגרדיאנט החם נחתך בגבול מעוגל ומכוון
+   במקום בקצה ישר של הסקשן. */
+.contact{position:relative;padding-block:clamp(40px,6vh,80px)}
+.contact-card{position:relative;overflow:hidden;isolation:isolate;
+  border-radius:clamp(18px,2.4vw,44px);
+  margin-inline:clamp(10px,2.2vw,46px);
+  background:var(--paper);
+  padding:clamp(70px,11vh,140px) clamp(24px,3.4vw,64px) clamp(80px,12vh,150px)}
 
 /* גרדיאנטים ישירות על השכבה, ולא אלמנטים מטושטשים.
    filter:blur() בתוך .contact{overflow:hidden} נחתך בגבול החיתוך
@@ -720,7 +725,6 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .foot-base a:hover{color:#EDEBE9}
 
 /* המחוון כהה כברירת מחדל ונבלע בפוטר — מתהפך רק שם */
-.bars-indicator[data-active-bar="7"] .bar{background-color:#F1EFED}
 
 
 /* ════════════════ מובייל — שלושת הסקשנים החדשים ════════════════ */
@@ -737,7 +741,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .work-grid{grid-template-columns:1fr;gap:32px}
   .card-name{font-size:19px}
 
-  .contact{padding:clamp(70px,10vh,110px) 20px clamp(80px,12vh,120px)}
+  .contact{padding-block:16px}
+  .contact-card{margin-inline:10px;border-radius:18px;
+    padding:clamp(60px,9vh,90px) 20px clamp(70px,10vh,110px)}
   .contact-grid{grid-template-columns:1fr;gap:44px}
   .contact-bg span{filter:blur(80px)}
   .contact-bg .g1{width:80vw;height:80vw}
@@ -756,7 +762,6 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .foot-col a{font-size:15px}
   .foot-base{gap:10px;font-size:12px}
   /* המחוון מסתיר תוכן בפוטר הצפוף */
-  .bars-indicator[data-active-bar="7"]{opacity:0;pointer-events:none}
 }
 
 
@@ -1111,6 +1116,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 <!-- ============ SECTION 6 — CONTACT ============ -->
 <section class="contact" id="contact" data-snap>
 
+  <div class="contact-card">
   <div class="contact-bg" aria-hidden="true"></div>
 
   <div class="contact-grid">
@@ -1169,6 +1175,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
       <p class="f-note" id="formNote" role="status" aria-live="polite"></p>
     </form>
 
+  </div>
   </div>
 </section>
 
@@ -1252,9 +1259,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   <div class="bar bar-2" data-go="#about"></div>
   <div class="bar bar-3" data-go="#services"></div>
   <div class="bar bar-4" data-go="#showreel"></div>
-  <div class="bar bar-5" data-go="#work"></div>
-  <div class="bar bar-6" data-go="#contact"></div>
-  <div class="bar bar-7" data-go="#foot"></div>
+  <div class="bar bar-5" data-go="#craft"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -1497,15 +1502,18 @@ function start(){
     } else if(kind === 'clip-in'){
       /* scrub ולא once: הצורה קשורה למיקום הגלילה ולכן היא נפתחת
          ונסגרת עם התנועה, במקום להינעל על 0% אחרי הפעלה אחת. */
-      /* טיימליין אחד לכניסה, החזקה ויציאה. שני טריגרים נפרדים
-         על אותו clipPath היו נלחמים על אותו מאפיין בקצוות. */
+      /* שני טריגרים בטווחים שאינם חופפים. הם אינם נלחמים כי
+         מצב הסיום של הכניסה זהה למצב הפתיחה של היציאה (OPEN),
+         ולכן בין השניים הצורה יציבה.
+         הטיימליין היחיד הקודם פרס כניסה-החזקה-יציאה על טווח אחד,
+         וההתכווצות התחילה כבר כשהבלוק מילא את המסך. */
       const SHUT='inset(8% round 3rem)', OPEN='inset(3% round 2rem)';
-      gsap.timeline({scrollTrigger:{trigger:sec,
-          start:'top 88%', end:'bottom 12%', scrub:true}})
-        .fromTo(el,{clipPath:SHUT},
-                   {clipPath:OPEN, ease:'none', duration:35, immediateRender:false})
-        .to(el,    {clipPath:OPEN, ease:'none', duration:30})
-        .to(el,    {clipPath:SHUT, ease:'none', duration:35});
+      gsap.fromTo(el,{clipPath:SHUT},
+        {clipPath:OPEN, ease:'none', immediateRender:false,
+         scrollTrigger:{trigger:sec, start:'top 90%', end:'top 8%', scrub:true}});
+      gsap.to(el,
+        {clipPath:SHUT, ease:'none', immediateRender:false,
+         scrollTrigger:{trigger:sec, start:'bottom 92%', end:'bottom 25%', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
@@ -1631,7 +1639,10 @@ function start(){
 
       tl.to('.craft-flex',        {autoAlpha:0, y:-40, ease:'none'}, 0)
         .to(gather.map(r=>r[0]),  {x:0, y:0, ease:'none'}, .15)
-        .to('.craft-copy',        {autoAlpha:1, ease:'none'}, .45);
+        .to('.craft-copy',        {autoAlpha:1, ease:'none'}, .45)
+        /* בסרטון הקופי גדל קלות בזמן שהגלולות נפתחות */
+        .fromTo('.craft-copy > div', {scale:.94},
+                                     {scale:1, ease:'none'}, .45);
 
       return () => {
         craftST = null;
@@ -1823,6 +1834,37 @@ preload(start);
   /* ── שנה בפוטר ── */
   var yr = document.getElementById('yr');
   if(yr) yr.textContent = new Date().getFullYear();
+
+
+  /* ── המחוון: פס פעיל + היעלמות אחרי craft ──
+     data-active-bar היה מקובע ל-"1" ומעולם לא התעדכן.
+     מאזין גלילה פשוט ולא ScrollTrigger — שום דבר חדש
+     לא נכנס למנוע הגלילה. */
+  (function(){
+    var ind = document.getElementById('secNav');
+    if(!ind) return;
+    var bars  = [].slice.call(ind.querySelectorAll('.bar'));
+    var last  = document.querySelector('#craft');
+    var ticking = false;
+
+    function sync(){
+      ticking = false;
+      var mid = innerHeight * 0.5, active = 1;
+      bars.forEach(function(b,i){
+        var t = document.querySelector(b.dataset.go);
+        if(t && t.getBoundingClientRect().top <= mid) active = i + 1;
+      });
+      ind.setAttribute('data-active-bar', String(active));
+      /* נעלם ברגע שהתחתית של craft עברה את ראש המסך */
+      ind.classList.toggle('is-gone',
+        !!last && last.getBoundingClientRect().bottom <= 0);
+    }
+    addEventListener('scroll', function(){
+      if(!ticking){ ticking = true; requestAnimationFrame(sync); }
+    }, {passive:true});
+    addEventListener('resize', sync, {passive:true});
+    sync();
+  })();
 
   /* ── פילטר הפרויקטים ──
      hidden ולא opacity: פריט מסונן יוצא מהזרימה ומעץ הנגישות גם יחד. */
