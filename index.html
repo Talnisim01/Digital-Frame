@@ -1051,22 +1051,20 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 
 /* ════════════════ MENU OVERLAY ════════════════
-   מדידות מגיליון הרפרנס, מומרות לפי 1rem=10px ב-1920,
-   ועטופות ב-clamp כדי להישאר במערכת שלנו.
-   RTL: הנקודה הכתומה שלהם ב-left:-2rem עם translate(-100%,-50%).
-   translate באחוזים לא מתהפך ב-RTL, ולכן היא ממוקמת כאן ע"י
-   inset-inline-start בלבד ו-translate נשאר על ציר Y. */
+   מדידות מגיליון הרפרנס, 1rem=10px ב-1920.
+   .menu הוא מכולה שקופה; הכרטיס הוא .menu__wrapper — הוא זה
+   שנושא את הרקע, הטשטוש והפינות. 1920 פחות 50px מכל צד = 1820,
+   בדיוק המידה שנמדדה ב-DevTools. */
 
 .menu{position:fixed;inset:0;z-index:60;
-  display:grid;padding:0;
-  background:rgba(255,255,255,.74);
-  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  width:100%;height:100dvh;
+  padding:clamp(14px,2.6vw,26px) clamp(10px,5vw,50px) clamp(14px,5vw,50px);
+  pointer-events:none;
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
 .menu[hidden]{display:none}
 .menu.is-open{visibility:visible;opacity:1}
 
-/* הזוהר החם מאחורי השכבה */
 .menu__ellipse{position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(50vw 46vw at 78% 0%,
@@ -1074,80 +1072,84 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     radial-gradient(40vw 38vw at 6% 96%,
       rgba(245,135,47,.13) 0%, rgba(255,184,120,.05) 48%, transparent 78%)}
 
-.menu__wrapper{position:relative;
+/* ── הכרטיס ── */
+.menu__wrapper{position:relative;pointer-events:auto;
   display:grid;grid-template-columns:repeat(12,1fr);
   grid-template-rows:1fr auto 1fr auto;
   width:100%;height:100%;
-  padding-inline:clamp(20px,5.7vw,110px);
-  padding-block:clamp(26px,2.6vw,52px) clamp(26px,3vw,50px)}
+  padding-inline:clamp(24px,5.7vw,110px);
+  padding-block:clamp(70px,5.2vw,100px) clamp(24px,2.6vw,50px);
+  background-color:rgba(255,255,255,.51);
+  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border-radius:clamp(18px,2.1vw,40px);
+  /* הרפרנס חותך פה נגיסה ב-SVG clip-path עבור ה-X.
+     כאן ה-X יושב מחוץ לכרטיס, בתוך הריפוד של .menu. */
+  transform:translateY(14px);
+  transition:transform .55s var(--ease)}
+.menu.is-open .menu__wrapper{transform:translateY(0)}
 
-.menu-close{position:absolute;top:clamp(20px,2.8vw,28px);
-  inset-inline-end:clamp(18px,3.6vw,36px);
-  width:clamp(26px,3.3vw,33px);height:clamp(26px,3.4vw,34px);
+/* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
+.menu-close{position:absolute;pointer-events:auto;
+  top:clamp(10px,1.4vw,22px);inset-inline-end:clamp(12px,2vw,34px);
+  width:clamp(26px,3.3vw,34px);height:clamp(26px,3.3vw,34px);
   background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
-  transition:transform .3s ease-out,opacity .3s ease-out;z-index:2}
+  transition:transform .3s ease-out,opacity .3s ease-out;z-index:3}
 .menu-close:hover{transform:scale(.9);opacity:.8}
 .menu-close svg{width:100%;height:100%}
 
 /* ── בלוק ההתחברות ── */
 .menu__connect{grid-column:1 / 7;grid-row:2;
-  display:grid;gap:min(30px,3vh);align-content:start;
-  justify-items:start}
-
+  display:grid;gap:min(30px,3vh);align-content:start;justify-items:start}
 .menu__connect-heading{display:flex;align-items:center;gap:15px;margin:0}
 .menu__connect-heading-icon{width:10px;height:10px;border-radius:50%;
   background:var(--orange);flex:none}
 .menu__connect-heading-text{color:var(--orange);font-weight:400;
   font-size:clamp(14px,1.05vw,20px)}
-
 .menu__connect-text{margin:0;color:var(--ink);font-weight:500;
-  font-size:min(clamp(30px,3.4vw,65px),6.5vh);
+  font-size:min(clamp(28px,3.4vw,65px),6.5vh);
   line-height:1;letter-spacing:.02em;max-width:min(100%,650px)}
-
 .menu__line{width:70px;height:1px;background:#8a8f8d;display:block}
-
 .menu__contact-email{display:flex;align-items:center;gap:10px;
   transition:opacity .3s ease-out}
 .menu__contact-email:hover{opacity:.75}
 .menu__contact-email svg{width:20px;height:20px;flex:none}
 .menu__contact-email span{color:#5b6871;font-weight:400;
   font-size:clamp(14px,1.05vw,20px);text-decoration:underline}
-
 .menu__cta{margin-top:min(20px,2vh)}
 
 /* ── טורי הניווט ── */
 .menu-nav__wrapper{grid-column:7 / 13;grid-row:2;
   display:grid;grid-template-columns:repeat(6,1fr)}
 
-.menu__navigation{grid-column:1 / 4;height:fit-content;
-  display:grid;gap:min(30px,3vh);
-  justify-self:center;justify-items:start;min-width:min(100%,260px)}
-.menu__col{grid-column:4 / 7;display:grid;align-content:start}
-.menu__navigation.is--sponsor{justify-self:end;margin-top:min(40px,4vh)}
+/* > בלבד. בלי זה הכלל חל גם על התפריטים שבתוך .menu__col,
+   שהוא רשת בת טור אחד — הם נדחפו לטורים משתמעים ונחתו
+   זה על זה. זו הייתה החפיפה. */
+.menu-nav__wrapper > .menu__navigation{grid-column:1 / 4}
+.menu__col{grid-column:4 / 7;display:grid;align-content:start;
+  gap:min(40px,4vh)}
+.menu__col > .menu__navigation{grid-column:auto;justify-self:start}
 
-.menu__navigation--header{width:100%;
-  padding-bottom:min(20px,1.5vh);
+.menu__navigation{height:fit-content;
+  display:grid;gap:min(30px,3vh);
+  justify-self:start;justify-items:start;min-width:min(100%,240px)}
+
+.menu__navigation--header{width:100%;padding-bottom:min(20px,1.5vh);
   border-bottom:1px solid rgba(140,141,145,.47)}
 .menu__navigation--header h4{margin:0;color:#334049;font-weight:400;
   font-size:clamp(13px,1vw,19px);line-height:1.2}
 
-.menu__navigation-item{position:relative;display:block;will-change:transform}
-
-/* inset-inline-start בלבד — translate נשאר על Y כדי שההיפוך
-   ב-RTL יעבוד. הנקודה יושבת מחוץ לקצה ההתחלתי של הטקסט. */
+.menu__navigation-item{position:relative;display:block}
+/* inset-inline-start בלבד — translate באחוזים לא מתהפך ב-RTL */
 .menu__navigation-icon{position:absolute;top:50%;
   inset-inline-start:-22px;
   width:12px;height:12px;border-radius:50%;background:var(--orange);
   transform:translateY(-50%) scale(0);
   transition:transform .35s var(--ease)}
-
 .menu__navigation-text{display:inline-block;color:var(--ink);
   font-weight:500;line-height:1;letter-spacing:.02em;
-  font-size:min(clamp(20px,2.3vw,44px),3.5vh);
+  font-size:min(clamp(19px,2.3vw,44px),3.5vh);
   transition:opacity .35s var(--ease)}
 
-/* ריחוף על הרשימה מעמעם את כולם, ריחוף על פריט מחזיר אותו.
-   הדפוס הזה מהרפרנס — הוא מייצר מיקוד בלי להזיז שום דבר. */
 .menu__navigation:hover .menu__navigation-text{opacity:.45}
 .menu__navigation-item:hover .menu__navigation-text{opacity:1}
 .menu__navigation-item:hover .menu__navigation-icon{
@@ -1157,47 +1159,50 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 /* ── פוטר התפריט ── */
 .menu__socials{grid-column:1 / 13;grid-row:4;
-  display:grid;justify-items:center;width:100%}
+  display:grid;justify-items:center;width:100%;align-self:end}
 .menu__socials-divider{width:100%;height:1px;background:#8a8f8d;
   margin-bottom:min(35px,3.5vh);display:block;opacity:.5}
-
 .menu__socials--footer{position:relative;width:100%;
   display:flex;align-items:center;justify-content:space-between}
-
 .menu__socials--copyright{color:#334049;font-weight:400;
   font-size:clamp(12px,.9vw,16px);line-height:1.2}
-
-/* ממורכז אבסולוטית ביחס לשורה, לא ביחס לשכנים */
 .menu__socials-list{position:absolute;top:50%;inset-inline-start:50%;
   transform:translate(50%,-50%);
   display:flex;align-items:center;gap:10px}
-[dir="ltr"] .menu__socials-list{transform:translate(-50%,-50%)}
-
 .menu__socials-link{position:relative;
   width:clamp(30px,3.5vw,35px);height:clamp(30px,3.5vw,35px);
-  border-radius:50%;border:1px solid rgba(51,64,73,.3);
-  display:grid;place-items:center;color:#334049;
+  border-radius:50%;border:1px solid rgba(91,104,113,.55);
+  display:grid;place-items:center;color:#5b6871;
   transition:.35s var(--ease)}
 .menu__socials-link:hover{background:var(--ink);color:#fff;
   border-color:var(--ink)}
 .menu__socials-link svg{width:15px;height:15px;fill:currentColor}
-
 .menu__socials--terms{display:flex;align-items:center;
   gap:clamp(20px,3vw,60px)}
 .menu__socials--terms a{color:#334049;text-decoration:none;
   font-size:clamp(12px,.9vw,16px);transition:color .3s ease-out}
 .menu__socials--terms a:hover{color:var(--ink)}
 
-/* נעילת גלילה כשהתפריט פתוח */
 html.menu-open,html.menu-open body{overflow:hidden}
 
 
+/* מובייל: הרפרנס מעביר את הרקע והטשטוש ל-.menu עצמו,
+   מאפס את הריפוד והכרטיס הופך לשקוף ומלא-מסך. */
 @media(max-width:900px){
+  .menu{padding:0;
+    background:rgba(255,255,255,.74);
+    backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+  .menu__ellipse{display:none}
+
   .menu__wrapper{grid-template-columns:1fr;
     grid-template-rows:auto 1fr auto;
+    background-color:transparent;backdrop-filter:none;
+    -webkit-backdrop-filter:none;border-radius:0;transform:none;
     padding-inline:24px;
     padding-block:min(90px,10vh) min(28px,3vh);
     overflow:auto}
+
+  .menu-close{top:20px;inset-inline-end:20px;width:24px;height:24px}
 
   .menu__connect{grid-column:1;grid-row:1;justify-items:center;
     text-align:center;gap:14px;margin-bottom:min(40px,2.5vh)}
@@ -1207,20 +1212,19 @@ html.menu-open,html.menu-open body{overflow:hidden}
 
   .menu-nav__wrapper{grid-column:1;grid-row:2;
     grid-template-columns:1fr;align-content:start;width:100%}
-  .menu__navigation,.menu__col{grid-column:1;justify-self:start;width:100%}
-  .menu__navigation{gap:min(20px,1.2vh);margin-bottom:min(34px,2.5vh)}
-  .menu__navigation.is--sponsor{justify-self:start;margin-top:0}
+  .menu-nav__wrapper > .menu__navigation,.menu__col{grid-column:1}
+  .menu__col{gap:min(28px,2vh)}
+  .menu__navigation{gap:min(20px,1.2vh);margin-bottom:min(30px,2.5vh);
+    width:100%}
   .menu__navigation--header h4{font-size:min(15px,1.5vh)}
   .menu__navigation-text{font-size:min(24px,2vh);line-height:.9}
   .menu__navigation-icon{inset-inline-start:-16px;width:9px;height:9px}
 
   .menu__socials{grid-row:3}
   .menu__socials-divider{margin-bottom:min(20px,2vh)}
-  /* הרשתות עוברות למרכז הזרימה, והתנאים יורדים */
   .menu__socials--footer{justify-content:center}
   .menu__socials--copyright,.menu__socials--terms{display:none}
   .menu__socials-list{position:static;transform:none;gap:12px}
-  [dir="ltr"] .menu__socials-list{transform:none}
 }
 
 </style>
@@ -1267,11 +1271,11 @@ html.menu-open,html.menu-open body{overflow:hidden}
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="תפריט" hidden>
   <div class="menu__ellipse" aria-hidden="true"></div>
 
-  <div class="menu__wrapper">
+  <button class="menu-close" id="menuClose" type="button" aria-label="סגירת תפריט">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
 
-    <button class="menu-close" id="menuClose" type="button" aria-label="סגירת תפריט">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
-    </button>
+  <div class="menu__wrapper">
 
     <div class="menu__connect">
       <p class="menu__connect-heading">
