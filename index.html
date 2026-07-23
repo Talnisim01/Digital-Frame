@@ -22,14 +22,27 @@ body{background:var(--paper);color:var(--ink);font-family:"Heebo",system-ui,sans
 a{color:inherit;text-decoration:none}
 
 /* ============ PRELOAD ============ */
-#load{position:fixed;inset:0;z-index:100;background:var(--paper);display:grid;place-items:center;
+#load{position:fixed;inset:0;z-index:100;background:#000;color:#fcfcfd;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
   transition:opacity .6s,visibility .6s}
 #load.done{opacity:0;visibility:hidden}
-#load .lg{font-weight:800;font-size:clamp(26px,5vw,44px);letter-spacing:.2em}
+#load .lg{font-weight:800;font-size:clamp(26px,5vw,44px);letter-spacing:.2em;color:#fcfcfd}
 #load .lg b{color:var(--orange)}
-#load .pct{margin-top:14px;font-size:13px;color:var(--gray);letter-spacing:.15em}
-#load .bar{margin-top:16px;width:min(220px,55vw);height:2px;background:rgba(20,27,36,.1)}
-#load .bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .2s}
+#load .load-bottom{position:absolute;bottom:0;left:0;width:100%;
+  padding:0 3rem;display:grid;gap:0;opacity:0;transition:opacity .5s .2s}
+#load.loading .load-bottom{opacity:1}
+#load .load-row{display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:2.2rem;padding-top:.8rem}
+#load .load-msgs{position:relative;overflow:hidden;height:clamp(14px,2.4rem,32px);flex:1}
+#load .load-msg{position:absolute;top:0;right:0;white-space:nowrap;
+  font-size:clamp(12px,1.4rem,18px);font-weight:400;letter-spacing:.03em;color:#fcfcfd;
+  transform:translateY(100%);opacity:0;transition:transform .5s ease,opacity .5s ease}
+#load .load-msg.active{transform:translateY(0);opacity:1}
+#load .load-msg.above{transform:translateY(-100%);opacity:0}
+#load .pct{font-size:clamp(16px,3.2rem,36px);font-weight:500;letter-spacing:.1em;color:#fcfcfd;
+  flex-shrink:0;padding-right:.2em}
+#load .bar{width:100%;height:13px;background:rgba(255,255,255,.17);overflow:hidden}
+#load .bar i{display:block;height:100%;width:0;background:#fff;transition:width .25s ease-out}
 
 /* ============ NAV ============ */
 nav{position:fixed;top:0;right:0;left:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
@@ -50,6 +63,14 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .dash i{width:12px;height:1px;background:var(--ink);display:block}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
+/* ── קישורי מרכז (כמו navbar-center ברפרנס) ──
+   direction:rtl כדי שהסדר יהיה טבעי בעברית, ממורכזים אבסולוטית */
+.nav-c{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:clamp(20px,2.6vw,44px);direction:rtl}
+.nav-c a{color:var(--gray);font-size:clamp(14px,1vw,18px);font-weight:400;
+  transition:color .3s var(--ease)}
+.nav-c:hover a{color:var(--gray)}
+.nav-c a:hover{color:var(--color-black-soft)}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
 .talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
   direction:rtl}
@@ -106,6 +127,24 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .burger i:last-child{transform:translateX(20%)}
 .burger:hover i:first-child,
 .burger:hover i:last-child{transform:translateX(0)}
+
+/* ── מצב כהה: כשהניווט מרחף מעל סקשן הפרויקטים השחור,
+   כל האלמנטים הופכים בהירים (כמו ברפרנס). מעבר חלק. */
+nav.on-dark .logo{color:#fcfcfd}
+nav.on-dark .divider{background:rgba(255,255,255,.25)}
+nav.on-dark .nav-sep{background-color:rgba(255,255,255,.35)}
+nav.on-dark .dash{border-color:rgba(255,255,255,.28)}
+nav.on-dark .dash i{background:#fcfcfd}
+nav.on-dark .dash:hover{background:#fcfcfd}
+nav.on-dark .dash:hover i{background:var(--ink)}
+nav.on-dark .nav-c a{color:rgba(255,255,255,.7)}
+nav.on-dark .nav-c a:hover{color:#fcfcfd}
+nav.on-dark .talk{color:#fcfcfd}
+nav.on-dark .talk .wave-text{border-bottom-color:rgba(255,255,255,.6)}
+nav.on-dark .talk:hover .wave-text{border-color:var(--orange)}
+nav.on-dark .burger i{background:#fcfcfd}
+nav .logo,nav .divider,nav .nav-sep,nav .dash,nav .dash i,nav .nav-c a,
+nav .talk,nav .talk .wave-text,nav .burger i{transition:color .5s var(--ease),background .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease)}
 @media(max-width:920px){.nav-c{display:none}.burger{display:flex}}
 
 /* ============ SECTION 1 — HERO ============ */
@@ -504,23 +543,25 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    הפילטור הוא CSS בלבד (attribute hidden) — לא אנימציה, ולכן
    לא יכול "להעלים תוכן בשקט" אם GSAP נכשל. */
 .work{position:relative;
+  background:#000;
   padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px) clamp(110px,16vh,175px);
   display:flex;flex-direction:column;gap:clamp(26px,3.6vh,44px)}
 
 .work-head{display:flex;align-items:center;justify-content:space-between;
   gap:24px;flex-wrap:wrap}
-.work-title{margin:0;font-weight:200;
-  font-size:clamp(30px,4.4vw,64px);line-height:1.08;letter-spacing:-.025em}
+.work-title{margin:0;font-weight:500;color:#fcfcfd;
+  font-size:clamp(34px,5vw,65px);line-height:1.02;letter-spacing:-.02em}
 .work-title strong{font-weight:700}
 
-/* כפתור המתאר — אותו דפוס חץ כמו ה-CTA, בגרסה שקופה */
+/* כפתור המתאר — אותו דפוס חץ כמו ה-CTA, בגרסה שקופה.
+   על רקע כהה: מסגרת בהירה, טקסט בהיר, הובר הופך ללבן מלא. */
 .ghost{display:inline-flex;align-items:center;gap:14px;flex:0 0 auto;
-  border:1px solid rgba(20,27,36,.28);border-radius:100px;
+  border:1px solid rgba(255,255,255,.28);border-radius:100px;
   padding:0 clamp(20px,1.8vw,30px);min-height:clamp(42px,3.2vw,48px);
-  background:transparent;color:var(--ink);text-decoration:none;
+  background:transparent;color:#fcfcfd;text-decoration:none;
   font-family:inherit;font-size:clamp(12px,.95vw,14px);letter-spacing:.1em;
   cursor:pointer;transition:.45s var(--ease)}
-.ghost:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ghost:hover{background:#fcfcfd;color:var(--ink);border-color:#fcfcfd}
 .ghost .arw-box{width:17px;height:17px}
 .ghost:hover .a1{transform:translate(-115%,-115%)}
 .ghost:hover .a2{transform:translate(0,0)}
@@ -528,13 +569,13 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* ── פילטרים ─────────────────────────────────────────────── */
 .work-filters{display:flex;flex-wrap:wrap;gap:clamp(8px,.9vw,15px)}
 .filt{display:inline-flex;align-items:center;
-  border:1px solid rgba(20,27,36,.28);border-radius:100px;
-  padding:0 clamp(18px,2vw,32px);min-height:clamp(42px,3.2vw,50px);
-  background:transparent;color:var(--ink);
-  font-family:inherit;font-size:clamp(12px,1vw,15px);letter-spacing:.07em;
+  border:1px solid #454545;border-radius:100px;
+  padding:0 clamp(22px,2.6vw,42px);min-height:clamp(46px,3.6vw,58px);
+  background:transparent;color:#fcfcfd;
+  font-family:inherit;font-size:clamp(14px,1.15vw,19px);font-weight:400;letter-spacing:.04em;
   cursor:pointer;white-space:nowrap;
   transition:background .45s var(--ease),color .45s var(--ease),border-color .45s var(--ease)}
-.filt:hover{border-color:var(--ink)}
+.filt:hover{border-color:#fcfcfd}
 .filt[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
 .filt:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
 
@@ -545,7 +586,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .card[hidden]{display:none}
 
 .card-media{position:relative;overflow:hidden;
-  border-radius:clamp(10px,1vw,16px);aspect-ratio:16/10;background:var(--silver)}
+  border-radius:clamp(18px,1.6vw,30px);aspect-ratio:16/10;background:var(--silver)}
 /* השכבה שזזה — נפרדת מהמסגרת החותכת, ולכן ההגדלה לא מזיזה את הפינות */
 .card-shot{position:absolute;inset:0;
   transition:transform 1.1s var(--ease);will-change:transform}
@@ -556,11 +597,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .shot-b{background:radial-gradient(125% 125% at 78% 20%,#FFC7B6 0%,#E24B3C 48%,#7C1D14 100%)}
 .shot-c{background:radial-gradient(125% 125% at 28% 82%,#D2ECF7 0%,#4FA9D8 46%,#123A54 100%)}
 
-.card-foot{display:flex;align-items:baseline;justify-content:space-between;
-  gap:16px;margin-top:clamp(12px,1.4vh,20px)}
-.card-tags{color:var(--gray);font-size:clamp(11px,.85vw,13px);letter-spacing:.06em}
-.card-name{display:inline-flex;align-items:center;gap:10px;
-  font-size:clamp(17px,1.7vw,26px);font-weight:300;letter-spacing:-.01em}
+.card-foot{display:flex;flex-direction:column-reverse;align-items:flex-start;
+  gap:clamp(8px,1vh,16px);margin-top:clamp(18px,2.4vh,30px)}
+.card-tags{color:#8c8c8c;font-size:clamp(13px,1.05vw,20px);letter-spacing:.04em;text-transform:uppercase}
+.card-name{display:inline-flex;align-items:center;gap:clamp(10px,1.2vw,18px);color:#fcfcfd;
+  font-size:clamp(24px,3vw,40px);font-weight:400;letter-spacing:.01em}
 .card-name .arw-box{width:16px;height:16px}
 .card:hover .card-name .a1{transform:translate(-115%,-115%)}
 .card:hover .card-name .a2{transform:translate(0,0)}
@@ -588,15 +629,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   gap:clamp(40px,6.8vw,130px);
   padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
   border-radius:clamp(20px,1.6vw,30px);
-  /* הרפרנס נותן rgba(255,255,255,.25) ו-shadow ב-6% אלפא, אבל
-     על הרקע שלנו (#F1EFED) זה יוצא #F4F3F2 — הפרש של 3 עד 5
-     יחידות מתוך 255, כלומר בלתי נראה. הערכים האלה עובדים אצלם
-     כי הרקע שמאחוריהם שונה. הועלו עד שהמסגרת נקראת על הנייר
-     שלנו: הטבעת והצל הם מה שהופך את זה לכרטיס, לא המילוי. */
-  background:rgba(255,255,255,.78);
-  box-shadow:0 20px 64px rgba(16,24,32,.10),
-             0 2px 10px rgba(16,24,32,.04),
-             0 0 0 1px rgba(16,24,32,.055);
+  background:rgba(255,255,255,.25);
+  box-shadow:0 10px 36px rgba(16,24,32,.06),
+             0 0 0 1px rgba(230,236,242,.08);
   max-width:1560px;margin-inline:auto}
 
 /* הזוהר. גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
@@ -800,6 +835,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   color:#7C8188;font-weight:300;font-size:clamp(12px,.95vw,14px)}
 .foot-base a{color:inherit;text-decoration:none;transition:color .35s var(--ease)}
 .foot-base a:hover{color:#EDEBE9}
+.scroll-top{display:inline-flex;align-items:center;justify-content:center;
+  width:clamp(38px,3vw,46px);height:clamp(38px,3vw,46px);border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);background:transparent;color:#EDEBE9;
+  cursor:pointer;flex-shrink:0;transition:background .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
+.scroll-top:hover{background:#EDEBE9;color:var(--ink);border-color:#EDEBE9}
 
 /* המחוון כהה כברירת מחדל ונבלע בפוטר — מתהפך רק שם */
 
@@ -816,7 +856,8 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .work-filters::-webkit-scrollbar{display:none}
   .filt{min-height:42px;font-size:13px;padding:0 18px}
   .work-grid{grid-template-columns:1fr;gap:32px}
-  .card-name{font-size:19px}
+  .card-name{font-size:26px}
+  .card-tags{font-size:14px}
 
 
   .foot{padding:70px 20px 34px}
@@ -973,10 +1014,21 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 </head>
 <body>
 
-<div id="load">
+<div id="load" class="loading">
   <div style="text-align:center">
     <div class="lg">DIGITAL<b>·</b>FRAME</div>
-    <div class="pct"><span id="pct">0</span>%</div>
+  </div>
+  <div class="load-bottom">
+    <div class="load-row">
+      <div class="load-msgs">
+        <span class="load-msg active">שלמות לוקחת רגע...</span>
+        <span class="load-msg">משהו מיוחד בדרך...</span>
+        <span class="load-msg">מכינים את החוויה שלך...</span>
+        <span class="load-msg">דברים גדולים לוקחים זמן...</span>
+        <span class="load-msg">שווה את ההמתנה...</span>
+      </div>
+      <div class="pct"><span id="pct">0</span>%</div>
+    </div>
     <div class="bar"><i id="barfill"></i></div>
   </div>
 </div>
@@ -986,6 +1038,12 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     <div class="logo">DIGITAL<b>·</b>FRAME</div>
     <span class="divider"></span>
     <a href="#" class="dash" aria-label="תפריט"><i></i></a>
+  </div>
+  <div class="nav-c">
+    <a href="#about">עלינו</a>
+    <a href="#work">פרויקטים</a>
+    <a href="#services">שירותים</a>
+    <a href="#contact">צור קשר</a>
   </div>
   <div class="right">
     <a href="#contact" class="talk"><span class="wave-text">בוא נדבר</span>
@@ -1355,6 +1413,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     <div class="foot-base">
       <span>© <span id="yr">2026</span> Digital Frame. כל הזכויות שמורות.</span>
       <span><a href="#">תנאי שימוש</a> · <a href="#">מדיניות פרטיות</a></span>
+      <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="חזרה למעלה">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
     </div>
 
   </div>
@@ -1455,6 +1516,22 @@ function draw(i){
 
   ctx.drawImage(_sh,0,0);
 }
+
+/* ── סבב הודעות טעינה (כמו ברפרנס: הודעה מתחלפת כל ~1.4s) ── */
+(function cycleLoadMsgs(){
+  const msgs=[...document.querySelectorAll('#load .load-msg')];
+  if(msgs.length<2) return;
+  let cur=0;
+  setInterval(()=>{
+    if(document.getElementById('load').classList.contains('done')) return;
+    msgs[cur].classList.remove('active');
+    msgs[cur].classList.add('above');
+    const next=(cur+1)%msgs.length;
+    msgs.forEach((m,i)=>{ if(i!==cur) m.classList.remove('above'); });
+    msgs[next].classList.add('active');
+    cur=next;
+  },1400);
+})();
 
 /* טעינת כל הפריימים עם מד התקדמות + ספירת כשלונות */
 function preload(done){
@@ -1764,6 +1841,23 @@ function start(){
 
   /* ניווט דביק */
   addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('stuck',scrollY>60));
+
+  /* ===== החלפת ערכת הניווט מעל סקשן כהה =====
+     כשקו הניווט העליון חוצה את סקשן הפרויקטים השחור,
+     כל אלמנטי הניווט הופכים בהירים (כמו ברפרנס). */
+  (function(){
+    const navEl=document.getElementById('nav');
+    const dark=document.querySelector('.work');
+    if(!navEl||!dark) return;
+    const probe=()=>{
+      const navMid=navEl.getBoundingClientRect().bottom*0.5;
+      const r=dark.getBoundingClientRect();
+      navEl.classList.toggle('on-dark', r.top<=navMid && r.bottom>=navMid);
+    };
+    addEventListener('scroll',probe,{passive:true});
+    addEventListener('resize',probe);
+    probe();
+  })();
 
   /* ===== מחוון הסקשנים בתחתית =====
      המצב הפעיל נקבע ע"י data-active-bar על ההורה, וה-CSS מגיב לו.
