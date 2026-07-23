@@ -63,14 +63,6 @@ nav.stuck{padding:16px clamp(20px,4vw,48px)}
 .dash i{width:12px;height:1px;background:var(--ink);display:block}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
-/* ── קישורי מרכז (כמו navbar-center ברפרנס) ──
-   direction:rtl כדי שהסדר יהיה טבעי בעברית, ממורכזים אבסולוטית */
-.nav-c{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  display:flex;align-items:center;gap:clamp(20px,2.6vw,44px);direction:rtl}
-.nav-c a{color:var(--gray);font-size:clamp(14px,1vw,18px);font-weight:400;
-  transition:color .3s var(--ease)}
-.nav-c:hover a{color:var(--gray)}
-.nav-c a:hover{color:var(--color-black-soft)}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
 .talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
   direction:rtl}
@@ -137,15 +129,12 @@ nav.on-dark .dash{border-color:rgba(255,255,255,.28)}
 nav.on-dark .dash i{background:#fcfcfd}
 nav.on-dark .dash:hover{background:#fcfcfd}
 nav.on-dark .dash:hover i{background:var(--ink)}
-nav.on-dark .nav-c a{color:rgba(255,255,255,.7)}
-nav.on-dark .nav-c a:hover{color:#fcfcfd}
 nav.on-dark .talk{color:#fcfcfd}
 nav.on-dark .talk .wave-text{border-bottom-color:rgba(255,255,255,.6)}
 nav.on-dark .talk:hover .wave-text{border-color:var(--orange)}
 nav.on-dark .burger i{background:#fcfcfd}
-nav .logo,nav .divider,nav .nav-sep,nav .dash,nav .dash i,nav .nav-c a,
+nav .logo,nav .divider,nav .nav-sep,nav .dash,nav .dash i,
 nav .talk,nav .talk .wave-text,nav .burger i{transition:color .5s var(--ease),background .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease)}
-@media(max-width:920px){.nav-c{display:none}.burger{display:flex}}
 
 /* ============ SECTION 1 — HERO ============ */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;
@@ -602,7 +591,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .card-tags{color:#8c8c8c;font-size:clamp(13px,1.05vw,20px);letter-spacing:.04em;text-transform:uppercase}
 .card-name{display:inline-flex;align-items:center;gap:clamp(10px,1.2vw,18px);color:#fcfcfd;
   font-size:clamp(24px,3vw,40px);font-weight:400;letter-spacing:.01em}
-.card-name .arw-box{width:16px;height:16px}
+.card-name .arw-box{width:clamp(18px,2vw,26px);height:clamp(18px,2vw,26px)}
 .card:hover .card-name .a1{transform:translate(-115%,-115%)}
 .card:hover .card-name .a2{transform:translate(0,0)}
 
@@ -1038,12 +1027,6 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
     <div class="logo">DIGITAL<b>·</b>FRAME</div>
     <span class="divider"></span>
     <a href="#" class="dash" aria-label="תפריט"><i></i></a>
-  </div>
-  <div class="nav-c">
-    <a href="#about">עלינו</a>
-    <a href="#work">פרויקטים</a>
-    <a href="#services">שירותים</a>
-    <a href="#contact">צור קשר</a>
   </div>
   <div class="right">
     <a href="#contact" class="talk"><span class="wave-text">בוא נדבר</span>
