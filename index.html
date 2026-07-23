@@ -1063,10 +1063,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
 .menu.is-open{visibility:visible;opacity:1}
-/* הטשטוש עולה מ-0 ל-40 יחד עם האטימות. blur קבוע על אלמנט
-   שהאטימות שלו מונפשת גורם לדפדפן לקפוץ בפריים הראשון. */
-.menu:not(.is-open) .menu__wrapper{
-  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)}
+/* הטשטוש קבוע ולעולם לא מונפש. הנפשת backdrop-filter מכריחה
+   את הדפדפן לטשטש מחדש 1820x874 בכל פריים — זה היה מקור
+   הקפיצה, לא הפתרון לה. */
 
 .menu__ellipse{position:absolute;inset:0;pointer-events:none;
   background:
@@ -1098,11 +1097,12 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
      transparent calc(var(--notch) - 1px), #000 var(--notch));
           mask-image:radial-gradient(circle var(--notch) at 100% 0,
      transparent calc(var(--notch) - 1px), #000 var(--notch));
-  transform:translateY(14px);
-  transition:transform .55s var(--ease),
-             backdrop-filter .45s var(--ease),
-             -webkit-backdrop-filter .45s var(--ease)}
-.menu.is-open .menu__wrapper{transform:translateY(0)}
+  transform:translate3d(0,14px,0);
+  /* translateZ מקדם את השכבה מראש כדי שהטשטוש כבר יהיה
+     מורכב כשהתפריט נפתח, במקום להיבנות באותו פריים. */
+  will-change:transform,opacity;
+  transition:transform .55s var(--ease)}
+.menu.is-open .menu__wrapper{transform:translate3d(0,0,0)}
 
 /* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
 .menu-close{position:absolute;pointer-events:auto;
