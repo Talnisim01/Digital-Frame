@@ -1062,8 +1062,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   pointer-events:none;
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
-.menu[hidden]{display:none}
 .menu.is-open{visibility:visible;opacity:1}
+/* הטשטוש עולה מ-0 ל-40 יחד עם האטימות. blur קבוע על אלמנט
+   שהאטימות שלו מונפשת גורם לדפדפן לקפוץ בפריים הראשון. */
+.menu:not(.is-open) .menu__wrapper{
+  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px)}
 
 .menu__ellipse{position:absolute;inset:0;pointer-events:none;
   background:
@@ -1087,15 +1090,25 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   background-color:rgba(255,255,255,.51);
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   border-radius:clamp(18px,2.1vw,40px);
-  /* הרפרנס חותך פה נגיסה ב-SVG clip-path עבור ה-X.
-     כאן ה-X יושב מחוץ לכרטיס, בתוך הריפוד של .menu. */
+  /* הנגיסה בפינה שבה יושב ה-X. הרפרנס עושה אותה ב-SVG clip-path
+     שלא נכלל בגיליון; כאן היא radial-gradient כמסכה, שנחתכת
+     מעל ה-border-radius ולכן שאר הפינות נשארות כשהיו. */
+  --notch:clamp(52px,5.4vw,104px);
+  -webkit-mask-image:radial-gradient(circle var(--notch) at 100% 0,
+     transparent calc(var(--notch) - 1px), #000 var(--notch));
+          mask-image:radial-gradient(circle var(--notch) at 100% 0,
+     transparent calc(var(--notch) - 1px), #000 var(--notch));
   transform:translateY(14px);
-  transition:transform .55s var(--ease)}
+  transition:transform .55s var(--ease),
+             backdrop-filter .45s var(--ease),
+             -webkit-backdrop-filter .45s var(--ease)}
 .menu.is-open .menu__wrapper{transform:translateY(0)}
 
 /* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
 .menu-close{position:absolute;pointer-events:auto;
-  top:clamp(10px,1.4vw,22px);inset-inline-end:clamp(12px,2vw,34px);
+  /* מיושר לקצה ההמבורגר — אותו clamp שמשמש כריפוד הימני
+     של שורת הניווט, כך שהסגירה נוחתת בדיוק על נקודת הלחיצה. */
+  top:clamp(16px,1.5vw,28px);right:clamp(20px,4vw,48px);inset-inline-end:auto;
   width:clamp(26px,3.3vw,34px);height:clamp(26px,3.3vw,34px);
   background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
   transition:transform .3s ease-out,opacity .3s ease-out;z-index:3}
@@ -1209,11 +1222,12 @@ html.menu-open,html.menu-open body{overflow:hidden}
     grid-template-rows:auto 1fr auto;column-gap:0;
     background-color:transparent;backdrop-filter:none;
     -webkit-backdrop-filter:none;border-radius:0;transform:none;
+    -webkit-mask-image:none;mask-image:none;
     padding-inline:24px;
     padding-block:min(90px,10vh) min(28px,3vh);
     overflow:auto}
 
-  .menu-close{top:20px;inset-inline-end:20px;width:24px;height:24px}
+  .menu-close{top:20px;right:20px;inset-inline-end:auto;width:24px;height:24px}
 
   .menu__connect{grid-column:1;grid-row:1;align-self:start;justify-items:center;
     text-align:center;gap:14px;margin-bottom:min(40px,2.5vh)}
@@ -2446,14 +2460,14 @@ preload(start);
     var y = menu.querySelector('.menu-yr');
     if(y) y.textContent = new Date().getFullYear();
 
+    /* מסירים את hidden פעם אחת בטעינה. מכאן והלאה הנראות
+       נשלטת ב-visibility בלבד — בלי display:none, ולכן שכבת
+       הטשטוש כבר קיימת ולא נבנית מחדש בכל פתיחה. */
+    menu.hidden = false;
+
     function open(){
       lastFocus = document.activeElement;
-      menu.hidden = false;
-      /* פריים אחד לפני הוספת המחלקה, אחרת המעבר מ-hidden
-         ל-opacity:1 קורה באותו tick והאנימציה נבלעת. */
-      requestAnimationFrame(function(){
-        menu.classList.add('is-open');
-      });
+      menu.classList.add('is-open');
       document.documentElement.classList.add('menu-open');
       burger.setAttribute('aria-expanded','true');
       if(window.lenis) window.lenis.stop();
@@ -2465,11 +2479,6 @@ preload(start);
       document.documentElement.classList.remove('menu-open');
       burger.setAttribute('aria-expanded','false');
       if(window.lenis) window.lenis.start();
-      /* ממתין לסיום ה-fade לפני החזרת hidden, אחרת השכבה
-         נעלמת מיד ואין אנימציית יציאה. */
-      setTimeout(function(){
-        if(!menu.classList.contains('is-open')) menu.hidden = true;
-      }, 500);
       if(lastFocus) lastFocus.focus();
     }
 
