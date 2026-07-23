@@ -1134,7 +1134,14 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .menu__col{flex:1 1 0;min-width:0}
 .menu__col{display:flex;flex-direction:column;gap:min(40px,4vh)}
 
-.menu__navigation{height:fit-content;
+/* איפוס הכלל הגלובלי nav{}. שורת הניווט של האתר מוגדרת על
+   סלקטור האלמנט nav — position:fixed, top/right/left:0, z-index,
+   direction:ltr וריפוד. שלושת התפריטים כאן הם <nav>, ולכן ירשו
+   את כל אלה ונערמו כולם על אותה נקודה מחוץ לזרימה.
+   זו הייתה החפיפה. */
+.menu__navigation{position:static;top:auto;right:auto;left:auto;
+  z-index:auto;direction:rtl;padding:0;transition:none;
+  height:fit-content;
   display:grid;gap:min(30px,3vh);justify-items:start}
 
 .menu__navigation--header{width:100%;padding-bottom:min(20px,1.5vh);
