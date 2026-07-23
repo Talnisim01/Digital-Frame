@@ -588,9 +588,15 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   gap:clamp(40px,6.8vw,130px);
   padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
   border-radius:clamp(20px,1.6vw,30px);
-  background:rgba(255,255,255,.25);
-  box-shadow:0 10px 36px rgba(16,24,32,.06),
-             0 0 0 1px rgba(230,236,242,.08);
+  /* הרפרנס נותן rgba(255,255,255,.25) ו-shadow ב-6% אלפא, אבל
+     על הרקע שלנו (#F1EFED) זה יוצא #F4F3F2 — הפרש של 3 עד 5
+     יחידות מתוך 255, כלומר בלתי נראה. הערכים האלה עובדים אצלם
+     כי הרקע שמאחוריהם שונה. הועלו עד שהמסגרת נקראת על הנייר
+     שלנו: הטבעת והצל הם מה שהופך את זה לכרטיס, לא המילוי. */
+  background:rgba(255,255,255,.78);
+  box-shadow:0 20px 64px rgba(16,24,32,.10),
+             0 2px 10px rgba(16,24,32,.04),
+             0 0 0 1px rgba(16,24,32,.055);
   max-width:1560px;margin-inline:auto}
 
 /* הזוהר. גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
