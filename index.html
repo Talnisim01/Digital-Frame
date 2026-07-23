@@ -618,10 +618,15 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   gap:clamp(40px,6.8vw,130px);
   padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
   border-radius:clamp(20px,1.6vw,30px);
-  background:rgba(255,255,255,.25);
-  box-shadow:0 10px 36px rgba(16,24,32,.06),
-             0 0 0 1px rgba(230,236,242,.08);
-  max-width:1560px;margin-inline:auto}
+  background:rgba(255,255,255,.78);
+  /* הרפרנס נותן rgba(255,255,255,.25) ו-shadow ב-6% אלפא, אבל
+     על הנייר שלנו (#F1EFED) זה מתמזג ל-#F4F3F2 — הפרש של 3 עד 5
+     יחידות מתוך 255, כלומר בלתי נראה. הערכים עובדים אצלם כי הרקע
+     מאחוריהם שונה. הטבעת והצל הם מה שהופך את זה לכרטיס. */
+  box-shadow:0 20px 64px rgba(16,24,32,.10),
+             0 2px 10px rgba(16,24,32,.04),
+             0 0 0 1px rgba(16,24,32,.055);
+  max-width:1820px;margin-inline:auto}
 
 /* הזוהר. גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
    נחתך בגבול והדפדפן משאיר שם קצה חד. */
@@ -782,7 +787,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 }
 
 /* ════════════════ SECTION 7 — FOOTER ════════════════ */
-.foot{position:relative;background:var(--color-black-soft);color:#EDEBE9;
+.foot{position:relative;background:#000;color:#fcfcfd;
   padding:clamp(70px,10vh,120px) clamp(20px,3.2vw,40px) clamp(34px,5vh,56px)}
 .foot-in{max-width:1560px;margin-inline:auto}
 
@@ -807,10 +812,13 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   align-items:center;color:#C9CCD0;
   font-size:clamp(12px,1vw,15px);letter-spacing:.06em}
 
-.foot-rule{height:1px;background:rgba(255,255,255,.14);
+.foot-rule{height:2px;background:#8a8f8d;opacity:.3;
   margin:clamp(38px,5.5vh,72px) 0 clamp(30px,4vh,50px)}
 
-.foot-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(24px,3vw,50px)}
+/* מדידות מגיליון הרפרנס. שם 1rem=10px ב-1920px רוחב,
+   ולכן 3.11rem הפך ל-31px, 1.63rem ל-16px וכן הלאה. */
+.foot-cols{display:flex;justify-content:space-between;gap:clamp(20px,2vw,32px);flex-wrap:wrap}
+.foot-col{width:clamp(140px,16vw,306px);gap:clamp(12px,1.4vw,20px)}
 .foot-col h4{margin:0 0 clamp(16px,2.2vh,26px);color:#7C8188;font-weight:400;
   font-size:clamp(11px,.85vw,13px);letter-spacing:.14em}
 .foot-col ul{list-style:none;margin:0;padding:0;display:grid;gap:clamp(9px,1.3vh,15px)}
@@ -818,12 +826,38 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   font-size:clamp(14px,1.15vw,18px);transition:color .35s var(--ease)}
 .foot-col a:hover{color:var(--orange)}
 
-.foot-base{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;
-  align-items:center;margin-top:clamp(38px,5vh,66px);
-  padding-top:clamp(20px,2.6vh,30px);border-top:1px solid rgba(255,255,255,.14);
-  color:#7C8188;font-weight:300;font-size:clamp(12px,.95vw,14px)}
-.foot-base a{color:inherit;text-decoration:none;transition:color .35s var(--ease)}
-.foot-base a:hover{color:#EDEBE9}
+/* ── ה-wordmark ── */
+.foot-mark{display:flex;justify-content:space-between;align-items:flex-start;
+  width:100%;margin-bottom:clamp(20px,2.6vw,38px);
+  direction:ltr;line-height:.82;
+  font-weight:800;letter-spacing:-.02em;color:#fcfcfd;
+  -webkit-user-select:none;user-select:none;overflow:hidden}
+.foot-mark__inner{font-size:clamp(42px,13.4vw,258px);display:block}
+
+/* ── שורת התחתית ── */
+.foot-bottom{display:grid;grid-template-areas:"stack";
+  padding-top:clamp(16px,2vw,28px);
+  border-top:1px solid rgba(255,255,255,.12)}
+
+.foot-soc{grid-area:stack;justify-self:start;align-self:center;
+  display:flex;align-items:center;gap:clamp(18px,3.4vw,45px)}
+.foot-soc__link{color:#8a8f8d;transition:color .3s ease-out}
+.foot-soc__link:hover{color:#fcfcfd}
+.foot-soc__link svg{width:19px;height:19px;fill:currentColor;display:block}
+
+.foot-copy{grid-area:stack;justify-self:center;align-self:center;
+  display:flex;align-items:center;gap:clamp(16px,4.6vw,64px);
+  color:#8a8f8d;font-weight:400;font-size:clamp(12px,1.1vw,17px)}
+.foot-copy a{color:inherit;text-decoration:none;transition:color .3s ease-out}
+.foot-copy a:hover{color:#fcfcfd}
+
+.foot-top{grid-area:stack;justify-self:end;align-self:center;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  background:none;border:0;padding:0;color:#fcfcfd;font-family:inherit;
+  transition:opacity .3s ease-out}
+.foot-top:hover{opacity:.75}
+.foot-top__text{font-weight:500;font-size:clamp(13px,1.3vw,20px);letter-spacing:.03em}
+.foot-top__icon{width:22px;height:22px;flex-shrink:0}
 .scroll-top{display:inline-flex;align-items:center;justify-content:center;
   width:clamp(38px,3vw,46px);height:clamp(38px,3vw,46px);border-radius:50%;
   border:1px solid rgba(255,255,255,.22);background:transparent;color:#EDEBE9;
@@ -853,9 +887,17 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .foot-top{grid-template-columns:1fr;gap:40px}
   .foot-q{font-size:clamp(23px,6.6vw,32px)}
   .foot-mail{font-size:20px;margin-top:24px}
-  .foot-cols{grid-template-columns:1fr 1fr;gap:30px 20px}
+  .foot-cols{gap:30px 20px}
+  .foot-col{width:calc(50% - 20px)}
+  .foot-mark{margin-bottom:28px}
+  .foot-mark__inner{font-size:clamp(30px,12.5vw,64px)}
+  .foot-bottom{grid-template-areas:"copy copy" "soc top";row-gap:clamp(24px,5vh,48px)}
+  .foot-soc{grid-area:soc;justify-self:start;gap:16px}
+  .foot-copy{grid-area:copy;justify-self:stretch;
+    justify-content:space-between;gap:8px;font-size:11px}
+  .foot-top{grid-area:top;justify-self:end}
+  .foot-top__text{font-size:13px}
   .foot-col a{font-size:15px}
-  .foot-base{gap:10px;font-size:12px}
   /* המחוון מסתיר תוכן בפוטר הצפוף */
 }
 
@@ -1393,11 +1435,30 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
       </div>
     </div>
 
-    <div class="foot-base">
-      <span>© <span id="yr">2026</span> Digital Frame. כל הזכויות שמורות.</span>
-      <span><a href="#">תנאי שימוש</a> · <a href="#">מדיניות פרטיות</a></span>
-      <button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="חזרה למעלה">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    <!-- ה-wordmark הענק. ברפרנס זה שלושה SVG נפרדים בתוך
+         .footer__logo-wrapper עם justify-content:space-between,
+         כך שהאותיות נפרשות על כל הרוחב. אצלנו שתי מילים. -->
+    <div class="foot-mark" aria-hidden="true">
+      <span class="foot-mark__inner">DIGITAL</span>
+      <span class="foot-mark__inner">FRAME</span>
+    </div>
+
+    <!-- שלושת הבלוקים חולקים תא רשת אחד ונדחפים להתחלה,
+         למרכז ולסוף. זה מה שהרפרנס עושה עם grid-areas:"stack",
+         והיתרון עליו הוא שהמרכז ממורכז ביחס למסך ולא ביחס
+         לרוחב השכנים. -->
+    <div class="foot-bottom">
+      <div class="foot-soc"><a class="foot-soc__link" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 3.4A6.4 6.4 0 1 0 18.4 12 6.4 6.4 0 0 0 12 5.6zm0 10.6A4.2 4.2 0 1 1 16.2 12 4.2 4.2 0 0 1 12 16.2zm6.7-10.9a1.5 1.5 0 1 1-1.5-1.5 1.5 1.5 0 0 1 1.5 1.5z"/></svg></a><a class="foot-soc__link" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a><a class="foot-soc__link" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.3 0-2.95-1.8-2.95s-2.07 1.4-2.07 2.85V21H9z"/></svg></a><a class="foot-soc__link" href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23 12s0-3.4-.44-5a2.5 2.5 0 0 0-1.77-1.78C19.2 4.8 12 4.8 12 4.8s-7.2 0-8.79.42A2.5 2.5 0 0 0 1.44 7C1 8.6 1 12 1 12s0 3.4.44 5a2.5 2.5 0 0 0 1.77 1.78c1.59.42 8.79.42 8.79.42s7.2 0 8.79-.42A2.5 2.5 0 0 0 22.56 17C23 15.4 23 12 23 12zM9.75 15.02V8.98L15.5 12z"/></svg></a><a class="foot-soc__link" href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-1.84-2.48v-3.2a5.77 5.77 0 1 0 4.93 5.71V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.24-1.48z"/></svg></a></div>
+
+      <div class="foot-copy">
+        <span>© <span id="yr">2026</span> Digital Frame</span>
+        <a href="#">מדיניות פרטיות</a>
+        <a href="#">תנאי שימוש</a>
+      </div>
+
+      <button class="foot-top" type="button" aria-label="חזרה למעלה">
+        <span class="foot-top__text">חזרה למעלה</span>
+        <svg class="foot-top__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16V8M8.5 11.5 12 8l3.5 3.5"/></svg>
       </button>
     </div>
 
@@ -1581,6 +1642,7 @@ function start(){
   const useLenis = window.Lenis && matchMedia('(pointer:fine)').matches;
   if(useLenis){
     lenis=new Lenis({duration:1.25,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))});
+    window.lenis=lenis;   /* נגיש לסקריפט של הסקשנים התחתונים */
     (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})();
     lenis.on('scroll',()=>ScrollTrigger.update());
   }
@@ -2028,7 +2090,7 @@ preload(start);
     var ind = document.getElementById('secNav');
     if(!ind) return;
     var bars  = [].slice.call(ind.querySelectorAll('.bar'));
-    var last  = document.querySelector('#craft');
+    var last  = document.querySelector('#work');   /* הפרויקטים */
     var ticking = false;
 
     function sync(){
@@ -2040,8 +2102,9 @@ preload(start);
       });
       ind.setAttribute('data-active-bar', String(active));
       /* נעלם ברגע שהתחתית של craft עברה את ראש המסך */
+      /* נעלמים ברגע שסקשן הפרויקטים מכסה יותר מחצי מסך */
       ind.classList.toggle('is-gone',
-        !!last && last.getBoundingClientRect().bottom <= 0);
+        !!last && last.getBoundingClientRect().top <= innerHeight * .55);
     }
     addEventListener('scroll', function(){
       if(!ticking){ ticking = true; requestAnimationFrame(sync); }
@@ -2049,6 +2112,17 @@ preload(start);
     addEventListener('resize', sync, {passive:true});
     sync();
   })();
+
+  /* ── חזרה למעלה ──
+     דרך lenis כשהוא פעיל, כדי שהתנועה תהיה זהה לשאר הניווט
+     ולא תילחם במנוע הגלילה החלקה. */
+  var topBtn = document.querySelector('.foot-top');
+  if(topBtn){
+    topBtn.addEventListener('click', function(){
+      if(window.lenis) window.lenis.scrollTo(0);
+      else window.scrollTo({top:0, behavior:'smooth'});
+    });
+  }
 
   /* ── פילטר הפרויקטים ──
      hidden ולא opacity: פריט מסונן יוצא מהזרימה ומעץ הנגישות גם יחד. */
