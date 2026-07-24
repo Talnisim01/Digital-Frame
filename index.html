@@ -1089,12 +1089,10 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   background-color:rgba(255,255,255,.51);
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   border-radius:clamp(18px,2.1vw,40px);
-  /* הנגיסה בפינה שבה יושב ה-X. הרפרנס עושה אותה ב-SVG clip-path
-     שלא נכלל בגיליון; כאן היא radial-gradient כמסכה, שנחתכת
-     מעל ה-border-radius ולכן שאר הפינות נשארות כשהיו. */
-  --notch:clamp(52px,5.4vw,104px);
-  -webkit-mask-image:radial-gradient(circle var(--notch) at 100% 0,
-     transparent calc(var(--notch) - 1px), #000 var(--notch));
+  /* הצורה עצמה נבנית ב-JS כ-clip-path: path(). פינה קעורה
+     אי אפשר לעשות ב-border-radius, ומסכת גרדיאנט לא נותנת
+     פינות אמיתיות. ה-border-radius כאן הוא נפילה-לאחור
+     במקרה שה-JS לא רץ. */
           mask-image:radial-gradient(circle var(--notch) at 100% 0,
      transparent calc(var(--notch) - 1px), #000 var(--notch));
   transform:translate3d(0,14px,0);
@@ -1222,7 +1220,6 @@ html.menu-open,html.menu-open body{overflow:hidden}
     grid-template-rows:auto 1fr auto;column-gap:0;
     background-color:transparent;backdrop-filter:none;
     -webkit-backdrop-filter:none;border-radius:0;transform:none;
-    -webkit-mask-image:none;mask-image:none;
     padding-inline:24px;
     padding-block:min(90px,10vh) min(28px,3vh);
     overflow:auto}
@@ -2460,13 +2457,56 @@ preload(start);
     var y = menu.querySelector('.menu-yr');
     if(y) y.textContent = new Date().getFullYear();
 
+
+    /* ── צורת הכרטיס ──
+       מלבן מעוגל שנגרע ממנו מלבן בפינה העליונה, כך שנוצרת
+       לשונית מוגבהת שבתוכה יושב ה-X. שלוש הפינות החיצוניות
+       קמורות, והמפגש בין הלשונית לקו העליון קעור.
+       path() דורש פיקסלים, ולכן הוא מחושב מחדש בכל שינוי גודל. */
+    var card = menu.querySelector('.menu__wrapper');
+
+    function shapeCard(){
+      if(!card) return;
+      var w = card.offsetWidth, h = card.offsetHeight;
+      if(!w || !h) return;
+      if(matchMedia('(max-width:900px)').matches){ card.style.clipPath=''; return; }
+
+      var R  = Math.min(40, w*0.022);      // פינות חיצוניות
+      var r  = Math.min(26, w*0.015);      // הפינה הקעורה
+      var TW = Math.min(150, Math.max(96, w*0.075));   // רוחב הלשונית
+      var TH = Math.min(62,  Math.max(40, h*0.062));   // גובה הלשונית
+      var x  = w - TW;                     // הקצה הפנימי של הלשונית
+
+      var d = [
+        'M', R, TH,
+        'H', x - r,
+        'A', r, r, 0, 0, 1, x, TH - r,     // קעורה: המרכז מימין-למטה
+        'V', R,
+        'A', R, R, 0, 0, 1, x + R, 0,
+        'H', w - R,
+        'A', R, R, 0, 0, 1, w, R,
+        'V', h - R,
+        'A', R, R, 0, 0, 1, w - R, h,
+        'H', R,
+        'A', R, R, 0, 0, 1, 0, h - R,
+        'V', TH + R,
+        'A', R, R, 0, 0, 1, R, TH,
+        'Z'
+      ].join(' ');
+      card.style.clipPath = 'path("' + d + '")';
+    }
+
+    addEventListener('resize', shapeCard, {passive:true});
+
     /* מסירים את hidden פעם אחת בטעינה. מכאן והלאה הנראות
        נשלטת ב-visibility בלבד — בלי display:none, ולכן שכבת
        הטשטוש כבר קיימת ולא נבנית מחדש בכל פתיחה. */
     menu.hidden = false;
+    shapeCard();          /* אחרי הסרת hidden — לפניה offsetWidth הוא 0 */
 
     function open(){
       lastFocus = document.activeElement;
+      shapeCard();        /* הגודל יכול היה להשתנות מאז */
       menu.classList.add('is-open');
       document.documentElement.classList.add('menu-open');
       burger.setAttribute('aria-expanded','true');
