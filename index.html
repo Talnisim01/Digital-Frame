@@ -1058,7 +1058,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 .menu{position:fixed;inset:0;z-index:60;
   width:100%;height:100dvh;
-  padding:clamp(14px,2.6vw,26px) clamp(10px,5vw,50px) clamp(14px,5vw,50px);
+  padding:8px clamp(10px,5vw,50px) clamp(14px,5vw,50px);
   pointer-events:none;
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
@@ -1110,14 +1110,14 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 /* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
 .menu-close{position:absolute;pointer-events:auto;
-  /* מיושר לקצה ההמבורגר — אותו clamp שמשמש כריפוד הימני
-     של שורת הניווט, כך שהסגירה נוחתת בדיוק על נקודת הלחיצה. */
-  top:clamp(16px,1.5vw,28px);right:clamp(20px,4vw,48px);inset-inline-end:auto;
-  width:clamp(26px,3.3vw,34px);height:clamp(26px,3.3vw,34px);
+  /* המיקום נכתב ב-JS מאותם מספרים שבונים את הלשונית.
+     display:grid + place-items ממרכז את ה-SVG בתוך התיבה. */
+  width:44px;height:44px;
+  display:grid;place-items:center;
   background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
   transition:transform .3s ease-out,opacity .3s ease-out;z-index:3}
+.menu-close svg{width:26px;height:26px;display:block}
 .menu-close:hover{transform:scale(.9);opacity:.8}
-.menu-close svg{width:100%;height:100%}
 
 /* ── בלוק ההתחברות ── */
 .menu__connect{grid-column:1;grid-row:1;align-self:center;
@@ -1159,7 +1159,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .menu__navigation{position:static;top:auto;right:auto;left:auto;
   z-index:auto;direction:rtl;padding:0;transition:none;
   height:fit-content;
-  display:grid;gap:min(30px,3vh);justify-items:start}
+  display:grid;gap:min(34px,3.6vh);justify-items:start}
 
 .menu__navigation--header{width:100%;padding-bottom:min(20px,1.5vh);
   border-bottom:1px solid rgba(140,141,145,.47)}
@@ -1175,7 +1175,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   transition:transform .35s var(--ease)}
 .menu__navigation-text{display:inline-block;color:var(--ink);
   font-weight:500;line-height:1;letter-spacing:.02em;
-  font-size:min(clamp(19px,2.3vw,44px),3.5vh);
+  font-size:min(clamp(22px,2.7vw,52px),4.4vh);
   transition:opacity .35s var(--ease)}
 
 .menu__navigation:hover .menu__navigation-text{opacity:.45}
@@ -1212,6 +1212,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .menu__socials--terms a:hover{color:var(--ink)}
 
 html.menu-open,html.menu-open body{overflow:hidden}
+/* ההמבורגר נשאר מצויר מתחת לתפריט ונראה כקו זר ליד ה-X.
+   נעלם בזמן שהתפריט פתוח; ה-X מחליף אותו באותו מקום. */
+html.menu-open .burger{opacity:0;pointer-events:none}
 
 
 /* מובייל: הרפרנס מעביר את הרקע והטשטוש ל-.menu עצמו,
@@ -2464,6 +2467,33 @@ preload(start);
     if(y) y.textContent = new Date().getFullYear();
 
 
+
+    /* ── אנימציית כניסה ──
+       שני הצדדים מתכנסים מכיוונים הפוכים, כמו ברפרנס: בלוק
+       ההתחברות נכנס מצד אחד וטורי הניווט מהצד השני, עם stagger
+       שמתעצם ככל שיורדים ברשימה.
+       עצמאי לגמרי מ-ScrollTrigger — אין כאן טריגר גלילה. */
+    var connectKids = menu.querySelectorAll('.menu__connect > *');
+    var navKids     = menu.querySelectorAll('.menu__navigation--header, .menu__navigation-item');
+    var footKids    = menu.querySelectorAll('.menu__socials-divider, .menu__socials--footer > *');
+
+    function animateIn(){
+      if(!window.gsap) return;
+      gsap.killTweensOf([connectKids, navKids, footKids]);
+      gsap.fromTo(connectKids, {x:26, autoAlpha:0},
+        {x:0, autoAlpha:1, duration:.62, ease:'power3.out', stagger:.055, delay:.10});
+      gsap.fromTo(navKids, {x:-30, autoAlpha:0},
+        {x:0, autoAlpha:1, duration:.58, ease:'power3.out', stagger:.042, delay:.14});
+      gsap.fromTo(footKids, {autoAlpha:0},
+        {autoAlpha:1, duration:.5, ease:'power2.out', stagger:.05, delay:.30});
+    }
+
+    function resetAnim(){
+      if(!window.gsap) return;
+      gsap.killTweensOf([connectKids, navKids, footKids]);
+      gsap.set([connectKids, navKids, footKids], {clearProps:'all'});
+    }
+
     /* ── צורת הכרטיס ──
        מלבן מעוגל שנגרע ממנו מלבן בפינה העליונה, כך שנוצרת
        לשונית מוגבהת שבתוכה יושב ה-X. שלוש הפינות החיצוניות
@@ -2479,11 +2509,17 @@ preload(start);
 
       var R  = Math.min(40, w*0.022);      // פינות חיצוניות
       var r  = Math.min(26, w*0.015);      // הפינה הקעורה
-      var TW = Math.min(168, Math.max(112, w*0.082));  // רוחב הלשונית
+      var TW = Math.min(132, Math.max(104, w*0.062));  // רוחב הלשונית
       /* גובה הלשונית חייב להיות לפחות R+r. אחרת הקטע האנכי
          שאחרי הקשת הקעורה יורד במקום לעלות, הנתיב חוצה את
          עצמו, ונוצר משולש זר בצד הפנימי של הלשונית. */
-      var TH = Math.max(R + r + 12, Math.min(86, h*0.092));
+      /* הגובה נמדד משורת הניווט: מרכז הלשונית חייב לנחות על
+         אותו קו אנכי שעליו יושבים הלוגו ו"בואו נדבר", אחרת
+         התפריט נראה כשכבה שמכסה את הניווט ולא כהמשך שלו. */
+      var navEl = document.querySelector('nav');
+      var padTop = parseFloat(getComputedStyle(menu).paddingTop) || 8;
+      var navMid = navEl ? navEl.offsetHeight/2 : 45;
+      var TH = Math.max(R + r + 8, 2*(navMid - padTop));
       var x  = w - TW;                     // הקצה הפנימי של הלשונית
 
       var d = [
@@ -2511,8 +2547,7 @@ preload(start);
         var cw = closeB.offsetWidth || 34, ch = closeB.offsetHeight || 34;
         closeB.style.right = Math.round(parseFloat(getComputedStyle(menu).paddingRight)
                               + TW/2 - cw/2) + 'px';
-        closeB.style.top   = Math.round(parseFloat(getComputedStyle(menu).paddingTop)
-                              + TH/2 - ch/2) + 'px';
+        closeB.style.top   = Math.round(padTop + TH/2 - ch/2) + 'px';
       }
     }
 
@@ -2529,6 +2564,7 @@ preload(start);
       shapeCard();        /* הגודל יכול היה להשתנות מאז */
       menu.classList.add('is-open');
       menu.classList.remove('is-warm');
+      animateIn();
       document.documentElement.classList.add('menu-open');
       burger.setAttribute('aria-expanded','true');
       if(window.lenis) window.lenis.stop();
@@ -2537,6 +2573,7 @@ preload(start);
 
     function close(){
       menu.classList.remove('is-open');
+      resetAnim();
       document.documentElement.classList.remove('menu-open');
       burger.setAttribute('aria-expanded','false');
       if(window.lenis) window.lenis.start();
