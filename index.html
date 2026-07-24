@@ -47,15 +47,17 @@ a{color:inherit;text-decoration:none}
 /* ============ NAV ============ */
 nav{position:fixed;top:0;right:0;left:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
   direction:ltr;   /* ← הופך את סדר ה-flex: brand בשמאל, right בימין */
-  padding:24px clamp(20px,4vw,48px);transition:padding .5s var(--ease)}
+  padding:30px clamp(20px,2.6vw,50px);transition:padding .5s var(--ease)}
 /* בלי רקע — הניווט תמיד שקוף, רק מתכווץ קלות בגלילה */
-nav.stuck{padding:16px clamp(20px,4vw,48px)}
+nav.stuck{padding:18px clamp(20px,2.6vw,50px)}
 .brand{display:flex;align-items:center;gap:18px}
 .logo{font-weight:800;font-size:22px;letter-spacing:.18em}
 .logo b{color:var(--orange)}
 .divider{width:1px;height:20px;background:rgba(20,27,36,.2)}
 /* מפריד אנכי בין ה-CTA להמבורגר */
 /* מפריד: בדיוק 1x13px, #111822, ממורכז אנכית */
+/* מרווח 40px בין הפריטים בצד ימין ומפריד של 13px — מידות הרפרנס */
+nav .right{display:flex;align-items:center;gap:clamp(18px,2.1vw,40px)}
 .nav-sep{flex:0 0 auto;width:1px;height:13px;
   background-color:var(--color-black-dark);
   align-self:center;margin-inline:10px}
@@ -1215,10 +1217,17 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   font-size:clamp(12px,.9vw,16px);transition:color .3s ease-out}
 .menu__socials--terms a:hover{color:var(--ink)}
 
+/* הבלוק הזה קיים רק במובייל. ברפרנס המייל וה-CTA יורדים
+   מתחת לרשימות ולא יושבים מתחת לכותרת. */
+.menu__cta-mobile{display:none}
 html.menu-open,html.menu-open body{overflow:hidden}
 /* ההמבורגר נשאר מצויר מתחת לתפריט ונראה כקו זר ליד ה-X.
    נעלם בזמן שהתפריט פתוח; ה-X מחליף אותו באותו מקום. */
-html.menu-open .burger{opacity:0;pointer-events:none}
+/* מכווצים את הקווים ולא את המכולה. המכולה שומרת על רוחבה
+   ולכן "בואו נדבר" והמפריד לא זזים כשהתפריט נפתח — זה מה
+   שהרפרנס עושה עם [data-nav="open"] .navbar__menu-bar. */
+html.menu-open .burger{pointer-events:none}
+html.menu-open .burger i{transform:scaleX(0);opacity:0}
 
 
 /* מובייל: הרפרנס מעביר את הרקע והטשטוש ל-.menu עצמו,
@@ -1230,7 +1239,7 @@ html.menu-open .burger{opacity:0;pointer-events:none}
   .menu__ellipse{display:none}
 
   .menu__wrapper{grid-template-columns:1fr;
-    grid-template-rows:auto 1fr auto;column-gap:0;
+    grid-template-rows:auto 1fr auto auto;column-gap:0;
     background-color:transparent;backdrop-filter:none;
     -webkit-backdrop-filter:none;border-radius:0;transform:none;
     padding-inline:24px;
@@ -1244,6 +1253,13 @@ html.menu-open .burger{opacity:0;pointer-events:none}
   .menu__connect-text{font-size:min(clamp(24px,7.4vw,38px),3.5vh);
     line-height:1.1;letter-spacing:0}
   .menu__connect .menu__line{display:none}
+  /* המייל וה-CTA העליונים יורדים; הגרסה התחתונה נכנסת */
+  .menu__connect .menu__contact-email,
+  .menu__connect .menu__cta{display:none}
+  .menu__cta-mobile{grid-column:1;grid-row:3;
+    display:grid;justify-items:center;gap:18px;
+    margin-top:min(30px,3vh)}
+  .menu__cta-mobile .menu__contact-email{display:flex}
 
   .menu-nav__wrapper{grid-column:1;grid-row:2;align-self:start;
     flex-direction:column;gap:min(28px,2vh);width:100%}
@@ -1255,7 +1271,7 @@ html.menu-open .burger{opacity:0;pointer-events:none}
   .menu__navigation-text{font-size:min(24px,2vh);line-height:.9}
   .menu__navigation-icon{inset-inline-start:-16px;width:9px;height:9px}
 
-  .menu__socials{grid-column:1;grid-row:3}
+  .menu__socials{grid-column:1;grid-row:4}
   .menu__socials-divider{margin-bottom:min(20px,2vh)}
   .menu__socials--footer{justify-content:center}
   .menu__socials--copyright,.menu__socials--terms{display:none}
@@ -1379,6 +1395,15 @@ html.menu-open .burger{opacity:0;pointer-events:none}
       </div>
 
     </div>
+
+      <div class="menu__cta-mobile">
+        <a class="menu__contact-email" href="mailto:hello@digitalframe.co.il">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6.5l9 6.2 9-6.2"/></svg>
+          <span>hello@digitalframe.co.il</span>
+        </a>
+        <a class="cta" href="#contact" data-menu-link><span class="wave-text">בואו נדבר</span>
+          <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
+      </div>
 
     <div class="menu__socials">
       <span class="menu__socials-divider" aria-hidden="true"></span>
@@ -2514,7 +2539,9 @@ preload(start);
 
       var R  = Math.min(40, w*0.022);   // פינות הכרטיס
       var Rt = 26;                      // פינת הלשונית
-      var TW = Math.max(Rt + R + 74, Math.min(168, w*0.079));
+      /* צר יותר: ברפרנס הלשונית כמעט ריבועית (~110x77 ב-1920).
+         קודם היא הייתה 151x74, כלומר מלבן. */
+      var TW = Math.max(Rt + R + 40, Math.min(122, w*0.058));
 
       var navEl  = document.querySelector('nav');
       var padTop = parseFloat(getComputedStyle(menu).paddingTop) || 8;
