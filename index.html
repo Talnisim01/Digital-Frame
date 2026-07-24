@@ -1063,6 +1063,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
 .menu.is-open{visibility:visible;opacity:1}
+/* מצב ביניים: האלמנט נצבע אך שקוף לחלוטין. זה מאלץ את
+   הדפדפן להרכיב את שכבת הטשטוש לפני שהתפריט באמת נפתח. */
+.menu.is-warm{visibility:visible}
 /* הטשטוש קבוע ולעולם לא מונפש. הנפשת backdrop-filter מכריחה
    את הדפדפן לטשטש מחדש 1820x874 בכל פריים — זה היה מקור
    הקפיצה, לא הפתרון לה. */
@@ -1086,8 +1089,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   width:100%;height:100%;
   padding-inline:clamp(24px,5.7vw,110px);
   padding-block:clamp(70px,5.2vw,100px) clamp(24px,2.6vw,50px);
-  background-color:rgba(255,255,255,.51);
-  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  /* רקע אטום יותר וטשטוש נמוך יותר מהרפרנס: אצלם הכרטיס יושב
+     על #fff, אצלנו על תוכן כהה. .51 עם blur(40) נתן פריים ראשון
+     שקוף מדי, וגם היה יקר יותר להרכבה. */
+  background-color:rgba(255,255,255,.66);
+  backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
   border-radius:clamp(18px,2.1vw,40px);
   /* הצורה עצמה נבנית ב-JS כ-clip-path: path(). פינה קעורה
      אי אפשר לעשות ב-border-radius, ומסכת גרדיאנט לא נותנת
@@ -2473,14 +2479,17 @@ preload(start);
 
       var R  = Math.min(40, w*0.022);      // פינות חיצוניות
       var r  = Math.min(26, w*0.015);      // הפינה הקעורה
-      var TW = Math.min(150, Math.max(96, w*0.075));   // רוחב הלשונית
-      var TH = Math.min(62,  Math.max(40, h*0.062));   // גובה הלשונית
+      var TW = Math.min(168, Math.max(112, w*0.082));  // רוחב הלשונית
+      /* גובה הלשונית חייב להיות לפחות R+r. אחרת הקטע האנכי
+         שאחרי הקשת הקעורה יורד במקום לעלות, הנתיב חוצה את
+         עצמו, ונוצר משולש זר בצד הפנימי של הלשונית. */
+      var TH = Math.max(R + r + 12, Math.min(86, h*0.092));
       var x  = w - TW;                     // הקצה הפנימי של הלשונית
 
       var d = [
         'M', R, TH,
         'H', x - r,
-        'A', r, r, 0, 0, 1, x, TH - r,     // קעורה: המרכז מימין-למטה
+        'A', r, r, 0, 0, 1, x, TH - r,     // קעורה
         'V', R,
         'A', R, R, 0, 0, 1, x + R, 0,
         'H', w - R,
@@ -2494,6 +2503,17 @@ preload(start);
         'Z'
       ].join(' ');
       card.style.clipPath = 'path("' + d + '")';
+
+      /* ה-X ממורכז בלשונית ולא ביחס לחלון. המיקום נגזר
+         מאותם מספרים שבנו את הצורה, כך שהשניים לא יכולים
+         לצאת מסונכרנים. */
+      if(closeB){
+        var cw = closeB.offsetWidth || 34, ch = closeB.offsetHeight || 34;
+        closeB.style.right = Math.round(parseFloat(getComputedStyle(menu).paddingRight)
+                              + TW/2 - cw/2) + 'px';
+        closeB.style.top   = Math.round(parseFloat(getComputedStyle(menu).paddingTop)
+                              + TH/2 - ch/2) + 'px';
+      }
     }
 
     addEventListener('resize', shapeCard, {passive:true});
@@ -2508,6 +2528,7 @@ preload(start);
       lastFocus = document.activeElement;
       shapeCard();        /* הגודל יכול היה להשתנות מאז */
       menu.classList.add('is-open');
+      menu.classList.remove('is-warm');
       document.documentElement.classList.add('menu-open');
       burger.setAttribute('aria-expanded','true');
       if(window.lenis) window.lenis.stop();
@@ -2524,6 +2545,13 @@ preload(start);
 
     burger.setAttribute('aria-expanded','false');
     burger.setAttribute('aria-controls','menu');
+    /* מחממים ברגע שהעכבר נוגע או שהאצבע יורדת — זה קונה
+       לדפדפן כמה עשרות מילישניות להרכיב את הטשטוש לפני
+       שהפתיחה מתחילה. */
+    function warm(){ if(!menu.classList.contains('is-open')) menu.classList.add('is-warm'); }
+    burger.addEventListener('pointerenter', warm);
+    burger.addEventListener('pointerdown', warm);
+    burger.addEventListener('focus', warm);
     burger.addEventListener('click', open);
     if(closeB) closeB.addEventListener('click', close);
 
