@@ -1058,7 +1058,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 .menu{position:fixed;inset:0;z-index:60;
   width:100%;height:100dvh;
-  padding:18px clamp(10px,5vw,50px) clamp(14px,5vw,50px);
+  padding:8px clamp(10px,5vw,50px) clamp(14px,5vw,50px);
   pointer-events:none;
   visibility:hidden;opacity:0;
   transition:opacity .5s var(--ease),visibility .5s var(--ease)}
@@ -2521,13 +2521,14 @@ preload(start);
          היא הייתה 113 עם שתי פינות של 40 — 33px שטוחים בלבד. */
       var TW = Math.max(Rt + R + 74, Math.min(168, w*0.079));
 
-      /* הקו התחתון של הלשונית יושב מעט מתחת לשורת הניווט, כך
-         שהרצועה העליונה נשארת גלויה לכל הרוחב והלשונית עולה
-         לתוכה — זה מה שגורם לתפריט להיקרא כהמשך של הניווט. */
+      /* ה-X מחליף את ההמבורגר באותה נקודה בדיוק, ולכן מרכז
+         הלשונית נגזר ממרכז שורת הניווט ולא מגובהה. הקו התחתון
+         של הלשונית נופל מתחת לטקסט הניווט, כך שהלוגו ו"בואו
+         נדבר" נשארים גלויים והרצועה נמשכת לכל הרוחב. */
       var navEl  = document.querySelector('nav');
-      var padTop = parseFloat(getComputedStyle(menu).paddingTop) || 18;
-      var navH   = navEl ? navEl.offsetHeight : 90;
-      var TH = Math.max(Rt + r + 16, navH + 8 - padTop);
+      var padTop = parseFloat(getComputedStyle(menu).paddingTop) || 8;
+      var navMid = navEl ? navEl.offsetHeight/2 : 45;
+      var TH = Math.max(Rt + r + 16, 2*(navMid - padTop));
       var x  = w - TW;
 
       var d = [
