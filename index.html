@@ -1078,6 +1078,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
       rgba(245,135,47,.13) 0%, rgba(255,184,120,.05) 48%, transparent 78%)}
 
 /* ── הכרטיס ── */
+/* הכרטיס מקבל קליקים רק כשהתפריט באמת פתוח. במצב החימום
+   הוא visibility:visible עם opacity:0, ובלי השורה הזו הוא
+   שכבה בלתי נראה שחוטפת את הקליק על ההמבורגר — ואז התפריט
+   לא נפתח כלל. */
+.menu:not(.is-open) .menu__wrapper{pointer-events:none}
 .menu__wrapper{position:relative;pointer-events:auto;
   /* שני טורים מפורשים ולא repeat(12,1fr) עם grid-column.
      חשבון טורים ב-RTL הפיל את שני הבלוקים לאותו צד; כאן
