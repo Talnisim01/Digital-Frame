@@ -66,7 +66,9 @@ nav .right{display:flex;align-items:center;gap:clamp(18px,2.1vw,40px)}
 .dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
 .right{display:flex;align-items:center;gap:22px}
 /* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
-.talk{display:inline-flex;align-items:center;gap:12px;font-size:18px;font-weight:400;
+/* מידות הרפרנס: 2rem לטקסט, 0.8rem מרווח, 2.2rem לחץ.
+   ב-1920 הבסיס שלהם הוא 10px ל-rem. */
+.talk{display:inline-flex;align-items:center;gap:8px;font-size:20px;font-weight:400;
   direction:rtl}
 
 /* ── אפקט הטקסט המתגלגל ──────────────────────────────────
@@ -106,7 +108,7 @@ nav .right{display:flex;align-items:center;gap:clamp(18px,2.1vw,40px)}
 .arw-box .a2{transform:translate(115%,115%)}                      /* ממתין מחוץ למסגרת */
 .talk:hover .a1,.cta:hover .a1{transform:translate(-115%,-115%)}  /* יוצא */
 .talk:hover .a2,.cta:hover .a2{transform:translate(0,0)}          /* נכנס */
-.talk .arw-box{width:19px;height:19px}
+.talk .arw-box{width:22px;height:22px}
 
 
 /* ההמבורגר — שני קווים באותו אורך, מוסטים אופקית (מדורג). בהובר מתיישרים לאותו קו */
@@ -484,6 +486,8 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .dash{width:26px;height:26px}
   .talk{display:none}          /* ← מה שגרם לצפיפות */
   .nav-sep{display:none}
+  .talk{font-size:14px;gap:7px}
+  .talk .arw-box{width:18px;height:18px}
   .right{gap:0}
   .burger{width:34px;padding:8px 0;gap:6px}
   .burger i{width:34px;height:2px}
@@ -1122,7 +1126,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   display:grid;place-items:center;
   background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
   transition:transform .3s ease-out,opacity .3s ease-out;z-index:3}
-.menu-close svg{width:34px;height:34px;display:block}
+.menu-close svg{width:42px;height:42px;display:block}
 .menu-close:hover{transform:scale(.9);opacity:.8}
 
 /* ── בלוק ההתחברות ── */
