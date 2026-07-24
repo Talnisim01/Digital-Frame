@@ -1100,10 +1100,10 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   background-color:rgba(255,255,255,.66);
   backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
   border-radius:clamp(18px,2.1vw,40px);
-  /* הצורה עצמה נבנית ב-JS כ-clip-path: path(). פינה קעורה
-     אי אפשר לעשות ב-border-radius, ומסכת גרדיאנט לא נותנת
-     פינות אמיתיות. ה-border-radius כאן הוא נפילה-לאחור
-     במקרה שה-JS לא רץ. */
+  /* ללא clip-path. הרפרנס חותך את הלשונית דרך
+     clip-path:url(#menu-bg-clip) — הגדרת SVG שאין לי, ושחזור
+     שלה מצילומים נכשל שלוש פעמים. פינות רגילות עד שיהיה
+     הנתיב המקורי. */
           mask-image:radial-gradient(circle var(--notch) at 100% 0,
      transparent calc(var(--notch) - 1px), #000 var(--notch));
   transform:translate3d(0,14px,0);
@@ -1115,8 +1115,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 /* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
 .menu-close{position:absolute;pointer-events:auto;
-  /* המיקום נכתב ב-JS מאותם מספרים שבונים את הלשונית.
-     display:grid + place-items ממרכז את ה-SVG בתוך התיבה. */
+  /* ממורכז על קו ההמבורגר: אותו clamp ששימש כריפוד הימני
+     של שורת הניווט, וגובה שמתלכד עם מרכזה. */
+  top:13px;right:clamp(20px,4vw,48px);inset-inline-end:auto;
   width:64px;height:64px;
   display:grid;place-items:center;
   background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
@@ -2499,78 +2500,14 @@ preload(start);
       gsap.set([connectKids, navKids, footKids], {clearProps:'all'});
     }
 
-    /* ── צורת הכרטיס ──
-       מלבן מעוגל שנגרע ממנו מלבן בפינה העליונה, כך שנוצרת
-       לשונית מוגבהת שבתוכה יושב ה-X. שלוש הפינות החיצוניות
-       קמורות, והמפגש בין הלשונית לקו העליון קעור.
-       path() דורש פיקסלים, ולכן הוא מחושב מחדש בכל שינוי גודל. */
-    var card = menu.querySelector('.menu__wrapper');
-
-    function shapeCard(){
-      if(!card) return;
-      var w = card.offsetWidth, h = card.offsetHeight;
-      if(!w || !h) return;
-      if(matchMedia('(max-width:900px)').matches){ card.style.clipPath=''; return; }
-
-      var R  = Math.min(40, w*0.022);      // פינות הכרטיס
-      var Rt = 26;                         // פינת הלשונית העליונה
-      var r  = 26;                         // הפינה הקעורה
-
-      /* הלשונית חייבת להיות רחבה מסכום שתי פינותיה, אחרת מה
-         שנשאר בין הקשתות הוא גבעה מעוגלת ולא לשונית. קודם
-         היא הייתה 113 עם שתי פינות של 40 — 33px שטוחים בלבד. */
-      var TW = Math.max(Rt + R + 74, Math.min(168, w*0.079));
-
-      /* ה-X מחליף את ההמבורגר באותה נקודה בדיוק, ולכן מרכז
-         הלשונית נגזר ממרכז שורת הניווט ולא מגובהה. הקו התחתון
-         של הלשונית נופל מתחת לטקסט הניווט, כך שהלוגו ו"בואו
-         נדבר" נשארים גלויים והרצועה נמשכת לכל הרוחב. */
-      var navEl  = document.querySelector('nav');
-      var padTop = parseFloat(getComputedStyle(menu).paddingTop) || 8;
-      var navMid = navEl ? navEl.offsetHeight/2 : 45;
-      var TH = Math.max(Rt + r + 16, 2*(navMid - padTop));
-      var x  = w - TW;
-
-      var d = [
-        'M', R, TH,
-        'H', x - r,
-        'A', r, r, 0, 0, 1, x, TH - r,     // קעורה
-        'V', Rt,
-        'A', Rt, Rt, 0, 0, 1, x + Rt, 0,
-        'H', w - R,
-        'A', R, R, 0, 0, 1, w, R,
-        'V', h - R,
-        'A', R, R, 0, 0, 1, w - R, h,
-        'H', R,
-        'A', R, R, 0, 0, 1, 0, h - R,
-        'V', TH + R,
-        'A', R, R, 0, 0, 1, R, TH,
-        'Z'
-      ].join(' ');
-      card.style.clipPath = 'path("' + d + '")';
-
-      /* ה-X ממורכז בלשונית ולא ביחס לחלון. המיקום נגזר
-         מאותם מספרים שבנו את הצורה, כך שהשניים לא יכולים
-         לצאת מסונכרנים. */
-      if(closeB){
-        var cw = closeB.offsetWidth || 34, ch = closeB.offsetHeight || 34;
-        closeB.style.right = Math.round(parseFloat(getComputedStyle(menu).paddingRight)
-                              + TW/2 - cw/2) + 'px';
-        closeB.style.top   = Math.round(padTop + TH/2 - ch/2) + 'px';
-      }
-    }
-
-    addEventListener('resize', shapeCard, {passive:true});
 
     /* מסירים את hidden פעם אחת בטעינה. מכאן והלאה הנראות
        נשלטת ב-visibility בלבד — בלי display:none, ולכן שכבת
        הטשטוש כבר קיימת ולא נבנית מחדש בכל פתיחה. */
     menu.hidden = false;
-    shapeCard();          /* אחרי הסרת hidden — לפניה offsetWidth הוא 0 */
 
     function open(){
       lastFocus = document.activeElement;
-      shapeCard();        /* הגודל יכול היה להשתנות מאז */
       menu.classList.add('is-open');
       menu.classList.remove('is-warm');
       animateIn();
