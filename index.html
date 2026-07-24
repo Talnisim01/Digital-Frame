@@ -1168,6 +1168,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    זו הייתה החפיפה. */
 .menu__navigation{position:static;top:auto;right:auto;left:auto;
   z-index:auto;direction:rtl;padding:0;transition:none;
+  /* גם רקע וטשטוש. בגרסת המובייל של nav{} יש רקע מטושטש,
+     ושלושת אלמנטי ה-nav כאן ירשו אותו — אלה היו המלבנים
+     האפורים מאחורי הרשימות. */
+  background:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:0;box-shadow:none;
   height:fit-content;
   display:grid;gap:min(30px,3vh);justify-items:start}
 
@@ -1250,7 +1255,9 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
     padding-block:min(90px,10vh) min(28px,3vh);
     overflow:auto}
 
-  .menu-close{top:20px;right:20px;inset-inline-end:auto;width:24px;height:24px}
+  /* התיבה הייתה 24 בזמן שהאייקון 42 — הוא גלש והופיע לא ממורכז */
+  .menu-close{top:16px;right:16px;inset-inline-end:auto;width:48px;height:48px}
+  .menu-close svg{width:30px;height:30px}
 
   .menu__connect{grid-column:1;grid-row:1;align-self:start;justify-items:center;
     text-align:center;gap:14px;margin-bottom:min(40px,2.5vh)}
