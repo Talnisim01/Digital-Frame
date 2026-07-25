@@ -961,6 +961,19 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* ── שכבה 0: הלופ ──
    הרקע מתחת לווידאו הוא לא קישוט: אם הסרטון לא נטען,
    הסקשן נראה מכוון במקום מלבן שחור. */
+/* ── הכדור ── */
+.craft-orb{position:absolute;inset:0;z-index:0;pointer-events:none;
+  display:grid;place-items:center}
+.craft-orb picture,.craft-orb__video{
+  grid-area:1/1;width:min(66vh,58vw,760px);aspect-ratio:1;
+  object-fit:contain}
+.craft-orb img{width:100%;height:100%;object-fit:contain;display:block}
+/* הווידאו מכסה את התמונה כשהוא מנגן. אם הדפדפן לא תומך
+   ב-WebM-עם-אלפא הוא לא יצייר כלום, וה-picture שמתחתיו נשאר. */
+.craft-orb__video{position:relative;z-index:1}
+@supports not (object-fit:contain){.craft-orb__video{display:none}}
+
+/* שאריות מ-.vimeo-bg, לא בשימוש עוד אבל נשמר למקרה */
 .vimeo-bg{position:absolute;inset:0;z-index:0;overflow:hidden;
   pointer-events:none;
   background:
@@ -1529,36 +1542,19 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
      בלי data-snap — הסקשן מוצמד, והעוגן יתנגש עם ה-pin. -->
 <section class="craft" id="craft">
 
-  <!-- הלופ המרכזי. שכבה 0. -->
-  <div class="vimeo-bg is--loop" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="metadata">
-      <source src="https://player.vimeo.com/video/1204394600?api=1&amp;background=1&amp;autoplay=1&amp;loop=1&amp;muted=1&amp;h=4a378f873f" type="video/mp4">
+  <!-- הכדור המרכזי. WebM שקוף לרוב הדפדפנים, WebP מונפש
+       לאייפון (WebM עם אלפא לא נתמך ב-Safari), ותמונת poster
+       כרשת ביטחון אחרונה. מוסתר מקוראי מסך — קישוט בלבד. -->
+  <div class="craft-orb" aria-hidden="true">
+    <picture>
+      <source srcset="/assets/craft-orb.webp" type="image/webp">
+      <img src="/assets/craft-orb-poster.png" alt="" loading="lazy" decoding="async">
+    </picture>
+    <video class="craft-orb__video" autoplay muted loop playsinline
+           poster="/assets/craft-orb-poster.png" preload="metadata">
+      <source src="/assets/craft-orb.webm" type="video/webm">
     </video>
   </div>
-
-  <!-- מצב 1: הטקסט העליון -->
-  <div class="craft-flex">
-    <h2 class="craft-heading" data-animate="title">נבנה בכוונה.<br><strong>נועד להרגיש.</strong></h2>
-    <p class="craft-text" data-animate="fade-up">מהאופן שבו המילים נושמות ועד לתנועה של האנימציה, <span>כל פרט נועד להדהד.</span></p>
-  </div>
-
-  <!-- ארבע הגלולות. מיקומי הפינות הם ברירת המחדל ב-CSS,
-       ו-GSAP אוסף אותן פנימה — כך שכשל משאיר אותן פזורות. -->
-  <div class="craft-pills">
-    <a class="craft-pill craft-pill--ux"  href="#services">אפיון ו-UI/UX</a>
-    <a class="craft-pill craft-pill--dev" href="#services">פיתוח</a>
-    <a class="craft-pill craft-pill--brd" href="#services">מיתוג</a>
-    <a class="craft-pill craft-pill--aut" href="#services">אוטומציה</a>
-  </div>
-
-  <!-- מצב 2: הקופי המרכזי -->
-  <div class="craft-copy">
-    <div>
-      <h3>אנחנו בונים <strong>חוויות</strong> שנושמות</h3>
-      <p>כי חוויה שנשארת לא נוצרת במקרה — <span>היא מעוצבת בכוונה.</span></p>
-    </div>
-  </div>
-
 </section>
 
 
@@ -2443,6 +2439,17 @@ preload(start);
   'use strict';
 
   /* ── שנה בפוטר ── */
+  /* אם הווידאו של הכדור לא מתחיל לנגן (Safari עם WebM-אלפא),
+     מסתירים אותו כדי שה-WebP שמתחתיו יופיע. */
+  var orbV = document.querySelector('.craft-orb__video');
+  if(orbV){
+    var orbCheck = setTimeout(function(){
+      if(orbV.readyState < 2 || orbV.videoWidth === 0){ orbV.style.display='none'; }
+    }, 900);
+    orbV.addEventListener('playing', function(){ clearTimeout(orbCheck); });
+    orbV.addEventListener('error', function(){ orbV.style.display='none'; });
+  }
+
   var yr = document.getElementById('yr');
   if(yr) yr.textContent = new Date().getFullYear();
 
