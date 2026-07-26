@@ -977,13 +977,15 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .craft-video{position:absolute;inset:0;z-index:0;pointer-events:none;
   display:grid;place-items:center}
 .craft-video__el{
-  width:min(64vh,52vw,720px);aspect-ratio:16/10;
-  object-fit:cover;
-  transform:translateY(9%);           /* יורד נמוך יותר */
-  -webkit-mask-image:radial-gradient(ellipse 62% 60% at 50% 50%,
-     #000 40%, rgba(0,0,0,.6) 62%, transparent 82%);
-          mask-image:radial-gradient(ellipse 62% 60% at 50% 50%,
-     #000 40%, rgba(0,0,0,.6) 62%, transparent 82%)}
+  /* הוכפל: היה 720 עם cover שחתך אותו. עכשיו contain כדי
+     לראות את מלוא הסרטון, ורחב יותר. */
+  width:min(112vh,82vw,1180px);aspect-ratio:16/9;
+  object-fit:contain;
+  transform:translateY(7%);           /* יורד נמוך יותר */
+  -webkit-mask-image:radial-gradient(ellipse 54% 54% at 50% 50%,
+     #000 46%, rgba(0,0,0,.55) 66%, transparent 84%);
+          mask-image:radial-gradient(ellipse 54% 54% at 50% 50%,
+     #000 46%, rgba(0,0,0,.55) 66%, transparent 84%)}
 
 
 /* שאריות מ-.vimeo-bg, לא בשימוש עוד אבל נשמר למקרה */
@@ -1021,22 +1023,20 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    העוגן לילד ה-static, כל הארבע קרסו לנקודה אחת. */
 .craft-pill{position:absolute;pointer-events:auto;text-decoration:none;
   display:inline-flex;align-items:center;
-  min-height:clamp(44px,3.6vw,56px);padding-inline:clamp(18px,1.8vw,28px);
+  min-height:clamp(52px,4.4vw,68px);
+  padding-inline:clamp(22px,2.2vw,34px);
   border-radius:100px;
-  background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.9);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  box-shadow:0 10px 34px rgba(20,27,36,.10),0 2px 6px rgba(20,27,36,.05);
-  gap:clamp(8px,.7vw,11px);
+  background:#fff;border:1px solid rgba(20,27,36,.06);
+  box-shadow:0 12px 40px rgba(20,27,36,.12),0 3px 10px rgba(20,27,36,.06);
+  gap:clamp(9px,.85vw,14px);
   color:var(--ink);font-weight:500;white-space:nowrap;
-  font-size:clamp(15px,1.35vw,22px);letter-spacing:-.01em;
+  font-size:clamp(17px,1.55vw,27px);letter-spacing:-.015em;
   will-change:transform;
   transition:box-shadow .5s var(--ease),background .5s var(--ease)}
 .craft-pill:hover{background:#fff;
   box-shadow:0 16px 44px rgba(20,27,36,.16),0 3px 8px rgba(20,27,36,.07)}
 .craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
-/* צבע כתום עדין בקצה, כמו ברפרנס */
-.craft-pill{border:1px solid rgba(255,103,17,.28)}
-.craft-pill__icon{width:clamp(18px,1.5vw,23px);height:auto;flex:none;
+.craft-pill__icon{width:clamp(20px,1.7vw,26px);height:auto;flex:none;
   color:var(--orange)}
 .craft-pill__float{display:inline-flex;align-items:center;gap:inherit}
 .craft-pill__text{display:inline-block}
@@ -1046,7 +1046,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* כל הגלולות ממוקמות במרכז — אסופות על הסרטון. GSAP מפזר
    אותן משם החוצה לפינות בגלילה. ה-transform של GSAP מוסיף
    על המרכוז הזה, כך שבמצב 0 (translate 0) הן על המרכז. */
-.craft-pill{top:50%;left:50%;margin-left:-60px;margin-top:-26px}
+.craft-pill{top:50%;left:50%;transform-origin:center;margin-left:-70px;margin-top:-32px}
 
 /* ── שכבה 3: הקופי המרכזי ── */
 .craft-copy{position:absolute;inset:0;z-index:3;
