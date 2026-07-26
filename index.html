@@ -1043,14 +1043,10 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .craft-pill--dev .craft-pill__icon,
 .craft-pill--aut .craft-pill__icon{color:#2D264B}
 
-/* מיקומי מצב 2 (הפזורים), נמדדו מהצילום.
-   left/right פיזיים: מיקום סביב הווידאו אינו תלוי כיוון קריאה.
-   רק צד אחד מוגדר בכל כלל, ולכן האלמנט אינו over-constrained
-   ו-left לא מנוטרל ב-RTL. */
-.craft-pill--ux  {top:23%;    left:10%}
-.craft-pill--dev {top:28%;    right:10%}
-.craft-pill--brd {bottom:9%;  left:12.5%}
-.craft-pill--aut {bottom:8%;  right:9.5%}
+/* כל הגלולות ממוקמות במרכז — אסופות על הסרטון. GSAP מפזר
+   אותן משם החוצה לפינות בגלילה. ה-transform של GSAP מוסיף
+   על המרכוז הזה, כך שבמצב 0 (translate 0) הן על המרכז. */
+.craft-pill{top:50%;left:50%;margin-left:-60px;margin-top:-26px}
 
 /* ── שכבה 3: הקופי המרכזי ── */
 .craft-copy{position:absolute;inset:0;z-index:3;
@@ -1082,10 +1078,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .craft-heading{font-size:clamp(26px,7.6vw,38px)}
   .craft-text{font-size:14px}
   .craft-pill{min-height:38px;padding-inline:14px;font-size:13px}
-  .craft-pill--ux  {top:34%;   left:4%}
-  .craft-pill--dev {top:40%;   right:4%}
-  .craft-pill--brd {bottom:14%; left:4%}
-  .craft-pill--aut {bottom:8%;  right:4%}
+.craft-pill{top:50%;left:50%;margin-left:-50px;margin-top:-22px}
   .craft-copy h3{font-size:clamp(26px,8.2vw,40px)}
   .craft-copy p{font-size:14px;max-width:34ch}
 }
