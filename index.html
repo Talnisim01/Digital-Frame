@@ -14,7 +14,15 @@
   --orange:#ff6711; --orange-soft:#FFB878;
   --color-black:#000000; --color-black-opacity:rgba(0,0,0,.1);
   --color-black-dark:#111822; --color-black-soft:#101820; --color-neutral:#8a8f8d;
-  --ease:cubic-bezier(.19,1,.22,1);
+  /* שלב 1 — יסוד התזמון, מיושר ל-mdx.
+     --ease: עקומת החתימה של הרפרנס (.625,.05,0,1), מחליפה את
+     easeOutExpo הקודם — משנה את התחושה של כל 28 ה-transitions
+     שכבר משתמשים בטוקן. --ease-soft: ה-easeOut המשני של הרפרנס.
+     טוקני המשך = סולם הרפרנס (0.3 מיקרו / 0.6 חשיפה / 0.75 גדול),
+     מאומצים per-element בשלבים הבאים. */
+  --ease:cubic-bezier(.625,.05,0,1);
+  --ease-soft:cubic-bezier(.25,.46,.45,.94);
+  --dur-fast:.3s; --dur:.6s; --dur-slow:.75s;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 /* מסתירים את פס הגלילה הרגיל של הדפדפן בכל הדף, כמו ברפרנס.
@@ -41,7 +49,7 @@ a{color:inherit;text-decoration:none}
 #load .load-msgs{position:relative;overflow:hidden;height:clamp(14px,2.4rem,32px);flex:1}
 #load .load-msg{position:absolute;top:0;right:0;white-space:nowrap;
   font-size:clamp(12px,1.4rem,18px);font-weight:400;letter-spacing:.03em;color:#fcfcfd;
-  transform:translateY(100%);opacity:0;transition:transform .5s ease,opacity .5s ease}
+  transform:translateY(100%);opacity:0;transition:transform .5s var(--ease),opacity .5s var(--ease)}
 #load .load-msg.active{transform:translateY(0);opacity:1}
 #load .load-msg.above{transform:translateY(-100%);opacity:0}
 #load .pct{font-size:clamp(16px,3.2rem,36px);font-weight:500;letter-spacing:.1em;color:#fcfcfd;
@@ -184,8 +192,8 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   border-radius:100px;
   box-shadow:0 22px 45px -22px rgba(20,27,36,.7);
   transform:scale(1);
-  transition:transform .45s cubic-bezier(.76,0,.24,1),
-             box-shadow .45s cubic-bezier(.76,0,.24,1);
+  transition:transform .45s var(--ease),
+             box-shadow .45s var(--ease);
   will-change:transform}
 .cta .arw-box{width:22px;height:22px}
 
