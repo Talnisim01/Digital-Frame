@@ -514,6 +514,10 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .right{gap:0}
   .burger{width:44px;padding:17px 0;gap:6px;align-items:center}
   .burger i{width:34px;height:2px}
+  /* הגדלת אזור המגע של קישורי התפריט בלי לשנות פריסה: padding חיובי
+     שממלא את המרווח + margin שלילי שמבטל אותו. המיקום הוויזואלי זהה,
+     אבל הלחיצה גדלה מ-19px ל-~29px ומרצפת את כל הטור בלי אזורים מתים. */
+  .menu__navigation-item{padding-block:5px;margin-block:-5px}
 
   /* ── סקשן הפריימים ─────────────────────────────────────
      הדהייה הייתה 240px קבועים בכל קצה. במסך 800px זה 480px
