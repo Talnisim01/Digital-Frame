@@ -1900,6 +1900,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/CustomEase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <script>
 /* ============ הפריימים שלך ============ */
@@ -2052,6 +2053,17 @@ function start(){
   fit(); draw(0);
 
   gsap.registerPlugin(ScrollTrigger);
+  /* עקומת החתימה של הרפרנס כ-ease ל-GSAP: cubic-bezier(.625,.05,0,1)
+     => נתיב CustomEase. עכשיו החשיפות ב-JS רצות על אותה עקומה כמו
+     ה-CSS transitions משלב 1. עטוף ב-try כדי שכשל טעינה של הפלאגין
+     מ-CDN לא יפיל את כל הסקריפט — במקרה כזה 'mdx' מקבל כינוי לעקומה
+     מקורית קרובה, וכל השאר ממשיך לעבוד. */
+  try{
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create('mdx', 'M0,0 C.625,.05 0,1 1,1');
+  }catch(e){
+    gsap.registerEase('mdx', gsap.parseEase('power3.out'));
+  }
 
   /* בנייד סרגל הכתובת משנה את גובה החלון תוך כדי גלילה, מה שמפעיל
      refresh() באמצע ה-pin ומקפיץ את רצף הפריימים. */
@@ -2147,9 +2159,9 @@ function start(){
       gsap.set(el,{opacity:1});
       gsap.fromTo(words,{yPercent:100,opacity:0},{
         yPercent:0, opacity:1,
-        duration:1.35, ease:'expo.out',
+        duration:1.0, ease:'mdx',
         immediateRender:false,
-        stagger:(i)=>li[i]*0.09 + i*0.012,
+        stagger:(i)=>li[i]*0.07 + i*0.01,
         scrollTrigger:st
       });
     } else if(kind === 'clip-in'){
@@ -2169,12 +2181,17 @@ function start(){
          scrollTrigger:{trigger:sec, start:'bottom 92%', end:'bottom 25%', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
-        {scale:1, opacity:1, y:0, duration:1.4, ease:'expo.out',
+        {scale:1, opacity:1, y:0, duration:.95, ease:'mdx',
+         delay:parseFloat(el.dataset.delay)||0,
          immediateRender:false, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
     } else {
-      const from = kind === 'fade' ? {opacity:0} : {y:44, opacity:0};
+      /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
+         עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
+         היה: y:44, 1.25s, power4.out — איטי כפול ובעקומה אחרת. */
+      const from = kind === 'fade' ? {opacity:0} : {y:80, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
-        duration:1.25, ease:'power4.out', immediateRender:false, scrollTrigger:st});
+        duration:.85, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
+        immediateRender:false, scrollTrigger:st});
     }
   });
 
