@@ -1022,31 +1022,34 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* ה-position וה-offsets על אותו אלמנט. כשהם היו מפוצלים בין
    העוגן לילד ה-static, כל הארבע קרסו לנקודה אחת. */
 .craft-pill{position:absolute;pointer-events:auto;text-decoration:none;
-  display:inline-flex;align-items:center;
-  min-height:clamp(52px,4.4vw,68px);
-  padding-inline:clamp(22px,2.2vw,34px);
-  border-radius:100px;
-  background:#fff;border:1px solid rgba(20,27,36,.06);
-  box-shadow:0 12px 40px rgba(20,27,36,.12),0 3px 10px rgba(20,27,36,.06);
-  gap:clamp(9px,.85vw,14px);
-  color:var(--ink);font-weight:500;white-space:nowrap;
-  font-size:clamp(17px,1.55vw,27px);letter-spacing:-.015em;
+  top:50%;left:50%;margin-left:-70px;margin-top:-30px;
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:clamp(10px,1.1vw,15px);
+  padding:clamp(14px,1.7vw,23px) clamp(22px,2.5vw,34px);
+  border-radius:68px;
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(8.5px);-webkit-backdrop-filter:blur(8.5px);
+  box-shadow:12px 16px 60px rgba(0,0,0,.07);
+  color:#101820;font-weight:400;white-space:nowrap;
+  font-size:clamp(18px,1.9vw,30px);letter-spacing:.03em;line-height:1;
   will-change:transform;
-  transition:box-shadow .5s var(--ease),background .5s var(--ease)}
-.craft-pill:hover{background:#fff;
-  box-shadow:0 16px 44px rgba(20,27,36,.16),0 3px 8px rgba(20,27,36,.07)}
-.craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
-.craft-pill__icon{width:clamp(20px,1.7vw,26px);height:auto;flex:none;
-  color:var(--orange)}
-.craft-pill__float{display:inline-flex;align-items:center;gap:inherit}
-.craft-pill__text{display:inline-block}
-.craft-pill--dev .craft-pill__icon,
-.craft-pill--aut .craft-pill__icon{color:#2D264B}
+  transition:box-shadow .5s var(--ease)}
 
-/* כל הגלולות ממוקמות במרכז — אסופות על הסרטון. GSAP מפזר
-   אותן משם החוצה לפינות בגלילה. ה-transform של GSAP מוסיף
-   על המרכוז הזה, כך שבמצב 0 (translate 0) הן על המרכז. */
-.craft-pill{top:50%;left:50%;transform-origin:center;margin-left:-70px;margin-top:-32px}
+.craft-pill::before{content:"";position:absolute;inset:0;
+  border-radius:inherit;padding:1px;
+  background:linear-gradient(to right,
+    #ffb263, #ffb16335 20%, transparent 40% 60%, #ffb16335 80%, #ffb263);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+          mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none}
+
+.craft-pill:hover{box-shadow:16px 20px 70px rgba(0,0,0,.12)}
+.craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+
+.craft-pill__float{display:inline-flex;align-items:center;gap:inherit}
+.craft-pill__icon{width:clamp(19px,1.6vw,24px);height:auto;flex:none;color:#101820}
+.craft-pill__text{display:inline-block}
 
 /* ── שכבה 3: הקופי המרכזי ── */
 .craft-copy{position:absolute;inset:0;z-index:3;
@@ -1575,10 +1578,10 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   <!-- ארבע הגלולות. מיקומי הפינות הם ברירת המחדל ב-CSS,
        ו-GSAP אוסף אותן פנימה — כך שכשל משאיר אותן פזורות. -->
   <div class="craft-pills">
-    <a class="craft-pill craft-pill--ux"  href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" viewBox="0 0 24 24" fill="none"><path d="M12.42 10a1.7 1.7 0 1 1-2.42 2.42A1.7 1.7 0 0 1 12.42 10Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.49 2.08c-.74-.14-1.54-.08-2.84.02l-.28.02c-1.71.13-2.76.21-3.64.59A5.02 5.02 0 0 0 2.71 5.74c-.37.87-.45 1.92-.58 3.63l-.02.28c-.1 1.3-.16 2.1-.02 2.84.22 1.15.78 2.21 1.62 3.04.54.53 1.23.92 2.36 1.57l2.08 1.18c1 .56 1.6.91 2.22 1.1.68.2 1.37.27 2.06.23l1.22 1.21a5.01 5.01 0 0 0 7.08-7.08l-1.22-1.21c.05-.69-.02-1.38-.23-2.06-.19-.62-.53-1.23-1.1-2.23l-1.17-2.07c-.65-1.13-1.04-1.83-1.57-2.36a5.02 5.02 0 0 0-3.04-1.62Z" fill="currentColor"/></svg><span class="craft-pill__text">אפיון ו-UI/UX</span></span></a>
-    <a class="craft-pill craft-pill--dev" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" viewBox="0 0 24 21" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.73 0A3.73 3.73 0 1 0 3.73 7.45 3.73 3.73 0 0 0 3.73 0ZM2.03 3.73a1.7 1.7 0 1 1 3.39 0 1.7 1.7 0 0 1-3.39 0Z" fill="currentColor"/><path d="M11.85 2.71a1.02 1.02 0 0 0 0 2.03h10.84a1.02 1.02 0 0 0 0-2.03H11.85Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.98 13.55a3.73 3.73 0 1 0 0 7.45 3.73 3.73 0 0 0 0-7.45ZM18.29 17.27a1.7 1.7 0 1 1 3.39 0 1.7 1.7 0 0 1-3.39 0Z" fill="currentColor"/><path d="M1.02 16.26a1.02 1.02 0 0 0 0 2.03h10.83a1.02 1.02 0 0 0 0-2.03H1.02Z" fill="currentColor"/></svg><span class="craft-pill__text">פיתוח</span></span></a>
-    <a class="craft-pill craft-pill--brd" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6.25A2.75 2.75 0 1 0 11 11.75 2.75 2.75 0 0 0 11 6.25ZM9.75 9a1.25 1.25 0 1 1 2.5 0 1.25 1.25 0 0 1-2.5 0Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.46 2.37c-1.14-.12-2.58-.12-4.42-.12h-.09c-1.83 0-3.27 0-4.42.12-1.16.13-2.1.39-2.91.98-.49.35-.92.78-1.27 1.27-.59.8-.85 1.75-.98 2.91C2.25 8.68 2.25 10.12 2.25 11.95v.1c0 1.83 0 3.27.12 4.42.13 1.16.39 2.1.98 2.91l.04.05c.35.47.76.88 1.23 1.22.8.59 1.75.85 2.91.98 1.14.12 2.58.12 4.42.12h.09c1.83 0 3.27 0 4.42-.12 1.16-.13 2.1-.39 2.91-.98.49-.35.92-.78 1.27-1.27.87-1.2 1.04-2.73 1.08-4.88.02-.73.02-1.56.02-2.49v-.05c0-1.84 0-3.28-.12-4.42-.13-1.16-.39-2.1-.98-2.91-.35-.49-.78-.92-1.27-1.27-.8-.59-1.75-.85-2.91-.98Z" fill="currentColor"/></svg><span class="craft-pill__text">מיתוג</span></span></a>
-    <a class="craft-pill craft-pill--aut" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" viewBox="0 0 15 10" fill="none"><path d="M4.8 3.1a.48.48 0 0 0-.95 0v.79h-.8a.48.48 0 0 0 0 .95h.8v.8a.48.48 0 0 0 .95 0v-.8h.8a.48.48 0 0 0 0-.95h-.8V3.1Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4 .08A3.48 3.48 0 0 0 .54 4.07l.14 1.03.93 3.24a2.2 2.2 0 0 0 4.03.34l.24-.37a1.8 1.8 0 0 1 3.1 0l.15.23a2.2 2.2 0 0 0 4.07-.68l.53-3.7A3.48 3.48 0 0 0 11 .08c-.49 0-.97.1-1.42.3l-.34.15c-.65.29-.91.4-1.18.46-.37.08-.75.08-1.12 0-.27-.06-.53-.17-1.18-.46L5.42.38A3.48 3.48 0 0 0 4 .08Z" fill="currentColor"/></svg><span class="craft-pill__text">אוטומציה</span></span></a>
+    <a class="craft-pill craft-pill--ux"  href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12.4219 9.99994C13.0906 10.6687 13.0906 11.753 12.4219 12.4218C11.7531 13.0906 10.6688 13.0906 9.99998 12.4218C9.33119 11.753 9.33119 10.6687 9.99998 9.99994C10.6688 9.33116 11.7531 9.33116 12.4219 9.99994Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4913 2.08112C11.7475 1.94212 10.9497 2.00344 9.65039 2.10331L9.3738 2.12452C7.65993 2.25575 6.61076 2.33609 5.73551 2.71052C4.37565 3.29227 3.29226 4.37565 2.71052 5.7355C2.33609 6.61076 2.25575 7.65993 2.12453 9.37379L2.10331 9.65039C2.00344 10.9497 1.94212 11.7475 2.08112 12.4913C2.29684 13.6457 2.86085 14.7063 3.69733 15.5306C4.2363 16.0618 4.93203 16.457 6.06507 17.1006L8.13654 18.2777C9.13248 18.8438 9.74241 19.1905 10.3611 19.3773C11.0363 19.5812 11.735 19.6568 12.4231 19.6088L13.6375 20.8232C15.6218 22.8075 18.8389 22.8075 20.8232 20.8232C22.8075 18.839 22.8075 15.6218 20.8232 13.6375L19.6088 12.4231C19.6568 11.735 19.5812 11.0364 19.3773 10.3611C19.1905 9.74241 18.8438 9.13249 18.2778 8.13655L17.1006 6.06506C16.457 4.93203 16.0618 4.2363 15.5306 3.69733C14.7063 2.86085 13.6457 2.29684 12.4913 2.08112Z" fill="currentColor"/></svg><span class="craft-pill__text">אפיון ו-UI/UX</span></span></a>
+    <a class="craft-pill craft-pill--dev" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" width="24" height="21" viewBox="0 0 24 21" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.72581 0C1.6681 0 0 1.6681 0 3.72581C0 5.78351 1.6681 7.45161 3.72581 7.45161C5.78351 7.45161 7.45161 5.78351 7.45161 3.72581C7.45161 1.6681 5.78351 0 3.72581 0ZM2.03226 3.72581C2.03226 2.79049 2.79049 2.03226 3.72581 2.03226C4.66113 2.03226 5.41935 2.79049 5.41935 3.72581C5.41935 4.66113 4.66113 5.41935 3.72581 5.41935C2.79049 5.41935 2.03226 4.66113 2.03226 3.72581Z" fill="currentColor"/><path d="M11.8548 2.70968C11.2936 2.70968 10.8387 3.16461 10.8387 3.72581C10.8387 4.287 11.2936 4.74194 11.8548 4.74194L22.6935 4.74194C23.2547 4.74194 23.7097 4.287 23.7097 3.72581C23.7097 3.16462 23.2547 2.70968 22.6935 2.70968L11.8548 2.70968Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.9839 13.5484C17.9262 13.5484 16.2581 15.2165 16.2581 17.2742C16.2581 19.3319 17.9262 21 19.9839 21C22.0416 21 23.7097 19.3319 23.7097 17.2742C23.7097 15.2165 22.0416 13.5484 19.9839 13.5484ZM18.2903 17.2742C18.2903 16.3389 19.0485 15.5806 19.9839 15.5806C20.9192 15.5806 21.6774 16.3389 21.6774 17.2742C21.6774 18.2095 20.9192 18.9677 19.9839 18.9677C19.0485 18.9677 18.2903 18.2095 18.2903 17.2742Z" fill="currentColor"/><path d="M1.01613 16.2581C0.454937 16.2581 0 16.713 0 17.2742C0 17.8354 0.454936 18.2903 1.01613 18.2903L11.8548 18.2903C12.416 18.2903 12.871 17.8354 12.871 17.2742C12.871 16.713 12.416 16.2581 11.8548 16.2581H1.01613Z" fill="currentColor"/></svg><span class="craft-pill__text">פיתוח</span></span></a>
+    <a class="craft-pill craft-pill--brd" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6.25C9.48122 6.25 8.25 7.48122 8.25 9C8.25 10.5188 9.48122 11.75 11 11.75C12.5188 11.75 13.75 10.5188 13.75 9C13.75 7.48122 12.5188 6.25 11 6.25ZM9.75 9C9.75 8.30964 10.3096 7.75 11 7.75C11.6904 7.75 12.25 8.30964 12.25 9C12.25 9.69036 11.6904 10.25 11 10.25C10.3096 10.25 9.75 9.69036 9.75 9Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4635 2.37373C15.3214 2.24999 13.8818 2.24999 12.0452 2.25H11.9548C10.1182 2.24999 8.67861 2.24999 7.53648 2.37373C6.37094 2.50001 5.42656 2.76232 4.62024 3.34815C4.13209 3.70281 3.70281 4.13209 3.34815 4.62024C2.76232 5.42656 2.50001 6.37094 2.37373 7.53648C2.24999 8.67861 2.24999 10.1182 2.25 11.9548V12.0452C2.24999 13.8818 2.24999 15.3214 2.37373 16.4635C2.50001 17.6291 2.76232 18.5734 3.34815 19.3798C3.36102 19.3975 3.37399 19.4151 3.38706 19.4327C3.73405 19.899 4.14981 20.3101 4.62024 20.6518C5.42656 21.2377 6.37094 21.5 7.53648 21.6263C8.67859 21.75 10.1182 21.75 11.9547 21.75H12.0453C13.8818 21.75 15.3214 21.75 16.4635 21.6263C17.6291 21.5 18.5734 21.2377 19.3798 20.6518C19.8679 20.2972 20.2972 19.8679 20.6518 19.3798C21.5217 18.1825 21.6903 16.6546 21.7348 14.5005C21.75 13.7682 21.75 12.9403 21.75 12.006V11.9547C21.75 10.1182 21.75 8.67859 21.6263 7.53648C21.5 6.37094 21.2377 5.42656 20.6518 4.62024C20.2972 4.13209 19.8679 3.70281 19.3798 3.34815C18.5734 2.76232 17.6291 2.50001 16.4635 2.37373ZM5.50191 4.56168C6.00992 4.19259 6.66013 3.97745 7.69804 3.865C8.74999 3.75103 10.1084 3.75 12 3.75C13.8916 3.75 15.25 3.75103 16.302 3.865C17.3399 3.97745 17.9901 4.19259 18.4981 4.56168C18.8589 4.82382 19.1762 5.14111 19.4383 5.50191C19.8074 6.00992 20.0225 6.66013 20.135 7.69804C20.249 8.74999 20.25 10.1084 20.25 12C20.25 12.255 20.25 12.5006 20.2497 12.7373C20.1438 12.6476 20.0435 12.5687 19.9448 12.4986C17.4737 10.7441 14.0651 11.2087 12.1537 13.5606C11.9951 13.7558 11.8432 13.9843 11.6711 14.2694L11.5462 14.2444C10.4471 14.0244 9.77404 13.8897 9.14216 13.9032C7.45369 13.939 5.86636 14.7154 4.80143 16.0261C4.53101 16.359 4.30278 16.7487 4.02741 17.2781C3.95858 16.9948 3.90522 16.6732 3.865 16.302C3.75103 15.25 3.75 13.8916 3.75 12C3.75 10.1084 3.75103 8.74999 3.865 7.69804C3.97745 6.66013 4.19259 6.00992 4.56168 5.50191C4.82382 5.14111 5.14111 4.82382 5.50191 4.56168Z" fill="currentColor"/></svg><span class="craft-pill__text">מיתוג</span></span></a>
+    <a class="craft-pill craft-pill--aut" href="#services"><span class="craft-pill__float"><svg class="craft-pill__icon" width="15" height="10" viewBox="0 0 15 10" fill="none"><path d="M4.80098 3.09492C4.80098 2.83186 4.58774 2.61862 4.32469 2.61862C4.06164 2.61862 3.84839 2.83186 3.84839 3.09492V3.88874H3.05456C2.79151 3.88874 2.57827 4.10199 2.57827 4.36504C2.57827 4.62809 2.79151 4.84134 3.05456 4.84134H3.84839V5.63517C3.84839 5.89822 4.06164 6.11146 4.32469 6.11146C4.58774 6.11146 4.80098 5.89822 4.80098 5.63517V4.84134H5.59481C5.85786 4.84134 6.07111 4.62809 6.07111 4.36504C6.07111 4.10199 5.85786 3.88874 5.59481 3.88874H4.80098V3.09492Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.00056 0.0783691C1.8707 0.0783691 0.234625 1.96478 0.535833 4.07324L0.682467 5.09967L1.60729 8.33656C1.87539 9.27491 2.73305 9.92184 3.70894 9.92184C4.45267 9.92184 5.14537 9.54366 5.54755 8.91805L5.78529 8.54822C6.5877 7.30003 8.4123 7.30003 9.21471 8.54822L9.36014 8.77445C9.81985 9.48956 10.6116 9.92184 11.4618 9.92184C12.7051 9.92184 13.7593 9.00759 13.9351 7.77674L14.4642 4.07324C14.7654 1.96478 13.1293 0.0783691 10.9994 0.0783691C10.5097 0.0783691 10.0255 0.181135 9.57799 0.380021L9.24078 0.529891C8.58964 0.819288 8.32603 0.933799 8.06047 0.990173C7.69094 1.06862 7.30906 1.06862 6.93953 0.990173C6.67397 0.933799 6.41036 0.819288 5.75922 0.529891L5.42201 0.380021C4.97452 0.181134 4.49027 0.0783691 4.00056 0.0783691ZM1.47885 3.93852C1.25963 2.40393 2.4504 1.03096 4.00056 1.03096C4.35698 1.03096 4.70943 1.10576 5.03513 1.25051L5.42373 1.42323C6.00736 1.68269 6.36648 1.84234 6.74172 1.922C7.24167 2.02813 7.75833 2.02813 8.25828 1.922C8.63352 1.84234 8.99264 1.68269 9.57627 1.42323L9.96487 1.25051C10.2906 1.10576 10.643 1.03096 10.9994 1.03096C12.5496 1.03096 13.7404 2.40393 13.5211 3.93852L12.9921 7.64202C12.8833 8.40357 12.2311 8.96924 11.4618 8.96924C10.9358 8.96924 10.4459 8.70178 10.1614 8.25933L10.016 8.0331C8.83862 6.20161 6.16138 6.20161 4.98399 8.0331L4.74624 8.40293C4.51934 8.75588 4.12854 8.96924 3.70894 8.96924C3.15836 8.96924 2.67449 8.60426 2.52323 8.07486L1.61628 4.90054L1.47885 3.93852Z" fill="currentColor"/></svg><span class="craft-pill__text">אוטומציה</span></span></a>
   </div>
 
   <!-- מצב 2: הקופי המרכזי -->
@@ -2241,10 +2244,10 @@ function start(){
       const sx = () => innerWidth  / REF_W;
       const sy = () => innerHeight / REF_H;
       const spread = [
-        ['.craft-pill--ux',  () => -764*sx(), () => -334*sy()],
-        ['.craft-pill--dev', () =>  482*sx(), () => -304*sy()],
-        ['.craft-pill--brd', () => -730*sx(), () =>  220*sy()],
-        ['.craft-pill--aut', () =>  502*sx(), () =>  242*sy()]
+        ['.craft-pill--ux',  () => -400*sx(), () => -180*sy()],
+        ['.craft-pill--dev', () =>  170*sx(), () => -160*sy()],
+        ['.craft-pill--brd', () => -400*sx(), () =>  120*sy()],
+        ['.craft-pill--aut', () =>  210*sx(), () =>   90*sy()]
       ];
 
       /* מצב פתיחה: הגלולות אסופות על הכדור (0,0) והכותרת העליונה
