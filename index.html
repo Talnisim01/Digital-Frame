@@ -2218,6 +2218,19 @@ function start(){
         start:'top bottom', end:'bottom top', scrub:1}});
   });
 
+  /* ── showreel: זום-השקטה קולנועי על הווידאו בזמן הגלילה דרך
+     הסקשן — מתחיל מעט מוגדל ומתיישב ל-1. תוסֶפֶתי: על .reel-video
+     בלבד, נחתך ע"י ה-clip-path של המסגרת, לא נוגע ב-clip-in, בלי pin.
+     נותן עומק לאזור הווידאו כמו ברפרנס. ── */
+  if(!reduce){
+    const reelVid = document.querySelector('.showreel .reel-video');
+    if(reelVid){
+      gsap.fromTo(reelVid,{scale:1.12},{scale:1, ease:'none',
+        scrollTrigger:{trigger:'.showreel',
+          start:'top bottom', end:'bottom top', scrub:1}});
+    }
+  }
+
   /* ── יציאה קשורה לגלילה ── */
   if(!reduce) document.querySelectorAll('[data-exit]').forEach(el=>{
     gsap.to(el,{y:-70, opacity:0, ease:'none',
