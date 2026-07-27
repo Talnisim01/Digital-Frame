@@ -1048,7 +1048,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
 
 .craft-pill__float{display:inline-flex;align-items:center;gap:inherit}
-.craft-pill__icon{width:clamp(19px,1.6vw,24px);height:auto;flex:none;color:#101820}
+.craft-pill__icon{width:clamp(22px,1.9vw,28px);height:auto;flex:none;color:#101820}
 .craft-pill__text{display:inline-block}
 
 /* ── שכבה 3: הקופי המרכזי ── */
@@ -2250,18 +2250,22 @@ function start(){
         ['.craft-pill--aut', () =>  210*sx(), () =>   90*sy()]
       ];
 
-      /* מצב פתיחה: הגלולות אסופות על הכדור (0,0) והכותרת העליונה
-         גלויה. הקופי המרכזי מוסתר. בגלילה זה מתהפך. */
+      /* מצב פתיחה: הגלולות מסודרות מסביב לסרטון אך קרובות (אשכול
+         קומפקטי = חלק מטווח הפיזור), לא אחת-על-השנייה במרכז.
+         הכותרת העליונה גלויה, הקופי המרכזי מוסתר. בגלילה האשכול
+         נפתח החוצה לפינות. */
+      const REST = 0.45;
       gsap.set('.craft-copy', {autoAlpha:0});
-      gsap.set(spread.map(r=>r[0]), {x:0, y:0});
+      spread.forEach(([sel,fx,fy]) =>
+        gsap.set(sel, {x:() => fx()*REST, y:() => fy()*REST}));
 
       const tl = gsap.timeline({
         scrollTrigger:{
           trigger:'.craft', start:'top top',
-          /* גלילה אחת קצרה, לא שלושה מסכים. 60% מגובה החלון —
-             חמישית–שלישית סיבוב גלגלת, מספיק לקליק אחד. */
-          end:'+=60%',
-          pin:true, scrub:.6, anticipatePin:1, id:'craft-states'
+          /* גלילה אחת. 35% מגובה החלון ≈ החלקה אחת — הפיזור,
+             יציאת הכותרת וכניסת הקופי מסתיימים במחווה אחת. */
+          end:'+=35%',
+          pin:true, scrub:.45, anticipatePin:1, id:'craft-states'
         }
       });
       craftST = tl.scrollTrigger;
