@@ -591,12 +591,25 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* ── פילטרים ─────────────────────────────────────────────── */
 .work-filters{display:flex;flex-wrap:wrap;gap:clamp(8px,.9vw,15px)}
 .filt{display:inline-flex;align-items:center;
+  position:relative;overflow:hidden;isolation:isolate;
   border:1px solid #454545;border-radius:100px;
   padding:0 clamp(22px,2.6vw,42px);min-height:clamp(46px,3.6vw,58px);
   background:transparent;color:#fcfcfd;
   font-family:inherit;font-size:clamp(14px,1.15vw,19px);font-weight:400;letter-spacing:.04em;
   cursor:pointer;white-space:nowrap;
   transition:background .45s var(--ease),color .45s var(--ease),border-color .45s var(--ease)}
+/* אפקט Origin: מילוי מעגלי שמתרחב בדיוק מנקודת כניסת הסמן וקורס
+   לכיוון היציאה. --ox/--oy = מיקום הסמן, --od = קוטר כיסוי, --os =
+   מצב הסקייל (0/1) — כולם נקבעים ב-JS. התנועה על עקומת החתימה.
+   z-index:-1 + isolation מציבים אותו מאחורי הטקסט; overflow חותך לפיל. */
+.filt::before{content:'';position:absolute;z-index:-1;
+  left:var(--ox,50%);top:var(--oy,50%);
+  width:var(--od,320px);height:var(--od,320px);
+  margin-left:calc(var(--od,320px) / -2);margin-top:calc(var(--od,320px) / -2);
+  border-radius:50%;background:var(--orange);
+  transform:scale(var(--os,0));transform-origin:center;
+  transition:transform .55s var(--ease)}
+.filt[aria-pressed="true"]::before{transform:scale(0)}
 .filt:hover{border-color:#fcfcfd}
 .filt[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
 .filt:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
@@ -2798,6 +2811,23 @@ preload(start);
       if(window.ScrollTrigger) ScrollTrigger.refresh();
     });
   });
+
+  /* אפקט Origin — המילוי מתרחב מנקודת כניסת הסמן וקורס לכיוון היציאה.
+     ה-JS קובע רק את המשתנים; התנועה עצמה על עקומת החתימה ב-CSS.
+     רק ב-pointer:fine (חסר משמעות במגע). */
+  if(matchMedia('(pointer:fine)').matches){
+    filters.forEach(function(btn){
+      function place(e, on){
+        var r = btn.getBoundingClientRect();
+        btn.style.setProperty('--ox', (e.clientX - r.left) + 'px');
+        btn.style.setProperty('--oy', (e.clientY - r.top) + 'px');
+        btn.style.setProperty('--od', (Math.max(r.width, r.height) * 2.3) + 'px');
+        btn.style.setProperty('--os', on ? '1' : '0');
+      }
+      btn.addEventListener('mouseenter', function(e){ place(e, true); });
+      btn.addEventListener('mouseleave', function(e){ place(e, false); });
+    });
+  }
 
   /* ── צ'יפים של תחומי עניין ── */
   [].forEach.call(document.querySelectorAll('.interest-option'), function(chip){
