@@ -1120,6 +1120,15 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   .craft-heading{font-size:clamp(26px,7.6vw,38px)}
   .craft-text{font-size:14px}
   .craft-pill{min-height:38px;padding-inline:14px;font-size:13px}
+  /* אין מעבר-גלילה במובייל (מושבת מתחת ל-769px), אז מציגים את מצב
+     המנוחה הנקי: כותרת + וידאו + הגלולות מפוזרות ב-2×2 קריא סביב
+     הנורה, במקום ערימה במרכז. הקופי המרכזי — מצב ה"נחשף" בגלילה —
+     מוסתר כדי שלא ייערם על הכותרת והגלולות. */
+  .craft-copy{display:none}
+  .craft-pill--ux {transform:translate(calc(-50% - 82px), calc(-50% - 70px))}
+  .craft-pill--dev{transform:translate(calc(-50% + 82px), calc(-50% - 70px))}
+  .craft-pill--brd{transform:translate(calc(-50% - 82px), calc(-50% + 70px))}
+  .craft-pill--aut{transform:translate(calc(-50% + 82px), calc(-50% + 70px))}
   .craft-copy h3{font-size:clamp(26px,8.2vw,40px)}
   .craft-copy p{font-size:14px;max-width:34ch}
 }
