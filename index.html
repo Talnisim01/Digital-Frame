@@ -113,7 +113,7 @@ nav .right{display:flex;align-items:center;gap:clamp(18px,2.1vw,40px)}
    הצורה מצוירת ישירות ב-path (בלי rotate), כדי שההחלקה תהיה translate נקי.
    שני עותקים בתוך מסגרת overflow:hidden:
    A1 מחליק החוצה לשמאל-למעלה, A2 נכנס במקומו מימין-למטה. */
-.arw{stroke:var(--orange);fill:none}
+.arw{stroke:var(--orange);fill:none;transition:stroke .5s var(--ease)}
 .arw-box{position:relative;display:inline-block;flex:none;overflow:hidden}
 .arw-box .arw{position:absolute;top:0;left:0;width:100%;height:100%;
   transition:transform .5s var(--ease)}
@@ -589,6 +589,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   font-family:inherit;font-size:clamp(12px,.95vw,14px);letter-spacing:.1em;
   cursor:pointer;transition:color .45s var(--ease),border-color .45s var(--ease)}
 .ghost:hover{border-color:transparent}
+/* כשהמילוי הכתום מכסה את הכפתור, החץ הכתום נעלם — צובעים אותו כהה
+   כדי שיישאר נראה על הרקע הכתום. */
+.ghost:hover .arw{stroke:var(--ink)}
 .ghost .arw-box{width:17px;height:17px}
 .ghost:hover .a1{transform:translate(-115%,-115%)}
 .ghost:hover .a2{transform:translate(0,0)}
@@ -1528,7 +1531,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   <div class="orb-wrap"><div class="orb-bg"></div></div>
   <div class="blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
   <div class="grain"></div>
-  <div class="content" data-exit>
+  <div class="content">
     <h1>
       <span class="ln"><span>כל <strong>לקוח</strong> מתחיל</span></span>
       <span class="ln"><span><strong>בחוויה</strong> שנשארת</span></span>
@@ -1568,7 +1571,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   </div>
 
   <!-- 4: התוכן -->
-  <div class="ideas-grid" data-exit>
+  <div class="ideas-grid">
     <p class="eyebrow" data-animate="fade">מה אנחנו עושים</p>
     <h2 class="ideas-title" data-animate="title">שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
     <p class="ideas-lede" data-animate="fade-up">קמפיינים שמביאים פניות, אוטומציה שמסננת אותן,
@@ -1701,7 +1704,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   </div>
 
   <div class="work-more" data-animate="fade">
-    <a href="#contact" class="cta"><span class="wave-text">רוצה כזה גם</span>
+    <a href="#contact" class="ghost"><span class="wave-text">רוצה כזה גם</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
   </div>
 
