@@ -802,7 +802,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   font-family:inherit;font-size:clamp(14px,1.1vw,17px);letter-spacing:.06em;
   cursor:pointer;
   transition:transform .4s var(--ease),background .4s var(--ease)}
-.cta-1:hover{transform:scale(.985);background:var(--color-black-dark)}
+.cta-1:hover{transform:scale(.96);background:var(--color-black-dark)}
 .cta-1:active{transform:scale(.965)}
 .cta-1 .arw-box{width:19px;height:19px}
 .cta-1:hover .a1{transform:translate(-115%,-115%)}
@@ -2209,7 +2209,7 @@ function start(){
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:.95, ease:'mdx',
-         delay:parseFloat(el.dataset.delay)||0,
+         delay:parseFloat(el.dataset.delay)||0, clearProps:'transform',
          immediateRender:false, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
@@ -2218,7 +2218,7 @@ function start(){
       const from = kind === 'fade' ? {opacity:0} : {y:80, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
         duration:.85, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
-        immediateRender:false, scrollTrigger:st});
+        clearProps:'transform', immediateRender:false, scrollTrigger:st});
     }
   });
 
