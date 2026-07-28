@@ -2521,12 +2521,10 @@ function start(){
       trigger: document.documentElement,
       start: 0, end: () => ScrollTrigger.maxScroll(window),
       snap:{
-        snapTo(value){
-          if(protectedZone(value) || !snapAt.length) return value;
-          const near = snapAt.reduce((a,b)=>
-            Math.abs(b-value) < Math.abs(a-value) ? b : a);
-          return Math.abs(near - value) < SNAP_TOL ? near : value;
-        },
+        /* snap מבוטל — הרגיש כמו "תיקון" כפוי שקופץ למסך מלא, וזה
+           לא הפיל של mdx (שם הגלילה חופשית וחלקה). מחזירים את הערך
+           הנוכחי תמיד => אין הצמדה. */
+        snapTo(value){ return value; },
         duration:{min:.25, max:.6}, delay:.1, ease:'power2.inOut'
       }
     });
@@ -2556,9 +2554,9 @@ function start(){
      שתיהן על yPercent/scale בלבד — נשארות ב-compositor. */
   const ideas = document.querySelector('.ideas');
   if(ideas){
-    gsap.fromTo('.ideas-layer--dome',{yPercent:-18},{yPercent:18,ease:'none',
+    gsap.fromTo('.ideas-layer--dome',{yPercent:-8},{yPercent:8,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
-    gsap.fromTo('.ideas-layer--glow',{yPercent:26,scale:.82},{yPercent:-26,scale:1.16,ease:'none',
+    gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
     gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
