@@ -1565,8 +1565,8 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
     <div class="ideas-layer ideas-layer--css" data-parallax="-0.16"></div>    <!-- 1: עיגול CSS מטושטש -->
-    <div class="ideas-layer ideas-layer--glow" data-parallax="0.10"></div>   <!-- 2: הזוהר PNG -->
-    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="" data-parallax="-0.05">   <!-- 3: הכיפה, נקייה -->
+    <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
+    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="">   <!-- 3: הכיפה, נקייה -->
     <div class="ideas-fade" aria-hidden="true"></div>            <!-- 4: דהייה בקצה העליון -->
   </div>
 
@@ -2545,9 +2545,9 @@ function start(){
      שתיהן על yPercent/scale בלבד — נשארות ב-compositor. */
   const ideas = document.querySelector('.ideas');
   if(ideas){
-    gsap.fromTo('.ideas-layer--dome',{yPercent:-8},{yPercent:8,ease:'none',
+    gsap.fromTo('.ideas-layer--dome',{yPercent:-18},{yPercent:18,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
-    gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
+    gsap.fromTo('.ideas-layer--glow',{yPercent:26,scale:.82},{yPercent:-26,scale:1.16,ease:'none',
       scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
     gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
