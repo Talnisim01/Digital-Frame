@@ -582,12 +582,13 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* כפתור המתאר — אותו דפוס חץ כמו ה-CTA, בגרסה שקופה.
    על רקע כהה: מסגרת בהירה, טקסט בהיר, הובר הופך ללבן מלא. */
 .ghost{display:inline-flex;align-items:center;gap:14px;flex:0 0 auto;
+  position:relative;overflow:hidden;isolation:isolate;
   border:1px solid rgba(255,255,255,.28);border-radius:100px;
   padding:0 clamp(20px,1.8vw,30px);min-height:clamp(42px,3.2vw,48px);
   background:transparent;color:#fcfcfd;text-decoration:none;
   font-family:inherit;font-size:clamp(12px,.95vw,14px);letter-spacing:.1em;
-  cursor:pointer;transition:.45s var(--ease)}
-.ghost:hover{background:#fcfcfd;color:var(--ink);border-color:#fcfcfd}
+  cursor:pointer;transition:color .45s var(--ease),border-color .45s var(--ease)}
+.ghost:hover{border-color:transparent}
 .ghost .arw-box{width:17px;height:17px}
 .ghost:hover .a1{transform:translate(-115%,-115%)}
 .ghost:hover .a2{transform:translate(0,0)}
@@ -606,7 +607,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    לכיוון היציאה. --ox/--oy = מיקום הסמן, --od = קוטר כיסוי, --os =
    מצב הסקייל (0/1) — כולם נקבעים ב-JS. התנועה על עקומת החתימה.
    z-index:-1 + isolation מציבים אותו מאחורי הטקסט; overflow חותך לפיל. */
-.filt::before{content:'';position:absolute;z-index:-1;
+.filt::before,.ghost::before{content:'';position:absolute;z-index:-1;
   left:var(--ox,50%);top:var(--oy,50%);
   width:var(--od,320px);height:var(--od,320px);
   margin-left:calc(var(--od,320px) / -2);margin-top:calc(var(--od,320px) / -2);
@@ -614,7 +615,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   transform:scale(var(--os,0));transform-origin:center;
   transition:transform .55s var(--ease)}
 .filt[aria-pressed="true"]::before{transform:scale(0)}
-.filt:hover{border-color:#fcfcfd}
+.filt:hover{border-color:transparent}
 .filt[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
 .filt:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
 
@@ -2842,7 +2843,7 @@ preload(start);
      ה-JS קובע רק את המשתנים; התנועה עצמה על עקומת החתימה ב-CSS.
      רק ב-pointer:fine (חסר משמעות במגע). */
   if(matchMedia('(pointer:fine)').matches){
-    filters.forEach(function(btn){
+    document.querySelectorAll('.filt, .ghost').forEach(function(btn){
       function place(e, on){
         var r = btn.getBoundingClientRect();
         btn.style.setProperty('--ox', (e.clientX - r.left) + 'px');
