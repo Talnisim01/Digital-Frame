@@ -2191,7 +2191,7 @@ function start(){
       gsap.fromTo(words,{yPercent:100,opacity:0},{
         yPercent:0, opacity:1,
         duration:1.0, ease:'mdx',
-        immediateRender:false,
+        immediateRender:true,
         stagger:(i)=>li[i]*0.07 + i*0.01,
         scrollTrigger:st
       });
@@ -2214,7 +2214,7 @@ function start(){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:.95, ease:'mdx',
          delay:parseFloat(el.dataset.delay)||0, clearProps:'transform',
-         immediateRender:false, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
+         immediateRender:true, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
          עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
@@ -2222,7 +2222,7 @@ function start(){
       const from = kind === 'fade' ? {opacity:0} : {y:80, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
         duration:.85, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
-        clearProps:'transform', immediateRender:false, scrollTrigger:st});
+        clearProps:'transform', immediateRender:true, scrollTrigger:st});
     }
   });
 
@@ -2499,7 +2499,7 @@ function start(){
   function buildSnap(){
     const max = ScrollTrigger.maxScroll(window);
     if(!max) return;
-    const y = ScrollTrigger.scroll(window);
+    const y = window.scrollY || window.pageYOffset || 0;
     snapAt = [...document.querySelectorAll('[data-snap]')]
       .map(sec => gsap.utils.clamp(0, max, sec.getBoundingClientRect().top + y) / max)
       .sort((a,b)=>a-b);
