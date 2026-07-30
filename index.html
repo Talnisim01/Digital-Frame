@@ -2179,7 +2179,7 @@ function start(){
   document.querySelectorAll('[data-animate]').forEach(el=>{
     const kind = el.dataset.animate;
     const sec  = el.closest('section') || el;
-    const st   = {trigger:sec, start:'top 78%', once:true};
+    const st   = {trigger:sec, start:'top 60%', once:true};
 
     if(reduce){ gsap.set(el,{opacity:1,y:0}); return; }
 
@@ -2190,7 +2190,7 @@ function start(){
       gsap.set(el,{opacity:1});
       gsap.fromTo(words,{yPercent:100,opacity:0},{
         yPercent:0, opacity:1,
-        duration:1.0, ease:'mdx',
+        duration:1.3, ease:'mdx',
         immediateRender:true,
         stagger:(i)=>li[i]*0.07 + i*0.01,
         scrollTrigger:st
@@ -2212,16 +2212,16 @@ function start(){
          scrollTrigger:{trigger:sec, start:'bottom 92%', end:'bottom 25%', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
-        {scale:1, opacity:1, y:0, duration:.95, ease:'mdx',
+        {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
          delay:parseFloat(el.dataset.delay)||0, clearProps:'transform',
-         immediateRender:true, scrollTrigger:{trigger:sec, start:'top 78%', once:true}});
+         immediateRender:true, scrollTrigger:{trigger:sec, start:'top 60%', once:true}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
          עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
          היה: y:44, 1.25s, power4.out — איטי כפול ובעקומה אחרת. */
       const from = kind === 'fade' ? {opacity:0} : {y:80, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
-        duration:.85, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
+        duration:1.5, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
         clearProps:'transform', immediateRender:true, scrollTrigger:st});
     }
   });
