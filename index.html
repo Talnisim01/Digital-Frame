@@ -1560,7 +1560,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 </section>
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="ideas" id="services" data-snap>
+<section class="ideas" id="services" data-snap data-leave-section>
 
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
@@ -1651,7 +1651,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 </section>
 
 
-<section class="work" id="work" data-snap>
+<section class="work" id="work" data-snap data-leave-section>
 
   <div class="work-head">
     <h2 class="work-title" data-animate="title">המלאכה שלנו,<br><strong>הביטוי שלך.</strong></h2>
@@ -2254,6 +2254,18 @@ function start(){
     gsap.to(el,{y:-70, opacity:0, ease:'none',
       scrollTrigger:{trigger:el.closest('section')||el,
         start:'bottom 65%', end:'bottom top', scrub:true}});
+  });
+
+  /* ── data-leave-section (בהשראת mdx): הסקשן דוהה ל-opacity 0 כשהוא
+     יוצא מהמסך למעלה. mdx משתמש ב-toggleActions בדסקטופ, אבל זה השאיר
+     סקשן תקוע מוסתר בגלילה חזרה — אז אנחנו קושרים ל-scrub: הדעיכה
+     תלויה במיקום הגלילה ולכן תמיד מתאוששת. הסקשן נשאר מלא כל עוד הוא
+     נראה, ודוהה רק כשהוא כבר יוצא. ── */
+  if(!reduce) document.querySelectorAll('[data-leave-section]').forEach(sec=>{
+    gsap.set(sec,{willChange:'opacity'});
+    gsap.fromTo(sec,{opacity:1},{opacity:0, ease:'none',
+      scrollTrigger:{trigger:sec, start:'bottom 40%', end:'bottom top',
+        scrub:true, invalidateOnRefresh:true}});
   });
 
   /* ── תנועת רקע רציפה בפוטר (בסגנון mdx): הטקסט הענק נע בפרלקס קל
