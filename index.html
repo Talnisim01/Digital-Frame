@@ -2256,6 +2256,20 @@ function start(){
         start:'bottom 65%', end:'bottom top', scrub:true}});
   });
 
+  /* ── חשיפת clip-path לרשת הפרויקטים (בהשראת ה-portfolio של mdx):
+     הרשת "נפתחת" מ-inset למסך מלא. חשוב — clip בלבד בלי autoAlpha, כך
+     שגם אם הטריגר לא ייורה הרשת נשארת נראית (חתוכה קלות), לא נעלמת. ── */
+  if(!reduce){
+    const grid = document.querySelector('.work-grid');
+    if(grid){
+      gsap.fromTo(grid,
+        {clipPath:'inset(14% 16% 0% 16% round 2rem)'},
+        {clipPath:'inset(0% 0% 0% 0% round 0rem)',
+         duration:1.5, ease:'mdx', immediateRender:true,
+         scrollTrigger:{trigger:grid, start:'top 82%', once:true}});
+    }
+  }
+
   /* ── תנועת רקע רציפה בפוטר (בסגנון mdx): הטקסט הענק נע בפרלקס קל
      נגד הגלילה — נותן כובד ותחושת עומק. בזרם הראשי כדי שירוץ בלי
      תלות בטעינת רצף הפריימים. ── */
