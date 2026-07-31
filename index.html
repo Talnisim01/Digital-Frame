@@ -1406,7 +1406,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
     <a href="#" class="dash" aria-label="תפריט"><i></i></a>
   </div>
   <div class="right">
-    <a href="#contact" class="talk"><span class="wave-text">בוא נדבר</span>
+    <a href="#contact" class="talk"><span class="wave-text">בואו נדבר</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
@@ -1548,7 +1548,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
     <div class="s-head">
       <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
       <p data-animate="fade-up">סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
-      <a href="#contact" class="cta" data-animate="fade-up"><span class="wave-text">בוא נדבר</span>
+      <a href="#contact" class="cta" data-animate="fade-up"><span class="wave-text">בואו נדבר</span>
         <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     </div>
     <div class="s-side">
@@ -1560,7 +1560,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 </section>
 
 <!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="ideas" id="services" data-snap data-leave-section>
+<section class="ideas" id="services" data-snap>
 
   <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
   <div class="ideas-bg" aria-hidden="true">
@@ -1651,7 +1651,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 </section>
 
 
-<section class="work" id="work" data-snap data-leave-section>
+<section class="work" id="work" data-snap>
 
   <div class="work-head">
     <h2 class="work-title" data-animate="title">המלאכה שלנו,<br><strong>הביטוי שלך.</strong></h2>
@@ -2179,7 +2179,7 @@ function start(){
   document.querySelectorAll('[data-animate]').forEach(el=>{
     const kind = el.dataset.animate;
     const sec  = el.closest('section') || el;
-    const st   = {trigger:sec, start:'top 60%', once:true};
+    const st   = {trigger:el, start:'top 80%', once:true};
 
     if(reduce){ gsap.set(el,{opacity:1,y:0}); return; }
 
@@ -2214,7 +2214,7 @@ function start(){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
          delay:parseFloat(el.dataset.delay)||0, clearProps:'transform',
-         immediateRender:true, scrollTrigger:{trigger:sec, start:'top 60%', once:true}});
+         immediateRender:true, scrollTrigger:{trigger:el, start:'top 80%', once:true}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
          עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
@@ -2254,18 +2254,6 @@ function start(){
     gsap.to(el,{y:-70, opacity:0, ease:'none',
       scrollTrigger:{trigger:el.closest('section')||el,
         start:'bottom 65%', end:'bottom top', scrub:true}});
-  });
-
-  /* ── data-leave-section (בהשראת mdx): הסקשן דוהה ל-opacity 0 כשהוא
-     יוצא מהמסך למעלה. mdx משתמש ב-toggleActions בדסקטופ, אבל זה השאיר
-     סקשן תקוע מוסתר בגלילה חזרה — אז אנחנו קושרים ל-scrub: הדעיכה
-     תלויה במיקום הגלילה ולכן תמיד מתאוששת. הסקשן נשאר מלא כל עוד הוא
-     נראה, ודוהה רק כשהוא כבר יוצא. ── */
-  if(!reduce) document.querySelectorAll('[data-leave-section]').forEach(sec=>{
-    gsap.set(sec,{willChange:'opacity'});
-    gsap.fromTo(sec,{opacity:1},{opacity:0, ease:'none',
-      scrollTrigger:{trigger:sec, start:'bottom 40%', end:'bottom top',
-        scrub:true, invalidateOnRefresh:true}});
   });
 
   /* ── תנועת רקע רציפה בפוטר (בסגנון mdx): הטקסט הענק נע בפרלקס קל
