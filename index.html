@@ -2203,10 +2203,10 @@ function start(){
          ולכן בין השניים הצורה יציבה.
          הטיימליין היחיד הקודם פרס כניסה-החזקה-יציאה על טווח אחד,
          וההתכווצות התחילה כבר כשהבלוק מילא את המסך. */
-      const SHUT='inset(14% round 4rem)', OPEN='inset(3% round 2rem)';
+      const SHUT='inset(18% round 4rem)', OPEN='inset(3% round 2rem)';
       gsap.fromTo(el,{clipPath:SHUT},
         {clipPath:OPEN, ease:'none', immediateRender:false,
-         scrollTrigger:{trigger:sec, start:'top 90%', end:'top 8%', scrub:true}});
+         scrollTrigger:{trigger:sec, start:'top 90%', end:'top 50%', scrub:true}});
       gsap.to(el,
         {clipPath:SHUT, ease:'none', immediateRender:false,
          scrollTrigger:{trigger:sec, start:'bottom 92%', end:'bottom 25%', scrub:true}});
