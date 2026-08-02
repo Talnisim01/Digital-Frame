@@ -842,7 +842,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 }
 
 /* ════════════════ SECTION 7 — FOOTER ════════════════ */
-.foot{position:relative;background:#000;color:#fcfcfd;
+.foot{position:relative;background:#000;color:#fcfcfd;overflow-x:clip;
   padding:clamp(70px,10vh,120px) clamp(20px,3.2vw,40px) clamp(34px,5vh,56px)}
 .foot-in{max-width:1560px;margin-inline:auto}
 
@@ -888,7 +888,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
   width:100%;margin:clamp(30px,5vh,64px) 0 clamp(24px,3vw,42px);
   direction:ltr;line-height:.82;
   font-weight:800;letter-spacing:-.02em;color:#fcfcfd;
-  -webkit-user-select:none;user-select:none;overflow:hidden}
+  -webkit-user-select:none;user-select:none;overflow:visible}
 /* 13.4vw נתן ~257px, ושתי המילים יחד תפסו כ-1900px בתוך מכולה
    של 1560 — האותיות נחתכו בקצה הימני. 9vw משאיר מרווח ביניהן. */
 .foot-mark__inner{font-size:clamp(28px,9vw,175px);display:block;white-space:nowrap}
@@ -2180,6 +2180,8 @@ function start(){
     const kind = el.dataset.animate;
     const sec  = el.closest('section') || el;
     const st   = {trigger:el, start:'top 62%', once:true};
+    /* #about ו-work מקבלים חשיפה מתואמת עם stagger (בהמשך) — לא פר-אלמנט */
+    if(el.closest('.sphere-grid') || el.closest('.work-grid')) return;
 
     if(reduce){ gsap.set(el,{opacity:1,y:0}); return; }
 
@@ -2211,10 +2213,15 @@ function start(){
          באזור הזה. מתחילה קטנה ונפתחת לגדול. הסגירה נפרדת ובטוחה:
          גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
       const SHUT='inset(15% round 4rem)', OPEN='inset(2.5% round 2rem)';
-      gsap.fromTo(el,{clipPath:SHUT},{clipPath:OPEN, duration:1.5, ease:'mdx',
-        immediateRender:true, scrollTrigger:{trigger:el, start:'top 62%', once:true}});
-      gsap.to(el,{clipPath:SHUT, ease:'none', immediateRender:false,
-        scrollTrigger:{trigger:sec, start:'bottom 55%', end:'bottom top', scrub:true}});
+      /* פתיחה סינמטית: once אמין, 1.5s power3.out — הקופסה נפתחת בצורה
+         שרואים, תוך כדי שהמגנוט מושך אותה למסך מלא. */
+      gsap.fromTo(el,{clipPath:SHUT},{clipPath:OPEN, duration:1.5, ease:'power3.out',
+        immediateRender:true, scrollTrigger:{trigger:el, start:'top 70%', once:true}});
+      /* יציאה: כשהסקשן עוזב למעלה (bottom 42%) הקופסה נסגרת יפה,
+         וכשחוזרים אליה בגלילה למעלה — נפתחת שוב. אמין (callbacks). */
+      ScrollTrigger.create({trigger:sec, start:'bottom 42%',
+        onEnter:()=>gsap.to(el,{clipPath:SHUT, duration:1.2, ease:'power3.in', overwrite:true}),
+        onLeaveBack:()=>gsap.to(el,{clipPath:OPEN, duration:1.2, ease:'power3.out', overwrite:true})});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
@@ -2261,22 +2268,31 @@ function start(){
         start:'bottom 65%', end:'bottom top', scrub:true}});
   });
 
-  /* ── חשיפת clip-path לרשת הפרויקטים (בהשראת ה-portfolio של mdx):
-     הרשת "נפתחת" מ-inset למסך מלא. חשוב — clip בלבד בלי autoAlpha, כך
-     שגם אם הטריגר לא ייורה הרשת נשארת נראית (חתוכה קלות), לא נעלמת. ── */
+  /* ── חשיפות מתואמות (בסגנון הרפרנס): האלמנטים בסקשן זורמים פנימה
+     יחד עם stagger, כאנימציה אחת אלגנטית — במקום כל אלמנט בנפרד. ── */
   if(!reduce){
-    const grid = document.querySelector('.work-grid');
-    if(grid){
-      gsap.fromTo(grid,
-        {clipPath:'inset(14% 16% 0% 16% round 2rem)'},
-        {clipPath:'inset(0% 0% 0% 0% round 0rem)',
-         duration:1.5, ease:'mdx', immediateRender:true,
-         scrollTrigger:{trigger:grid, start:'top 82%', once:true}});
+    const sphereGrid = document.querySelector('.sphere-grid');
+    if(sphereGrid){
+      const els = sphereGrid.querySelectorAll('[data-animate]');
+      gsap.from(els,{y:60, autoAlpha:0, duration:1.2, ease:'power3.out', stagger:.12,
+        scrollTrigger:{trigger:sphereGrid, start:'top 58%', once:true}});
+    }
+    const workGrid = document.querySelector('.work-grid');
+    if(workGrid){
+      const cards = workGrid.querySelectorAll('.card');
+      gsap.from(cards,{y:72, autoAlpha:0, duration:1.15, ease:'power3.out', stagger:.13,
+        scrollTrigger:{trigger:workGrid, start:'top 72%', once:true}});
     }
   }
 
-  /* ── פרלקס טקסט הפוטר הוסר: הזזת ה-yPercent חתכה את המילים
-     DIGITAL/FRAME מחוץ לגבולות. הטקסט נשאר סטטי ומלא. ── */
+  /* ── פרלקס טקסט הפוטר (בסגנון mdx): DIGITAL/FRAME נעים כלפי מעלה
+     נגד הגלילה — עומק וכובד. ה-overflow טופל (foot: clip אופקי,
+     foot-mark: visible אנכי) כך שהמילים לא נחתכות. ── */
+  if(!reduce){
+    const marks = document.querySelectorAll('.foot-mark__inner');
+    if(marks.length) gsap.fromTo(marks,{yPercent:18},{yPercent:-14, ease:'none',
+      scrollTrigger:{trigger:'.foot-mark', start:'top bottom', end:'bottom bottom', scrub:1}});
+  }
 
   /* ── משיכה מגנטית על כפתור הניגון ──
      רק במכשירי מצביע: במגע אין ריחוף, וזה היה נתקע במצב "נמשך".
@@ -2365,15 +2381,14 @@ function start(){
         ['.craft-pill--aut', () =>  655*sx(), () =>  290*sy()]
       ];
 
-      /* מצב מנוחה (סגור) = מסודרות מסביב לנורה — במקום שבו הפתוח
-         הישן היה (0.62 מהפיזור המלא החדש). בגלילה נפתחות עד הפינות.
-         xPercent/yPercent:-50 ממרכזים כל גלולה על נקודת ה-50%/50%
-         ללא תלות ברוחבה (מחליף את מרווחי ה-margin הקבועים). */
-      const REST = 0.62;
+      /* מצב התחלה: כל הגלולות מקובצות במרכז (x:0,y:0), קטנות ומוסתרות.
+         בגלילה הן מתפוצצות החוצה לפינות ונחשפות — כמו הרפרנס.
+         xPercent/yPercent:-50 ממרכזים כל גלולה על נקודת ה-50%/50%. */
+      const REST = 0;
       gsap.set('.craft-copy', {autoAlpha:0});
       spread.forEach(([sel,fx,fy]) =>
         gsap.set(sel, {xPercent:-50, yPercent:-50,
-          x:() => fx()*REST, y:() => fy()*REST}));
+          x:0, y:0, scale:.45, autoAlpha:0}));
 
       const tl = gsap.timeline({
         scrollTrigger:{
@@ -2403,7 +2418,7 @@ function start(){
          הקופי המרכזי נכנס — הכל על אותו פס גלילה קצר. */
       tl.to('.craft-flex', {autoAlpha:0, y:-30, ease:'power1.in'}, 0);
       spread.forEach(([sel,fx,fy]) => {
-        tl.to(sel, {x:fx, y:fy, ease:'power2.out'}, 0);
+        tl.to(sel, {x:fx, y:fy, scale:1, autoAlpha:1, ease:'power2.out'}, 0);
       });
       tl
         .to('.craft-copy', {autoAlpha:1, ease:'power1.out'}, .25)
