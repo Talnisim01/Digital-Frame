@@ -2527,23 +2527,26 @@ function start(){
       st && v > st.start/max - .03 && v < st.end/max + .03);
   }
 
-  if(!touch && !reduce){
-    ScrollTrigger.create({
-      trigger: document.documentElement,
-      start: 0, end: () => ScrollTrigger.maxScroll(window),
-      snap:{
-        /* מגנוט: כשעוצרים בתוך טווח המשיכה של סקשן, נמשכים חלק לראשו
-           (הסקשן ממלא את המסך). מחוץ ל-tol — גלילה חופשית. באזור המוגן
-           (רצף הפריימים) אין מגנוט. משך ארוך = משיכה חלקה, לא קפיצה. */
-        snapTo(value){
-          if(protectedZone(value) || !snapAt.length) return value;
-          /* תמיד נצמדים לסקשן הקרוב ביותר — בלי אזורים מתים, כך
-             שהמגנוט תופס בכל מקום (וגם בגלילה מהירה). */
-          return snapAt.reduce((a,b)=>
-            Math.abs(b-value) < Math.abs(a-value) ? b : a);
-        },
-        duration:{min:.4, max:.9}, delay:.08, ease:'power2.inOut'
-      }
+  if(!touch && !reduce && window.lenis){
+    /* מגנוט בסגנון הרפרנס: בכניסה לסקשן (top 58%) מבצעים
+       lenis.scrollTo אליו עם lock:true — מושך אותו בחוזקה למסך מלא,
+       והאנימציות מתנגנות תוך כדי המשיכה. מדלגים על about הנעוץ.
+       דגל pulling + טיימר בטיחות מונעים חטיפה כפולה/תקיעה. משך קצר. */
+    let pulling = false;
+    ['#services','#showreel','#work','#contact'].forEach(sel=>{
+      const sec = document.querySelector(sel);
+      if(!sec) return;
+      ScrollTrigger.create({
+        trigger: sec, start:'top 58%', end:'top 8%',
+        onEnter:()=>{
+          if(pulling) return;
+          pulling = true;
+          window.lenis.scrollTo(sec, {duration:.8, lock:true,
+            easing:t=>1-Math.pow(1-t,3),
+            onComplete:()=>{ pulling = false; }});
+          setTimeout(()=>{ pulling = false; }, 1200);
+        }
+      });
     });
   }
 
