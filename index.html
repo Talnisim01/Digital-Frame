@@ -884,7 +884,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .foot-col a:hover{color:var(--orange)}
 
 /* ── ה-wordmark ── */
-.foot-mark{display:flex;justify-content:space-between;align-items:flex-start;
+.foot-mark{display:flex;justify-content:center;gap:clamp(18px,3vw,64px);align-items:flex-start;
   width:100%;margin:clamp(30px,5vh,64px) 0 clamp(24px,3vw,42px);
   direction:ltr;line-height:.82;
   font-weight:800;letter-spacing:-.02em;color:#fcfcfd;
@@ -2206,11 +2206,15 @@ function start(){
       /* פתיחה/סגירה קשורות לגלילה (scrub timeline) — הכי אמין:
          המסגרת קטנה בכניסה, נפתחת ומחזיקה גדולה כשהיא במרכז המסך,
          ונסגרת ביציאה לסקשן הבא. תלוי-מיקום => לא נתקע והפיך. */
-      const SHUT='inset(15% round 4rem)', OPEN='inset(3% round 2rem)';
-      gsap.timeline({scrollTrigger:{trigger:sec, start:'top bottom', end:'bottom top', scrub:1}})
-        .fromTo(el,{clipPath:SHUT},{clipPath:OPEN, ease:'power2.out', duration:1})
-        .to(el,{clipPath:OPEN, duration:1.4})
-        .to(el,{clipPath:SHUT, ease:'power2.in', duration:1});
+      /* פתיחה אמינה: מופעלת פעם אחת כשהמסגרת עצמה נכנסת (טריגר על
+         האלמנט, כמו רשת הפרויקטים שעובדת) — לא תלוי ב-scrub שנתקע
+         באזור הזה. מתחילה קטנה ונפתחת לגדול. הסגירה נפרדת ובטוחה:
+         גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
+      const SHUT='inset(15% round 4rem)', OPEN='inset(2.5% round 2rem)';
+      gsap.fromTo(el,{clipPath:SHUT},{clipPath:OPEN, duration:1.5, ease:'mdx',
+        immediateRender:true, scrollTrigger:{trigger:el, start:'top 80%', once:true}});
+      gsap.to(el,{clipPath:SHUT, ease:'none', immediateRender:false,
+        scrollTrigger:{trigger:sec, start:'bottom 55%', end:'bottom top', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
@@ -2533,11 +2537,12 @@ function start(){
            (רצף הפריימים) אין מגנוט. משך ארוך = משיכה חלקה, לא קפיצה. */
         snapTo(value){
           if(protectedZone(value) || !snapAt.length) return value;
-          const near = snapAt.reduce((a,b)=>
+          /* תמיד נצמדים לסקשן הקרוב ביותר — בלי אזורים מתים, כך
+             שהמגנוט תופס בכל מקום (וגם בגלילה מהירה). */
+          return snapAt.reduce((a,b)=>
             Math.abs(b-value) < Math.abs(a-value) ? b : a);
-          return Math.abs(near - value) < SNAP_TOL ? near : value;
         },
-        duration:{min:.5, max:1.0}, delay:.12, ease:'power2.inOut'
+        duration:{min:.4, max:.9}, delay:.08, ease:'power2.inOut'
       }
     });
   }
