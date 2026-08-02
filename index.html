@@ -344,7 +344,7 @@ html.menu-open .scroll-prog{opacity:0}
    ולכן אפשר להנפיש אותה מ-8% ל-0% והווידאו נפתח החוצה.
    8% הוא ברירת המחדל, כך שגם בלי JS הצורה נכונה. */
 .reel-wrap{position:relative;width:100%;min-height:100vh;
-  clip-path:inset(8% round 3rem);
+  clip-path:inset(3% round 2.2rem);
   background:var(--color-black-soft);
   will-change:clip-path}
 
@@ -2203,13 +2203,14 @@ function start(){
          ולכן בין השניים הצורה יציבה.
          הטיימליין היחיד הקודם פרס כניסה-החזקה-יציאה על טווח אחד,
          וההתכווצות התחילה כבר כשהבלוק מילא את המסך. */
-      const SHUT='inset(18% round 4rem)', OPEN='inset(3% round 2rem)';
-      gsap.fromTo(el,{clipPath:SHUT},
-        {clipPath:OPEN, ease:'none', immediateRender:false,
-         scrollTrigger:{trigger:sec, start:'top 90%', end:'top 50%', scrub:true}});
-      gsap.to(el,
-        {clipPath:SHUT, ease:'none', immediateRender:false,
-         scrollTrigger:{trigger:sec, start:'bottom 92%', end:'bottom 25%', scrub:true}});
+      /* המסגרת פתוחה (כמעט מלאה) כברירת מחדל ב-CSS. בכניסה היא נפתחת
+         מ-SHUT אל הפתוח, ובגלילה לסקשן הבא נסגרת חזרה — דרך
+         toggleActions (מתנגן עד הסוף, אמין, לא נתקע כמו scrub);
+         immediateRender:false כך שאם הטריגר לא ייורה — נשארת גדולה. */
+      const SHUT='inset(16% round 3.5rem)';
+      gsap.from(el,{clipPath:SHUT, duration:1.3, ease:'mdx', immediateRender:false,
+        scrollTrigger:{trigger:sec, start:'top 82%', end:'bottom 20%',
+          toggleActions:'play reverse play reverse'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
@@ -2270,16 +2271,8 @@ function start(){
     }
   }
 
-  /* ── תנועת רקע רציפה בפוטר (בסגנון mdx): הטקסט הענק נע בפרלקס קל
-     נגד הגלילה — נותן כובד ותחושת עומק. בזרם הראשי כדי שירוץ בלי
-     תלות בטעינת רצף הפריימים. ── */
-  if(!reduce){
-    const marks = document.querySelectorAll('.foot-mark__inner');
-    if(marks[0]) gsap.fromTo(marks[0],{yPercent:22},{yPercent:-6,ease:'none',
-      scrollTrigger:{trigger:'.foot-mark',start:'top bottom',end:'bottom bottom',scrub:1}});
-    if(marks[1]) gsap.fromTo(marks[1],{yPercent:14},{yPercent:-10,ease:'none',
-      scrollTrigger:{trigger:'.foot-mark',start:'top bottom',end:'bottom bottom',scrub:1}});
-  }
+  /* ── פרלקס טקסט הפוטר הוסר: הזזת ה-yPercent חתכה את המילים
+     DIGITAL/FRAME מחוץ לגבולות. הטקסט נשאר סטטי ומלא. ── */
 
   /* ── משיכה מגנטית על כפתור הניגון ──
      רק במכשירי מצביע: במגע אין ריחוף, וזה היה נתקע במצב "נמשך".
@@ -2568,12 +2561,14 @@ function start(){
      שתיהן על yPercent/scale בלבד — נשארות ב-compositor. */
   const ideas = document.querySelector('.ideas');
   if(ideas){
-    gsap.fromTo('.ideas-layer--dome',{yPercent:-8},{yPercent:8,ease:'none',
-      scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
-    gsap.fromTo('.ideas-layer--glow',{yPercent:14,scale:.92},{yPercent:-14,scale:1.06,ease:'none',
-      scrollTrigger:{trigger:ideas,start:'top bottom',end:'bottom top',scrub:1}});
+    /* הקשת (dome) והזוהר (glow) עולים מלמטה כשמגיעים לסקשן — בלי
+       הסתרת opacity (כדי לא להתנגש עם הנשימה ולא להיתקע מוסתרים). */
+    gsap.from('.ideas-layer--dome',{yPercent:55, duration:1.6, ease:'mdx',
+      scrollTrigger:{trigger:ideas, start:'top 72%', once:true}});
+    gsap.from('.ideas-layer--glow',{yPercent:70, scale:.88, duration:1.6, ease:'mdx', delay:.12,
+      scrollTrigger:{trigger:ideas, start:'top 72%', once:true}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
-    gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut'});
+    gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut',delay:2});
   }
 
   addEventListener('resize',()=>{fit();draw(Math.round(seq.f||0));ScrollTrigger.refresh()});
