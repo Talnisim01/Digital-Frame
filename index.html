@@ -2179,7 +2179,7 @@ function start(){
   document.querySelectorAll('[data-animate]').forEach(el=>{
     const kind = el.dataset.animate;
     const sec  = el.closest('section') || el;
-    const st   = {trigger:el, start:'top 80%', once:true};
+    const st   = {trigger:el, start:'top 62%', once:true};
 
     if(reduce){ gsap.set(el,{opacity:1,y:0}); return; }
 
@@ -2212,14 +2212,14 @@ function start(){
          גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
       const SHUT='inset(15% round 4rem)', OPEN='inset(2.5% round 2rem)';
       gsap.fromTo(el,{clipPath:SHUT},{clipPath:OPEN, duration:1.5, ease:'mdx',
-        immediateRender:true, scrollTrigger:{trigger:el, start:'top 80%', once:true}});
+        immediateRender:true, scrollTrigger:{trigger:el, start:'top 62%', once:true}});
       gsap.to(el,{clipPath:SHUT, ease:'none', immediateRender:false,
         scrollTrigger:{trigger:sec, start:'bottom 55%', end:'bottom top', scrub:true}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
          delay:parseFloat(el.dataset.delay)||0, clearProps:'transform',
-         immediateRender:true, scrollTrigger:{trigger:el, start:'top 80%', once:true}});
+         immediateRender:true, scrollTrigger:{trigger:el, start:'top 62%', once:true}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
          עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
