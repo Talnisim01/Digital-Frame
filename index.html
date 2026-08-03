@@ -336,7 +336,7 @@ html.menu-open .scroll-prog{opacity:0}
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 4 — SHOWREEL ============ */
-.showreel{position:relative;min-height:100vh;
+.showreel{position:relative;min-height:100vh;z-index:1;
   display:grid;place-items:stretch;
   padding:0;background:var(--paper);overflow:hidden}
 
@@ -999,9 +999,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    שלוש שכבות באותו מרחב מוצמד:
    .vimeo-bg(0) → .craft-pills(2) → .craft-flex ו-.craft-copy(3) */
 
-.craft{position:relative;
-  /* בועות כתומות מטושטשות בצדדים — עדינות, כמו ברפרנס. שתי
-     נקודות רדיאליות בכתום רך על שוליי הסקשן. */
+.craft{position:relative;z-index:3;
+  /* z-index:3 כדי ש-craft "יתגלגל" מעל ה-showreel המתכווץ (z-index:1)
+     כשה-showreel ננעץ עם pinSpacing:false. */
   background:
     radial-gradient(38vw 40vw at -6% 32%,
       rgba(255,103,17,.10) 0%, rgba(255,184,120,.05) 40%, transparent 70%),
@@ -2212,16 +2212,19 @@ function start(){
          האלמנט, כמו רשת הפרויקטים שעובדת) — לא תלוי ב-scrub שנתקע
          באזור הזה. מתחילה קטנה ונפתחת לגדול. הסגירה נפרדת ובטוחה:
          גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
-      const SHUT='inset(15% round 4rem)', OPEN='inset(2.5% round 2rem)';
-      /* פתיחה סינמטית: once אמין, 1.5s power3.out — הקופסה נפתחת בצורה
-         שרואים, תוך כדי שהמגנוט מושך אותה למסך מלא. */
-      gsap.fromTo(el,{clipPath:SHUT},{clipPath:OPEN, duration:1.5, ease:'power3.out',
+      /* היברידי (בהשראת ה-DOM inspector של הרפרנס):
+         (א) כניסה מטריגר (ללא scrub) — clip-path נפתח מ-inset(10% 5%)
+             למסך מלא, 1.5s power3.out, פעם אחת כשהמגנוט מושך פנימה.
+         (ב) יציאה scrubbed + חפיפה — הסקשן ננעץ (pin) עם pinSpacing:false
+             כך שסקשן ה-craft "מתגלגל" מעליו (z-index גבוה יותר) בזמן
+             שהריל מתכווץ ברקע ב-scrub. ננעץ => scrub אמין (כמו הפריימים
+             וה-craft), לא נתקע. */
+      const START='inset(10% 5% round 3rem)', FULL='inset(0% round 1.2rem)';
+      gsap.fromTo(el,{clipPath:START},{clipPath:FULL, duration:1.5, ease:'power3.out',
         immediateRender:true, scrollTrigger:{trigger:el, start:'top 70%', once:true}});
-      /* יציאה: כשהסקשן עוזב למעלה (bottom 42%) הקופסה נסגרת יפה,
-         וכשחוזרים אליה בגלילה למעלה — נפתחת שוב. אמין (callbacks). */
-      ScrollTrigger.create({trigger:sec, start:'bottom 42%',
-        onEnter:()=>gsap.to(el,{clipPath:SHUT, duration:1.2, ease:'power3.in', overwrite:true}),
-        onLeaveBack:()=>gsap.to(el,{clipPath:OPEN, duration:1.2, ease:'power3.out', overwrite:true})});
+      gsap.to(el,{scale:.82, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top top', end:'+=90%',
+          pin:sec, pinSpacing:false, scrub:true, anticipatePin:1, id:'reel-exit'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
@@ -2248,18 +2251,9 @@ function start(){
         start:'top bottom', end:'bottom top', scrub:1}});
   });
 
-  /* ── showreel: זום-השקטה קולנועי על הווידאו בזמן הגלילה דרך
-     הסקשן — מתחיל מעט מוגדל ומתיישב ל-1. תוסֶפֶתי: על .reel-video
-     בלבד, נחתך ע"י ה-clip-path של המסגרת, לא נוגע ב-clip-in, בלי pin.
-     נותן עומק לאזור הווידאו כמו ברפרנס. ── */
-  if(!reduce){
-    const reelVid = document.querySelector('.showreel .reel-video');
-    if(reelVid){
-      gsap.fromTo(reelVid,{scale:1.12},{scale:1, ease:'none',
-        scrollTrigger:{trigger:'.showreel',
-          start:'top bottom', end:'bottom top', scrub:1}});
-    }
-  }
+  /* ── זום-הווידאו הנפרד הוסר: ה-scale של היציאה (על .reel-wrap) כבר
+     מכווץ את הווידאו איתו, וה-pin משנה את מיקומי ה-scrub — שילוב
+     של שני scale-ים על אותו אזור נראה מוזר. ── */
 
   /* ── יציאה קשורה לגלילה ── */
   if(!reduce) document.querySelectorAll('[data-exit]').forEach(el=>{
