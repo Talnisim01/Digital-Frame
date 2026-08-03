@@ -197,10 +197,8 @@ h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:
   will-change:transform,scale}
 .cta .arw-box{width:22px;height:22px}
 
-.cta:hover{scale:.96;
-  box-shadow:0 12px 26px -16px rgba(20,27,36,.55)}
-.cta:active{scale:.935;
-  box-shadow:0 8px 18px -14px rgba(20,27,36,.6);
+.cta:hover{box-shadow:0 12px 26px -16px rgba(20,27,36,.55)}
+.cta:active{box-shadow:0 8px 18px -14px rgba(20,27,36,.6);
   transition-duration:.12s}
 
 @media(prefers-reduced-motion:reduce){
@@ -2284,6 +2282,20 @@ function start(){
       const cards = workGrid.querySelectorAll('.card');
       gsap.from(cards,{y:72, autoAlpha:0, duration:1.15, ease:'power3.out', stagger:.13,
         scrollTrigger:{trigger:workGrid, start:'top 72%', toggleActions:'play none none reverse'}});
+    }
+
+    /* hover scale מנוהל ב-GSAP: על כפתורים שמקבלים reveal (transform של
+       GSAP, למשל ה-CTA בסקשן 2) תכונת ה-CSS scale לא מתחברת אמין עם
+       ה-transform — GSAP חייב לנהל את שניהם. חל על כל ה-.cta באחידות.
+       מוגבל ל-pointer:fine כדי שבמגע tap לא ישאיר כפתור מכווץ. */
+    if(window.matchMedia('(pointer:fine)').matches){
+      gsap.utils.toArray('.cta').forEach(btn=>{
+        const set = (s,d)=>gsap.to(btn,{scale:s, duration:d, ease:'power2.out', overwrite:'auto'});
+        btn.addEventListener('mouseenter',()=>set(.96,.4));
+        btn.addEventListener('mouseleave',()=>set(1,.45));
+        btn.addEventListener('mousedown', ()=>set(.935,.12));
+        btn.addEventListener('mouseup',   ()=>set(.96,.12));
+      });
     }
   }
 
