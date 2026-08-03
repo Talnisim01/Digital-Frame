@@ -347,6 +347,10 @@ html.menu-open .scroll-prog{opacity:0}
   clip-path:inset(3% round 2.2rem);
   background:var(--color-black-soft);
   will-change:clip-path}
+/* עוטף פנימי במילוי מוחלט: המסגרת (.reel-wrap) שומרת על גובהה המלא
+   ואילו .reel-inner מתכווץ ב-scroll (הווידאו מתכווץ בתוך המסגרת). */
+.reel-inner{position:absolute;inset:0;transform-origin:center center;
+  will-change:transform}
 
 .reel-video{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;display:block}
@@ -860,10 +864,11 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .foot-mail span{transition:color .4s var(--ease)}
 .foot-mail:hover span{color:var(--orange)}
 
-.foot-awards{text-align:left}
+.foot-awards{display:flex;flex-direction:column;align-items:flex-end;
+  gap:clamp(16px,2.2vh,24px);text-align:left}
 .foot-awards h3{margin:0;font-weight:200;
   font-size:clamp(21px,2.4vw,36px);letter-spacing:-.02em}
-.foot-awards p{margin:12px 0 clamp(24px,3.4vh,40px);max-width:34ch;margin-inline-start:auto;
+.foot-awards p{margin:0;max-width:34ch;
   color:#8A8F95;font-weight:300;font-size:clamp(13px,1vw,15px);line-height:1.65}
 .foot-badges{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:clamp(18px,2.4vw,40px);
   align-items:center;color:#C9CCD0;
@@ -999,9 +1004,9 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    שלוש שכבות באותו מרחב מוצמד:
    .vimeo-bg(0) → .craft-pills(2) → .craft-flex ו-.craft-copy(3) */
 
-.craft{position:relative;z-index:3;
-  /* z-index:3 כדי ש-craft "יתגלגל" מעל ה-showreel המתכווץ (z-index:1)
-     כשה-showreel ננעץ עם pinSpacing:false. */
+.craft{position:relative;z-index:3;margin-top:-9vh;
+  /* z-index:3 + margin שלילי קטן => craft "מתגלגל" מעל תחתית ה-showreel
+     בזמן שהווידאו מתכווץ בתוכו. אין pin => אין קריסה. */
   background:
     radial-gradient(38vw 40vw at -6% 32%,
       rgba(255,103,17,.10) 0%, rgba(255,184,120,.05) 40%, transparent 70%),
@@ -1586,6 +1591,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 
   <div class="reel-wrap" data-animate="clip-in">
 
+    <div class="reel-inner">
     <!-- החלף במקור שלך. נכס בדיקה ציבורי, לא לפרודקשן. -->
     <video class="reel-video" autoplay muted loop playsinline preload="metadata"
            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%232A2A2E'/%3E%3C/svg%3E">
@@ -1604,6 +1610,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
           fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
       </span>
     </button>
+    </div>
 
   </div>
 </section>
@@ -2212,19 +2219,20 @@ function start(){
          האלמנט, כמו רשת הפרויקטים שעובדת) — לא תלוי ב-scrub שנתקע
          באזור הזה. מתחילה קטנה ונפתחת לגדול. הסגירה נפרדת ובטוחה:
          גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
-      /* היברידי (בהשראת ה-DOM inspector של הרפרנס):
-         (א) כניסה מטריגר (ללא scrub) — clip-path נפתח מ-inset(10% 5%)
-             למסך מלא, 1.5s power3.out, פעם אחת כשהמגנוט מושך פנימה.
-         (ב) יציאה scrubbed + חפיפה — הסקשן ננעץ (pin) עם pinSpacing:false
-             כך שסקשן ה-craft "מתגלגל" מעליו (z-index גבוה יותר) בזמן
-             שהריל מתכווץ ברקע ב-scrub. ננעץ => scrub אמין (כמו הפריימים
-             וה-craft), לא נתקע. */
+      /* היברידי — גרסה בטוחה (בלי pin, בלי קריסה):
+         (א) כניסה מטריגר: clip-path נפתח מ-inset(10% 5%) למסך מלא,
+             1.5s power3.out, פעם אחת. הטריגר על ה-reel-wrap => יורה רק
+             כשמגיעים באמת ל-showreel, לא קודם.
+         (ב) יציאה scrubbed: ה-.reel-inner (הווידאו+הכפתור) מתכווץ 1→0.84
+             בזמן שגוללים דרך החצי התחתון של הסקשן. ה-.reel-wrap שומר על
+             גובהו המלא — זרימת ה-DOM נשמרת, שום דבר לא קורס.
+             סקשן ה-craft (z-index:3 + margin שלילי קטן) מתגלגל מעליו. */
       const START='inset(10% 5% round 3rem)', FULL='inset(0% round 1.2rem)';
       gsap.fromTo(el,{clipPath:START},{clipPath:FULL, duration:1.5, ease:'power3.out',
-        immediateRender:true, scrollTrigger:{trigger:el, start:'top 70%', once:true}});
-      gsap.to(el,{scale:.82, ease:'none',
-        scrollTrigger:{trigger:sec, start:'top top', end:'+=90%',
-          pin:sec, pinSpacing:false, scrub:true, anticipatePin:1, id:'reel-exit'}});
+        immediateRender:true, scrollTrigger:{trigger:el, start:'top 72%', once:true}});
+      const inner = el.querySelector('.reel-inner');
+      if(inner) gsap.fromTo(inner,{scale:1},{scale:.84, ease:'none',
+        scrollTrigger:{trigger:sec, start:'center center', end:'bottom top', scrub:true, id:'reel-exit'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
