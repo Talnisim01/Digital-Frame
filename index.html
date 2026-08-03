@@ -2225,7 +2225,7 @@ function start(){
              בזמן שגוללים דרך החצי התחתון של הסקשן. ה-.reel-wrap שומר על
              גובהו המלא — זרימת ה-DOM נשמרת, שום דבר לא קורס.
              סקשן ה-craft (z-index:3 + margin שלילי קטן) מתגלגל מעליו. */
-      const START='inset(10% 5% round 3rem)', FULL='inset(0% round 1.2rem)';
+      const START='inset(11% 6% round 3rem)', FULL='inset(3% round 2.2rem)';
       gsap.fromTo(el,{clipPath:START},{clipPath:FULL, duration:1.5, ease:'power3.out',
         immediateRender:true, scrollTrigger:{trigger:el, start:'top 72%', once:true}});
       const inner = el.querySelector('.reel-inner');
