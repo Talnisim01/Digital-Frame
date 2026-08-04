@@ -2215,9 +2215,13 @@ function start(){
       gsap.fromTo(el,{clipPath:START},{clipPath:FULL,
         duration:1.5, ease:'power3.out', immediateRender:true,
         scrollTrigger:{trigger:el, start:'top 72%', once:true}});
-      gsap.to(el,{scale:.82, ease:'none',
-        scrollTrigger:{trigger:sec, start:'top top', end:'+=100%',
-          pin:sec, pinSpacing:true, scrub:true, anticipatePin:1, id:'reel-exit'}});
+      /* יציאה scrubbed בלי pin: כל הכרטיס מתכווץ 1→0.85 בזמן שגוללים
+         דרכו, ונסוג לתוך רקע הדף הבהיר מסביבו. בלי pin => ScrollTrigger
+         לא מחשב מיקומים שגוי מול ה-pin של רצף הפריימים בסקשן 2, אז
+         ה-showreel לא קופץ/מופיע מוקדם. הכרטיס מלא (scale 1) במנוחה. */
+      gsap.fromTo(el,{scale:1},{scale:.85, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top top', end:'bottom top',
+          scrub:true, id:'reel-exit'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
