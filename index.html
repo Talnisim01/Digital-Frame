@@ -334,7 +334,7 @@ html.menu-open .scroll-prog{opacity:0}
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 4 — SHOWREEL ============ */
-.showreel{position:relative;min-height:100vh;z-index:1;
+.showreel{position:relative;min-height:100vh;
   display:grid;place-items:stretch;
   padding:0;background:var(--paper);overflow:hidden}
 
@@ -344,11 +344,8 @@ html.menu-open .scroll-prog{opacity:0}
 .reel-wrap{position:relative;width:100%;min-height:100vh;
   clip-path:inset(3% round 2.2rem);
   background:var(--color-black-soft);
-  will-change:clip-path}
-/* עוטף פנימי במילוי מוחלט: המסגרת (.reel-wrap) שומרת על גובהה המלא
-   ואילו .reel-inner מתכווץ ב-scroll (הווידאו מתכווץ בתוך המסגרת). */
-.reel-inner{position:absolute;inset:0;transform-origin:center center;
-  will-change:transform}
+  transform-origin:center center;
+  will-change:clip-path,transform}
 
 .reel-video{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;display:block}
@@ -1002,9 +999,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    שלוש שכבות באותו מרחב מוצמד:
    .vimeo-bg(0) → .craft-pills(2) → .craft-flex ו-.craft-copy(3) */
 
-.craft{position:relative;z-index:3;margin-top:-9vh;
-  /* z-index:3 + margin שלילי קטן => craft "מתגלגל" מעל תחתית ה-showreel
-     בזמן שהווידאו מתכווץ בתוכו. אין pin => אין קריסה. */
+.craft{position:relative;
   background:
     radial-gradient(38vw 40vw at -6% 32%,
       rgba(255,103,17,.10) 0%, rgba(255,184,120,.05) 40%, transparent 70%),
@@ -1589,11 +1584,9 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
 
   <div class="reel-wrap" data-animate="clip-in">
 
-    <div class="reel-inner">
-    <!-- החלף במקור שלך. נכס בדיקה ציבורי, לא לפרודקשן. -->
-    <video class="reel-video" autoplay muted loop playsinline preload="metadata"
-           poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Crect width='16' height='9' fill='%232A2A2E'/%3E%3C/svg%3E">
-      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+    <video class="reel-video" autoplay muted loop playsinline preload="auto"
+           poster="/showreel-poster.jpg">
+      <source src="/showreel.mp4" type="video/mp4">
     </video>
 
     <div class="reel-scrim" aria-hidden="true"></div>
@@ -1608,7 +1601,6 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
           fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
       </span>
     </button>
-    </div>
 
   </div>
 </section>
@@ -2210,27 +2202,22 @@ function start(){
          ולכן בין השניים הצורה יציבה.
          הטיימליין היחיד הקודם פרס כניסה-החזקה-יציאה על טווח אחד,
          וההתכווצות התחילה כבר כשהבלוק מילא את המסך. */
-      /* פתיחה/סגירה קשורות לגלילה (scrub timeline) — הכי אמין:
-         המסגרת קטנה בכניסה, נפתחת ומחזיקה גדולה כשהיא במרכז המסך,
-         ונסגרת ביציאה לסקשן הבא. תלוי-מיקום => לא נתקע והפיך. */
-      /* פתיחה אמינה: מופעלת פעם אחת כשהמסגרת עצמה נכנסת (טריגר על
-         האלמנט, כמו רשת הפרויקטים שעובדת) — לא תלוי ב-scrub שנתקע
-         באזור הזה. מתחילה קטנה ונפתחת לגדול. הסגירה נפרדת ובטוחה:
-         גם אם ה-scrub לא יתקדם, המסגרת נשארת פתוחה (גדולה). */
-      /* היברידי — גרסה בטוחה (בלי pin, בלי קריסה):
-         (א) כניסה מטריגר: clip-path נפתח מ-inset(10% 5%) למסך מלא,
-             1.5s power3.out, פעם אחת. הטריגר על ה-reel-wrap => יורה רק
-             כשמגיעים באמת ל-showreel, לא קודם.
-         (ב) יציאה scrubbed: ה-.reel-inner (הווידאו+הכפתור) מתכווץ 1→0.84
-             בזמן שגוללים דרך החצי התחתון של הסקשן. ה-.reel-wrap שומר על
-             גובהו המלא — זרימת ה-DOM נשמרת, שום דבר לא קורס.
-             סקשן ה-craft (z-index:3 + margin שלילי קטן) מתגלגל מעליו. */
-      const START='inset(11% 6% round 3rem)', FULL='inset(3% round 2.2rem)';
-      gsap.fromTo(el,{clipPath:START},{clipPath:FULL, duration:1.5, ease:'power3.out',
-        immediateRender:true, scrollTrigger:{trigger:el, start:'top 72%', once:true}});
-      const inner = el.querySelector('.reel-inner');
-      if(inner) gsap.fromTo(inner,{scale:1},{scale:.84, ease:'none',
-        scrollTrigger:{trigger:sec, start:'center center', end:'bottom top', scrub:true, id:'reel-exit'}});
+      /* היברידי בהשראת mdx (מאומת מה-DOM inspector):
+         (א) חשיפה מטריגר — clip-path נפתח מהחריץ המרכזי של הרפרנס
+             inset(20% 40% 0% 40%) עד הכרטיס המלא (inset 3%), 1.5s
+             power3.out, פעם אחת.
+         (ב) יציאה scrubbed בזמן pin — כל הכרטיס (.reel-wrap) מתכווץ
+             scale 1→0.82, ונסוג לתוך רקע הדף הבהיר מסביב. אין מסגרת
+             שחורה: מה שמסביב לכרטיס הוא הדף, לא רקע הקופסה. הווידאו
+             ממלא את הכרטיס תמיד (scale על כל הכרטיס, לא על תוכן פנימי).
+             pinSpacing:true => שומר מקום בזרימה, אין קריסה. */
+      const START='inset(20% 40% 0% 40% round 3rem)', FULL='inset(3% round 2.2rem)';
+      gsap.fromTo(el,{clipPath:START},{clipPath:FULL,
+        duration:1.5, ease:'power3.out', immediateRender:true,
+        scrollTrigger:{trigger:el, start:'top 72%', once:true}});
+      gsap.to(el,{scale:.82, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top top', end:'+=100%',
+          pin:sec, pinSpacing:true, scrub:true, anticipatePin:1, id:'reel-exit'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
