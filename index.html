@@ -334,14 +334,17 @@ html.menu-open .scroll-prog{opacity:0}
 @media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
 
 /* ============ SECTION 4 — SHOWREEL ============ */
-.showreel{position:relative;min-height:100vh;
-  display:grid;place-items:stretch;
-  padding:0;background:var(--paper);overflow:hidden}
+/* Option B — sticky: הסקשן גבוה מ-100vh כדי לתת מרווח גלילה, וה-reel-wrap
+   "נדבק" (position:sticky) בראש המסך בזמן שהסקשן נגלל תחתיו — משכפל את
+   ה"מוחזק ואז נסוג" של mdx בלי GSAP pin (בלי חישוב cross-pin שביר).
+   אין overflow:hidden — הוא שובר sticky. */
+.showreel{position:relative;min-height:185vh;
+  padding:0;background:var(--paper)}
 
 /* clip-path ולא border-radius+width: הצורה נחתכת מתוך בלוק מלא,
    ולכן אפשר להנפיש אותה מ-8% ל-0% והווידאו נפתח החוצה.
    8% הוא ברירת המחדל, כך שגם בלי JS הצורה נכונה. */
-.reel-wrap{position:relative;width:100%;min-height:100vh;
+.reel-wrap{position:sticky;top:0;width:100%;height:100vh;
   clip-path:inset(3% round 2.2rem);
   background:var(--color-black-soft);
   transform-origin:center center;
@@ -2215,12 +2218,13 @@ function start(){
       gsap.fromTo(el,{clipPath:START},{clipPath:FULL,
         duration:1.5, ease:'power3.out', immediateRender:true,
         scrollTrigger:{trigger:el, start:'top 72%', once:true}});
-      /* יציאה scrubbed בלי pin: כל הכרטיס מתכווץ 1→0.85 בזמן שגוללים
-         דרכו, ונסוג לתוך רקע הדף הבהיר מסביבו. בלי pin => ScrollTrigger
-         לא מחשב מיקומים שגוי מול ה-pin של רצף הפריימים בסקשן 2, אז
-         ה-showreel לא קופץ/מופיע מוקדם. הכרטיס מלא (scale 1) במנוחה. */
-      gsap.fromTo(el,{scale:1},{scale:.85, ease:'none',
-        scrollTrigger:{trigger:sec, start:'top top', end:'bottom top',
+      /* יציאה — Option B (sticky): ה-.reel-wrap דביק (CSS) ומוחזק בראש
+         המסך בזמן שהסקשן נגלל תחתיו. כאן רק מקטינים אותו scale 1→0.82
+         לאורך גלילת הסקשן — כך הוא "מוחזק ואז נסוג" לתוך רקע הדף הבהיר.
+         GSAP רק מנפיש property (scale), ללא pin => אין חישוב cross-pin,
+         אין קפיצה. הכרטיס מלא (scale 1) בתחילת הצפייה. */
+      gsap.fromTo(el,{scale:1},{scale:.82, ease:'none',
+        scrollTrigger:{trigger:sec, start:'top top', end:'bottom bottom',
           scrub:true, id:'reel-exit'}});
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
@@ -2345,7 +2349,7 @@ function start(){
   const pinLen = isMobile ? '+=240%' : '+=340%';
   const seqTween = gsap.to(seq,{f:FRAME_COUNT-1,ease:'none',
     scrollTrigger:{trigger:'.sphere-sec',start:'top top',end:pinLen,
-      pin:true,scrub:1,anticipatePin:1,
+      pin:true,scrub:1,anticipatePin:1,refreshPriority:10,
       onUpdate:()=>{
         const idx=Math.round(seq.f);
         if(idx===lastDrawn) return;            // מצייר רק כשהפריים באמת השתנה
@@ -2401,7 +2405,7 @@ function start(){
           /* גלילה אחת. 35% מגובה החלון ≈ החלקה אחת — הפיזור,
              יציאת הכותרת וכניסת הקופי מסתיימים במחווה אחת. */
           end:'+=35%',
-          pin:true, scrub:.45, anticipatePin:1, id:'craft-states'
+          pin:true, scrub:.45, anticipatePin:1, refreshPriority:5, id:'craft-states'
         }
       });
       craftST = tl.scrollTrigger;
