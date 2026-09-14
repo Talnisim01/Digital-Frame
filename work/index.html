@@ -3,38 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Digital Frame — שיווק דיגיטלי ואוטומציה</title>
+<title>פרויקטים — Digital Frame</title>
+<meta name="description" content="עבודות נבחרות של Digital Frame — מיתוג, UI/UX, פיתוח ואוטומציה.">
+<meta property="og:title" content="פרויקטים — Digital Frame">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/page-work.css">
 </head>
-<body>
-
-<div id="load" class="loading">
-  <div style="text-align:center">
-    <div class="lg">DIGITAL<b>·</b>FRAME</div>
-  </div>
-  <div class="load-bottom">
-    <div class="load-row">
-      <div class="load-msgs">
-        <span class="load-msg active">שלמות לוקחת רגע...</span>
-        <span class="load-msg">משהו מיוחד בדרך...</span>
-        <span class="load-msg">מכינים את החוויה שלך...</span>
-        <span class="load-msg">דברים גדולים לוקחים זמן...</span>
-        <span class="load-msg">שווה את ההמתנה...</span>
-      </div>
-      <div class="pct"><span id="pct">0</span>%</div>
-    </div>
-    <div class="bar"><i id="barfill"></i></div>
-  </div>
-</div>
+<body class="page page--work">
 
 <nav id="nav">
   <div class="brand">
     <div class="logo">DIGITAL<b>·</b>FRAME</div>
     <span class="divider"></span>
-    <a href="#" class="dash" aria-label="תפריט"><i></i></a>
+    <a href="/" class="dash" aria-label="תפריט"><i></i></a>
   </div>
   <div class="right">
     <a href="#contact" class="talk"><span class="wave-text">בואו נדבר</span>
@@ -44,10 +29,7 @@
   </div>
 </nav>
 
-<!-- ============ MENU OVERLAY ============
-     מבנה לפי הרפרנס: בלוק connect בצד אחד, טורי ניווט בצד השני,
-     ופוטר עם מפריד, קרדיט, רשתות ותנאים.
-     hidden כברירת מחדל — בלי JS הוא לא מכסה את העמוד. -->
+
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="תפריט" hidden>
   <div class="menu__ellipse" aria-hidden="true"></div>
 
@@ -78,19 +60,19 @@
 
       <nav class="menu__navigation">
         <div class="menu__navigation--header"><h4>ניווט</h4></div>
-        <a class="menu__navigation-item" href="#hero" data-menu-link>
+        <a class="menu__navigation-item" href="/" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">בית</span></a>
-        <a class="menu__navigation-item" href="#about" data-menu-link>
+        <a class="menu__navigation-item" href="/#about" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">עלינו</span></a>
-        <a class="menu__navigation-item" href="#services" data-menu-link>
+        <a class="menu__navigation-item" href="/#services" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">מה אנחנו עושים</span></a>
-        <a class="menu__navigation-item" href="#showreel" data-menu-link>
+        <a class="menu__navigation-item" href="/#showreel" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">שואוריל</span></a>
-        <a class="menu__navigation-item" href="#work" data-menu-link>
+        <a class="menu__navigation-item" href="/#work" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">פרויקטים</span></a>
         <a class="menu__navigation-item" href="#contact" data-menu-link>
@@ -101,23 +83,23 @@
       <div class="menu__col">
         <nav class="menu__navigation is--services">
           <div class="menu__navigation--header"><h4>שירותים</h4></div>
-          <a class="menu__navigation-item" href="#services" data-menu-link>
+          <a class="menu__navigation-item" href="/#services" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">אפיון ו-UI/UX</span></a>
-          <a class="menu__navigation-item" href="#services" data-menu-link>
+          <a class="menu__navigation-item" href="/#services" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">בניית אתרים</span></a>
-          <a class="menu__navigation-item" href="#services" data-menu-link>
+          <a class="menu__navigation-item" href="/#services" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">מיתוג</span></a>
-          <a class="menu__navigation-item" href="#services" data-menu-link>
+          <a class="menu__navigation-item" href="/#services" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">קמפיינים</span></a>
         </nav>
 
         <nav class="menu__navigation is--sponsor">
           <div class="menu__navigation--header"><h4>אוטומציה</h4></div>
-          <a class="menu__navigation-item" href="#services" data-menu-link>
+          <a class="menu__navigation-item" href="/#services" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">אוטומציה עסקית</span></a>
         </nav>
@@ -157,139 +139,16 @@
   </div>
 </div>
 
-
-<section class="hero" id="hero" data-snap>
-  <div class="orb-wrap"><div class="orb-bg"></div></div>
-  <div class="blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
-  <div class="grain"></div>
-  <div class="content">
-    <h1>
-      <span class="ln"><span>כל <strong>לקוח</strong> מתחיל</span></span>
-      <span class="ln"><span><strong>בחוויה</strong> שנשארת</span></span>
-    </h1>
-    <p class="lede">אנחנו משלבים אסטרטגיה, קריאייטיב ואוטומציה כדי לבנות לעסק שלך נוכחות דיגיטלית
-      <span class="dim">שמביאה לקוחות — ולא רק לייקים.</span></p>
-    <a href="#about" class="cta"><span class="wave-text">קצת עלינו</span>
-      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
-</section>
-
-<section class="sphere-sec" id="about" data-snap>
-  <canvas id="seq"></canvas>
-  <div class="sphere-grid">
-    <div class="s-head">
-      <h2 data-animate="title"><strong>שיווק שמרגישים.</strong><br>תוצאות שאפשר למדוד.</h2>
-      <p data-animate="fade-up">סטודיו שמחבר אסטרטגיה, קריאייטיב ואוטומציה — ובונה לעסק שלך מערכת שמביאה לקוחות, לא רק חשיפות.</p>
-      <a href="#contact" class="cta" data-animate="fade-up"><span class="wave-text">בואו נדבר</span>
-        <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
-    </div>
-    <div class="s-side">
-      <p data-animate="fade-up">בין אם דרך קמפיין ממוקד, אוטומציה בוואטסאפ או מערכת שמנהלת את ההזמנה עד הסוף —
-        <span class="dim">אנחנו בונים רגעים שלקוחות לא רק רואים, אלא פועלים בהם.</span></p>
-      <div class="chips" data-animate="fade-up"><span class="chip">קמפיינים</span><span class="chip">אוטומציה</span><span class="chip">מערכות</span><span class="chip">+</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SECTION 3 (placeholder) ============ -->
-<section class="ideas" id="services" data-snap>
-
-  <!-- שכבות הרקע — פלקסבוקס ממרכז אותן מול הסקשן -->
-  <div class="ideas-bg" aria-hidden="true">
-    <div class="ideas-layer ideas-layer--css" data-parallax="-0.16"></div>    <!-- 1: עיגול CSS מטושטש -->
-    <div class="ideas-layer ideas-layer--glow"></div>   <!-- 2: הזוהר PNG -->
-    <img class="ideas-layer ideas-layer--dome" src="/assets/dome.png" alt="">   <!-- 3: הכיפה, נקייה -->
-    <div class="ideas-fade" aria-hidden="true"></div>            <!-- 4: דהייה בקצה העליון -->
-  </div>
-
-  <!-- 4: התוכן -->
-  <div class="ideas-grid">
-    <p class="eyebrow" data-animate="fade">מה אנחנו עושים</p>
-    <h2 class="ideas-title" data-animate="title">שלושה חלקים,<br><strong>מערכת אחת.</strong></h2>
-    <p class="ideas-lede" data-animate="fade-up">קמפיינים שמביאים פניות, אוטומציה שמסננת אותן,
-      <span class="dim">ומערכת שסוגרת את העסקה — הכול מחובר, הכול נמדד.</span></p>
-  </div>
-
-</section>
-
-<!-- מחוון הסקשנים — הפס הגבוה = הסקשן הנוכחי -->
-<!-- ============ SECTION 4 — SHOWREEL ============ -->
-<section class="showreel" id="showreel" data-snap>
-
-  <div class="reel-wrap" data-animate="clip-in">
-
-    <video class="reel-video" autoplay muted loop playsinline preload="auto"
-           poster="/showreel-poster.jpg">
-      <source src="/showreel.mp4" type="video/mp4">
-    </video>
-
-    <div class="reel-scrim" aria-hidden="true"></div>
-
-    <button class="reel-play" type="button" aria-label="נגן את הסרטון" data-animate="scale-in">
-      <span class="reel-label wave-text">צפו בשואוריל</span>
-      <span class="reel-bar" aria-hidden="true"></span>
-      <span class="reel-ico" aria-hidden="true">
-        <svg class="ply p1" viewBox="0 0 24 24"><path d="M9.5 6.6v10.8L18 12z"
-          fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        <svg class="ply p2" viewBox="0 0 24 24"><path d="M9.5 6.6v10.8L18 12z"
-          fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-      </span>
-    </button>
-
-  </div>
-</section>
-
-
-<!-- ============ SECTION 5 — WORK / פרויקטים ============ -->
-<!-- ============ SERVICES — סקשן עצמאי ============
-     ממוקם אחרי השואוריל ולפני הפרויקטים.
-     id="craft" ולא "services": המזהה הזה כבר תפוס ע"י סקשן ה-Ideas.
-     בלי data-snap — הסקשן מוצמד, והעוגן יתנגש עם ה-pin. -->
-<section class="craft" id="craft">
-
-  <!-- הסרטון המרכזי. יורד נמוך יותר מהמרכז (ראה .craft-video ב-CSS),
-       ומסכת radial-gradient ממיסה את קצוותיו האפרפרים לתוך הנייר. -->
-  <div class="craft-video" aria-hidden="true">
-    <video class="craft-video__el" autoplay muted loop playsinline preload="metadata">
-      <source src="/assets/craft-video.webm" type="video/webm">
-      <source src="/assets/craft-video.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <!-- מצב 1: הטקסט העליון -->
-  <div class="craft-flex">
-    <h2 class="craft-heading" data-animate="title">נבנה בכוונה.<br><strong>נועד להרגיש.</strong></h2>
-    <p class="craft-text" data-animate="fade-up">מהאופן שבו המילים נושמות ועד לתנועה של האנימציה, <span>כל פרט נועד להדהד.</span></p>
-  </div>
-
-  <!-- ארבע הגלולות. מיקומי הפינות הם ברירת המחדל ב-CSS,
-       ו-GSAP אוסף אותן פנימה — כך שכשל משאיר אותן פזורות. -->
-  <div class="craft-pills">
-    <span class="craft-pill-pos craft-pill--ux"><a class="craft-pill" href="#services"><svg class="craft-pill__icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12.4219 9.99994C13.0906 10.6687 13.0906 11.753 12.4219 12.4218C11.7531 13.0906 10.6688 13.0906 9.99998 12.4218C9.33119 11.753 9.33119 10.6687 9.99998 9.99994C10.6688 9.33116 11.7531 9.33116 12.4219 9.99994Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.4913 2.08112C11.7475 1.94212 10.9497 2.00344 9.65039 2.10331L9.3738 2.12452C7.65993 2.25575 6.61076 2.33609 5.73551 2.71052C4.37565 3.29227 3.29226 4.37565 2.71052 5.7355C2.33609 6.61076 2.25575 7.65993 2.12453 9.37379L2.10331 9.65039C2.00344 10.9497 1.94212 11.7475 2.08112 12.4913C2.29684 13.6457 2.86085 14.7063 3.69733 15.5306C4.2363 16.0618 4.93203 16.457 6.06507 17.1006L8.13654 18.2777C9.13248 18.8438 9.74241 19.1905 10.3611 19.3773C11.0363 19.5812 11.735 19.6568 12.4231 19.6088L13.6375 20.8232C15.6218 22.8075 18.8389 22.8075 20.8232 20.8232C22.8075 18.839 22.8075 15.6218 20.8232 13.6375L19.6088 12.4231C19.6568 11.735 19.5812 11.0364 19.3773 10.3611C19.1905 9.74241 18.8438 9.13249 18.2778 8.13655L17.1006 6.06506C16.457 4.93203 16.0618 4.2363 15.5306 3.69733C14.7063 2.86085 13.6457 2.29684 12.4913 2.08112Z" fill="currentColor"/></svg><span class="craft-pill__text">אפיון ו-UI/UX</span></a></span>
-    <span class="craft-pill-pos craft-pill--dev"><a class="craft-pill" href="#services"><svg class="craft-pill__icon" width="24" height="21" viewBox="0 0 24 21" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.72581 0C1.6681 0 0 1.6681 0 3.72581C0 5.78351 1.6681 7.45161 3.72581 7.45161C5.78351 7.45161 7.45161 5.78351 7.45161 3.72581C7.45161 1.6681 5.78351 0 3.72581 0ZM2.03226 3.72581C2.03226 2.79049 2.79049 2.03226 3.72581 2.03226C4.66113 2.03226 5.41935 2.79049 5.41935 3.72581C5.41935 4.66113 4.66113 5.41935 3.72581 5.41935C2.79049 5.41935 2.03226 4.66113 2.03226 3.72581Z" fill="currentColor"/><path d="M11.8548 2.70968C11.2936 2.70968 10.8387 3.16461 10.8387 3.72581C10.8387 4.287 11.2936 4.74194 11.8548 4.74194L22.6935 4.74194C23.2547 4.74194 23.7097 4.287 23.7097 3.72581C23.7097 3.16462 23.2547 2.70968 22.6935 2.70968L11.8548 2.70968Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M19.9839 13.5484C17.9262 13.5484 16.2581 15.2165 16.2581 17.2742C16.2581 19.3319 17.9262 21 19.9839 21C22.0416 21 23.7097 19.3319 23.7097 17.2742C23.7097 15.2165 22.0416 13.5484 19.9839 13.5484ZM18.2903 17.2742C18.2903 16.3389 19.0485 15.5806 19.9839 15.5806C20.9192 15.5806 21.6774 16.3389 21.6774 17.2742C21.6774 18.2095 20.9192 18.9677 19.9839 18.9677C19.0485 18.9677 18.2903 18.2095 18.2903 17.2742Z" fill="currentColor"/><path d="M1.01613 16.2581C0.454937 16.2581 0 16.713 0 17.2742C0 17.8354 0.454936 18.2903 1.01613 18.2903L11.8548 18.2903C12.416 18.2903 12.871 17.8354 12.871 17.2742C12.871 16.713 12.416 16.2581 11.8548 16.2581H1.01613Z" fill="currentColor"/></svg><span class="craft-pill__text">פיתוח</span></a></span>
-    <span class="craft-pill-pos craft-pill--brd"><a class="craft-pill" href="#services"><svg class="craft-pill__icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 6.25C9.48122 6.25 8.25 7.48122 8.25 9C8.25 10.5188 9.48122 11.75 11 11.75C12.5188 11.75 13.75 10.5188 13.75 9C13.75 7.48122 12.5188 6.25 11 6.25ZM9.75 9C9.75 8.30964 10.3096 7.75 11 7.75C11.6904 7.75 12.25 8.30964 12.25 9C12.25 9.69036 11.6904 10.25 11 10.25C10.3096 10.25 9.75 9.69036 9.75 9Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.4635 2.37373C15.3214 2.24999 13.8818 2.24999 12.0452 2.25H11.9548C10.1182 2.24999 8.67861 2.24999 7.53648 2.37373C6.37094 2.50001 5.42656 2.76232 4.62024 3.34815C4.13209 3.70281 3.70281 4.13209 3.34815 4.62024C2.76232 5.42656 2.50001 6.37094 2.37373 7.53648C2.24999 8.67861 2.24999 10.1182 2.25 11.9548V12.0452C2.24999 13.8818 2.24999 15.3214 2.37373 16.4635C2.50001 17.6291 2.76232 18.5734 3.34815 19.3798C3.36102 19.3975 3.37399 19.4151 3.38706 19.4327C3.73405 19.899 4.14981 20.3101 4.62024 20.6518C5.42656 21.2377 6.37094 21.5 7.53648 21.6263C8.67859 21.75 10.1182 21.75 11.9547 21.75H12.0453C13.8818 21.75 15.3214 21.75 16.4635 21.6263C17.6291 21.5 18.5734 21.2377 19.3798 20.6518C19.8679 20.2972 20.2972 19.8679 20.6518 19.3798C21.5217 18.1825 21.6903 16.6546 21.7348 14.5005C21.75 13.7682 21.75 12.9403 21.75 12.006V11.9547C21.75 10.1182 21.75 8.67859 21.6263 7.53648C21.5 6.37094 21.2377 5.42656 20.6518 4.62024C20.2972 4.13209 19.8679 3.70281 19.3798 3.34815C18.5734 2.76232 17.6291 2.50001 16.4635 2.37373ZM5.50191 4.56168C6.00992 4.19259 6.66013 3.97745 7.69804 3.865C8.74999 3.75103 10.1084 3.75 12 3.75C13.8916 3.75 15.25 3.75103 16.302 3.865C17.3399 3.97745 17.9901 4.19259 18.4981 4.56168C18.8589 4.82382 19.1762 5.14111 19.4383 5.50191C19.8074 6.00992 20.0225 6.66013 20.135 7.69804C20.249 8.74999 20.25 10.1084 20.25 12C20.25 12.255 20.25 12.5006 20.2497 12.7373C20.1438 12.6476 20.0435 12.5687 19.9448 12.4986C17.4737 10.7441 14.0651 11.2087 12.1537 13.5606C11.9951 13.7558 11.8432 13.9843 11.6711 14.2694L11.5462 14.2444C10.4471 14.0244 9.77404 13.8897 9.14216 13.9032C7.45369 13.939 5.86636 14.7154 4.80143 16.0261C4.53101 16.359 4.30278 16.7487 4.02741 17.2781C3.95858 16.9948 3.90522 16.6732 3.865 16.302C3.75103 15.25 3.75 13.8916 3.75 12C3.75 10.1084 3.75103 8.74999 3.865 7.69804C3.97745 6.66013 4.19259 6.00992 4.56168 5.50191C4.82382 5.14111 5.14111 4.82382 5.50191 4.56168Z" fill="currentColor"/></svg><span class="craft-pill__text">מיתוג</span></a></span>
-    <span class="craft-pill-pos craft-pill--aut"><a class="craft-pill" href="#services"><svg class="craft-pill__icon" width="15" height="10" viewBox="0 0 15 10" fill="none"><path d="M4.80098 3.09492C4.80098 2.83186 4.58774 2.61862 4.32469 2.61862C4.06164 2.61862 3.84839 2.83186 3.84839 3.09492V3.88874H3.05456C2.79151 3.88874 2.57827 4.10199 2.57827 4.36504C2.57827 4.62809 2.79151 4.84134 3.05456 4.84134H3.84839V5.63517C3.84839 5.89822 4.06164 6.11146 4.32469 6.11146C4.58774 6.11146 4.80098 5.89822 4.80098 5.63517V4.84134H5.59481C5.85786 4.84134 6.07111 4.62809 6.07111 4.36504C6.07111 4.10199 5.85786 3.88874 5.59481 3.88874H4.80098V3.09492Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M4.00056 0.0783691C1.8707 0.0783691 0.234625 1.96478 0.535833 4.07324L0.682467 5.09967L1.60729 8.33656C1.87539 9.27491 2.73305 9.92184 3.70894 9.92184C4.45267 9.92184 5.14537 9.54366 5.54755 8.91805L5.78529 8.54822C6.5877 7.30003 8.4123 7.30003 9.21471 8.54822L9.36014 8.77445C9.81985 9.48956 10.6116 9.92184 11.4618 9.92184C12.7051 9.92184 13.7593 9.00759 13.9351 7.77674L14.4642 4.07324C14.7654 1.96478 13.1293 0.0783691 10.9994 0.0783691C10.5097 0.0783691 10.0255 0.181135 9.57799 0.380021L9.24078 0.529891C8.58964 0.819288 8.32603 0.933799 8.06047 0.990173C7.69094 1.06862 7.30906 1.06862 6.93953 0.990173C6.67397 0.933799 6.41036 0.819288 5.75922 0.529891L5.42201 0.380021C4.97452 0.181134 4.49027 0.0783691 4.00056 0.0783691ZM1.47885 3.93852C1.25963 2.40393 2.4504 1.03096 4.00056 1.03096C4.35698 1.03096 4.70943 1.10576 5.03513 1.25051L5.42373 1.42323C6.00736 1.68269 6.36648 1.84234 6.74172 1.922C7.24167 2.02813 7.75833 2.02813 8.25828 1.922C8.63352 1.84234 8.99264 1.68269 9.57627 1.42323L9.96487 1.25051C10.2906 1.10576 10.643 1.03096 10.9994 1.03096C12.5496 1.03096 13.7404 2.40393 13.5211 3.93852L12.9921 7.64202C12.8833 8.40357 12.2311 8.96924 11.4618 8.96924C10.9358 8.96924 10.4459 8.70178 10.1614 8.25933L10.016 8.0331C8.83862 6.20161 6.16138 6.20161 4.98399 8.0331L4.74624 8.40293C4.51934 8.75588 4.12854 8.96924 3.70894 8.96924C3.15836 8.96924 2.67449 8.60426 2.52323 8.07486L1.61628 4.90054L1.47885 3.93852Z" fill="currentColor"/></svg><span class="craft-pill__text">אוטומציה</span></a></span>
-  </div>
-
-  <!-- מצב 2: הקופי המרכזי -->
-  <div class="craft-copy">
-    <div>
-      <h3>אנחנו בונים <strong>חוויות</strong> שנושמות</h3>
-      <p>כי חוויה שנשארת לא נוצרת במקרה — <span>היא מעוצבת בכוונה.</span></p>
-    </div>
-  </div>
-
-</section>
-
-
-<section class="work" id="work" data-snap>
+<!-- ============ כותרת הדף ============
+     משתמשת במחלקות של סקשן הפרויקטים בדף הבית, עם work--page
+     שמוסיף מרווח עליון לפינוי הניווט. אין כאן קנבס, אין pin. -->
+<section class="work work--page" id="work">
 
   <div class="work-head">
-    <h2 class="work-title" data-animate="title">המלאכה שלנו,<br><strong>הביטוי שלך.</strong></h2>
-    <a href="#work" class="ghost" data-animate="fade"><span class="wave-text">כל הפרויקטים</span>
-      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
+    <p class="eyebrow" data-animate="fade">פרויקטים</p>
+    <h1 class="work-title" data-animate="title">המלאכה שלנו,<br><strong>הביטוי שלך.</strong></h1>
   </div>
 
-  <!-- הפילטור הוא JS, אבל מצב ברירת המחדל ("הכול") נכון גם בלעדיו -->
   <div class="work-filters" role="group" aria-label="סינון פרויקטים" data-animate="fade-up">
     <button class="filt" type="button" data-filter="all"   aria-pressed="true">הכול</button>
     <button class="filt" type="button" data-filter="ux"    aria-pressed="false">UI/UX</button>
@@ -298,10 +157,10 @@
     <button class="filt" type="button" data-filter="auto"  aria-pressed="false">אוטומציה</button>
   </div>
 
-  <div class="work-grid" id="workGrid">
+<div class="work-grid" id="workGrid">
 
     <!-- ⚠ .card-shot הוא מילוי גרדיאנט זמני. החלף ב-<img loading="lazy"> של הפרויקט. -->
-    <a class="card" href="#work" data-tags="brand ux" data-animate="fade-up">
+    <a class="card" href="#" data-tags="brand ux" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-a"></div></div>
       <div class="card-foot">
         <span class="card-name">Jepeto Style
@@ -311,7 +170,7 @@
       </div>
     </a>
 
-    <a class="card" href="#work" data-tags="dev ux" data-animate="fade-up">
+    <a class="card" href="#" data-tags="dev ux" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-b"></div></div>
       <div class="card-foot">
         <span class="card-name">RedBeary
@@ -321,7 +180,7 @@
       </div>
     </a>
 
-    <a class="card" href="#work" data-tags="dev auto" data-animate="fade-up">
+    <a class="card" href="#" data-tags="dev auto" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-c"></div></div>
       <div class="card-foot">
         <span class="card-name">Piece4You
@@ -333,19 +192,8 @@
 
   </div>
 
-  <div class="work-more" data-animate="fade">
-    <a href="#contact" class="ghost"><span class="wave-text">רוצה כזה גם</span>
-      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
-  </div>
-
 </section>
 
-
-<!-- ============ SECTION 6 — LET'S TALK ============
-     מבנה לפי הרפרנס: lets-talk__ellipse כאח נפרד,
-     lets-talk-flex עם __info ו-__form-wrapper,
-     form-group > form-group-field > label + input + form-error.
-     המסגרת יושבת על .lets-talk-flex עצמה, כמו ברפרנס. -->
 <section class="contact" id="contact" data-snap>
 
     <div class="lets-talk__ellipse" aria-hidden="true"></div>
@@ -450,8 +298,6 @@
   </div>
 </section>
 
-
-<!-- ============ SECTION 7 — FOOTER ============ -->
 <footer class="foot" id="foot" data-snap>
   <div class="foot-in">
 
@@ -477,31 +323,31 @@
       <div class="foot-col">
         <h4>הסטודיו</h4>
         <ul>
-          <li><a href="#about">עלינו</a></li>
-          <li><a href="#services">השירותים</a></li>
-          <li><a href="#work">פרויקטים</a></li>
-          <li><a href="#showreel">שואוריל</a></li>
+          <li><a href="/#about">עלינו</a></li>
+          <li><a href="/#services">השירותים</a></li>
+          <li><a href="/#work">פרויקטים</a></li>
+          <li><a href="/#showreel">שואוריל</a></li>
           <li><a href="#contact">צור קשר</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h4>שירותים</h4>
         <ul>
-          <li><a href="#services">אפיון ו-UI/UX</a></li>
-          <li><a href="#services">בניית אתרים</a></li>
-          <li><a href="#services">מיתוג</a></li>
-          <li><a href="#services">קמפיינים</a></li>
-          <li><a href="#services">אוטומציה עסקית</a></li>
+          <li><a href="/#services">אפיון ו-UI/UX</a></li>
+          <li><a href="/#services">בניית אתרים</a></li>
+          <li><a href="/#services">מיתוג</a></li>
+          <li><a href="/#services">קמפיינים</a></li>
+          <li><a href="/#services">אוטומציה עסקית</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h4>עוד</h4>
         <ul>
-          <li><a href="#services">חנויות אונליין</a></li>
-          <li><a href="#services">אוטומציית וואטסאפ</a></li>
-          <li><a href="#services">מערכות ניהול</a></li>
-          <li><a href="#services">אינטגרציות</a></li>
-          <li><a href="#services">תחזוקה ותמיכה</a></li>
+          <li><a href="/#services">חנויות אונליין</a></li>
+          <li><a href="/#services">אוטומציית וואטסאפ</a></li>
+          <li><a href="/#services">מערכות ניהול</a></li>
+          <li><a href="/#services">אינטגרציות</a></li>
+          <li><a href="/#services">תחזוקה ותמיכה</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -546,19 +392,7 @@
   </div>
 </footer>
 
-
-<div class="bars-indicator" id="secNav" data-active-bar="1">
-  <div class="bar bar-1" data-go="#hero"></div>
-  <div class="bar bar-2" data-go="#about"></div>
-  <div class="bar bar-3" data-go="#services"></div>
-  <div class="bar bar-4" data-go="#showreel"></div>
-  <div class="bar bar-5" data-go="#craft"></div>
-</div>
-
-<!-- קו-התקדמות גלילה עדין בצד ימין. מחליף ויזואלית את פס הדפדפן
-     שהוסתר, בשפת העיצוב של האתר (דק, כתום מותג, מרחף מהקצה). -->
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -566,7 +400,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <script src="/assets/engine.js"></script>
 <script src="/assets/site.js"></script>
-
 
 </body>
 </html>

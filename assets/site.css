@@ -1,0 +1,1368 @@
+:root{
+  --paper:#F1EFED; --light:#FEFDFB; --silver:#E9EAEC;
+  --ink:#141B24; --gray:#A3A6AA;
+  --orange:#ff6711; --orange-soft:#FFB878;
+  --color-black:#000000; --color-black-opacity:rgba(0,0,0,.1);
+  --color-black-dark:#111822; --color-black-soft:#101820; --color-neutral:#8a8f8d;
+  /* שלב 1 — יסוד התזמון, מיושר ל-mdx.
+     --ease: עקומת החתימה של הרפרנס (.625,.05,0,1), מחליפה את
+     easeOutExpo הקודם — משנה את התחושה של כל 28 ה-transitions
+     שכבר משתמשים בטוקן. --ease-soft: ה-easeOut המשני של הרפרנס.
+     טוקני המשך = סולם הרפרנס (0.3 מיקרו / 0.6 חשיפה / 0.75 גדול),
+     מאומצים per-element בשלבים הבאים. */
+  --ease:cubic-bezier(.625,.05,0,1);
+  --ease-soft:cubic-bezier(.25,.46,.45,.94);
+  --dur-fast:.3s; --dur:.6s; --dur-slow:.75s;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+/* מסתירים את פס הגלילה הרגיל של הדפדפן בכל הדף, כמו ברפרנס.
+   הגלילה עצמה (Lenis + גלגלת + מקלדת) לא נפגעת — רק החיווי הוויזואלי
+   מוסתר, ובמקומו יש את מחוון 5-הפסים. */
+html{scrollbar-width:none;-ms-overflow-style:none}
+::-webkit-scrollbar{width:0;height:0;display:none}
+body{background:var(--paper);color:var(--ink);font-family:"Heebo",system-ui,sans-serif;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+
+/* ============ PRELOAD ============ */
+#load{position:fixed;inset:0;z-index:100;background:#000;color:#fcfcfd;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  transition:opacity .6s,visibility .6s}
+#load.done{opacity:0;visibility:hidden}
+#load .lg{font-weight:800;font-size:clamp(26px,5vw,44px);letter-spacing:.2em;color:#fcfcfd}
+#load .lg b{color:var(--orange)}
+#load .load-bottom{position:absolute;bottom:0;left:0;width:100%;
+  padding:0 3rem;display:grid;gap:0;opacity:0;transition:opacity .5s .2s}
+#load.loading .load-bottom{opacity:1}
+#load .load-row{display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:2.2rem;padding-top:.8rem}
+#load .load-msgs{position:relative;overflow:hidden;height:clamp(14px,2.4rem,32px);flex:1}
+#load .load-msg{position:absolute;top:0;right:0;white-space:nowrap;
+  font-size:clamp(12px,1.4rem,18px);font-weight:400;letter-spacing:.03em;color:#fcfcfd;
+  transform:translateY(100%);opacity:0;transition:transform .5s var(--ease),opacity .5s var(--ease)}
+#load .load-msg.active{transform:translateY(0);opacity:1}
+#load .load-msg.above{transform:translateY(-100%);opacity:0}
+#load .pct{font-size:clamp(16px,3.2rem,36px);font-weight:500;letter-spacing:.1em;color:#fcfcfd;
+  flex-shrink:0;padding-right:.2em}
+#load .bar{width:100%;height:13px;background:rgba(255,255,255,.17);overflow:hidden}
+#load .bar i{display:block;height:100%;width:0;background:#fff;transition:width .25s ease-out}
+
+/* ============ NAV ============ */
+nav{position:fixed;top:0;right:0;left:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  direction:ltr;   /* ← הופך את סדר ה-flex: brand בשמאל, right בימין */
+  padding:30px clamp(20px,2.6vw,50px);transition:padding .5s var(--ease)}
+/* בלי רקע — הניווט תמיד שקוף, רק מתכווץ קלות בגלילה */
+nav.stuck{padding:18px clamp(20px,2.6vw,50px)}
+.brand{display:flex;align-items:center;gap:18px}
+.logo{font-weight:800;font-size:22px;letter-spacing:.18em}
+.logo b{color:var(--orange)}
+.divider{width:1px;height:20px;background:rgba(20,27,36,.2)}
+/* מפריד אנכי בין ה-CTA להמבורגר */
+/* מפריד: בדיוק 1x13px, #111822, ממורכז אנכית */
+/* מרווח 40px בין הפריטים בצד ימין ומפריד של 13px — מידות הרפרנס */
+nav .right{display:flex;align-items:center;gap:clamp(18px,2.1vw,40px)}
+.nav-sep{flex:0 0 auto;width:1px;height:13px;
+  background-color:var(--color-black-dark);
+  align-self:center;margin-inline:10px}
+.dash{width:42px;height:42px;border:1px solid rgba(20,27,36,.22);border-radius:50%;display:grid;place-items:center;transition:.4s var(--ease)}
+.dash i{width:12px;height:1px;background:var(--ink);display:block}
+.dash:hover{background:var(--ink)}.dash:hover i{background:#fff}
+.right{display:flex;align-items:center;gap:22px}
+/* "בואו נדבר" — החץ עולה כלפי מעלה-חוץ בהובר */
+/* מידות הרפרנס: 2rem לטקסט, 0.8rem מרווח, 2.2rem לחץ.
+   ב-1920 הבסיס שלהם הוא 10px ל-rem. */
+.talk{display:inline-flex;align-items:center;gap:8px;font-size:20px;font-weight:400;
+  direction:rtl}
+
+/* ── אפקט הטקסט המתגלגל ──────────────────────────────────
+   העוטף חותך (overflow:hidden) בגובה שורה אחת בדיוק.
+   כל תו הוא span עם ::after שמחזיק עותק זהה ב-top:100% —
+   כלומר בדיוק שורה אחת מתחת, מחוץ לאזור הנראה.
+   בהובר כל התווים עולים ב--100%: המקור יוצא למעלה והעותק נכנס תחתיו.
+   ה-stagger מגיע מ-transition-delay שנגזר מ---i של כל תו. */
+/* white-space:nowrap הכרחי: כשהטקסט נשבר לשתי שורות,
+   עותקי ה-::after משורה 1 נוחתים על שורה 2 ונראים ככפילות. */
+.wave-text{display:inline-block;overflow:hidden;line-height:1.35;
+  white-space:nowrap;vertical-align:bottom}
+.wave-text .char{display:inline-block;position:relative;
+  transition:transform .55s var(--ease);
+  transition-delay:calc(var(--i) * .02s)}
+.wave-text .char::after{content:attr(data-char);
+  position:absolute;inset-inline-start:0;top:100%;
+  width:100%;text-align:center}
+.talk:hover .wave-text .char,
+.cta:hover  .wave-text .char,
+.ghost:hover .wave-text .char,
+.reel-play:hover .wave-text .char{transform:translateY(-100%)}
+
+/* הקו התחתון על ה-.wave-text בלבד — החץ יושב מחוצה לו */
+.talk .wave-text{border-bottom:1px solid var(--ink);
+  transition:border-color .35s var(--ease)}
+.talk:hover .wave-text{border-color:var(--orange)}
+/* ── החץ: מצביע שמאלה-למעלה (↖) — "קדימה" ב-RTL.
+   הצורה מצוירת ישירות ב-path (בלי rotate), כדי שההחלקה תהיה translate נקי.
+   שני עותקים בתוך מסגרת overflow:hidden:
+   A1 מחליק החוצה לשמאל-למעלה, A2 נכנס במקומו מימין-למטה. */
+.arw{stroke:var(--orange);fill:none;transition:stroke .5s var(--ease)}
+.arw-box{position:relative;display:inline-block;flex:none;overflow:hidden}
+.arw-box .arw{position:absolute;top:0;left:0;width:100%;height:100%;
+  transition:transform .5s var(--ease)}
+.arw-box .a1{transform:translate(0,0)}
+.arw-box .a2{transform:translate(115%,115%)}                      /* ממתין מחוץ למסגרת */
+.talk:hover .a1,.cta:hover .a1{transform:translate(-115%,-115%)}  /* יוצא */
+.talk:hover .a2,.cta:hover .a2{transform:translate(0,0)}          /* נכנס */
+.talk .arw-box{width:22px;height:22px}
+
+
+/* ההמבורגר — שני קווים באותו אורך, מוסטים אופקית (מדורג). בהובר מתיישרים לאותו קו */
+/* ההמבורגר — מידות מדויקות: 60x3px, #111822.
+   ברירת מחדל: העליון translateX(-20%), התחתון translateX(20%).
+   בהובר: שניהם translateX(0) => מקבילים מיושרים. */
+.burger{display:flex;flex-direction:column;gap:10px;cursor:pointer;background:none;border:0;
+  padding:10px 0;width:60px}
+.burger i{display:block;width:60px;height:3px;background:var(--color-black-dark);
+  transition:transform .45s var(--ease)}
+.burger i:first-child{transform:translateX(-20%)}
+.burger i:last-child{transform:translateX(20%)}
+.burger:hover i:first-child,
+.burger:hover i:last-child{transform:translateX(0)}
+
+/* ── מצב כהה: כשהניווט מרחף מעל סקשן הפרויקטים השחור,
+   כל האלמנטים הופכים בהירים (כמו ברפרנס). מעבר חלק. */
+nav.on-dark .logo{color:#fcfcfd}
+nav.on-dark .divider{background:rgba(255,255,255,.25)}
+nav.on-dark .nav-sep{background-color:rgba(255,255,255,.35)}
+nav.on-dark .dash{border-color:rgba(255,255,255,.28)}
+nav.on-dark .dash i{background:#fcfcfd}
+nav.on-dark .dash:hover{background:#fcfcfd}
+nav.on-dark .dash:hover i{background:var(--ink)}
+nav.on-dark .talk{color:#fcfcfd}
+nav.on-dark .talk .wave-text{border-bottom-color:rgba(255,255,255,.6)}
+nav.on-dark .talk:hover .wave-text{border-color:var(--orange)}
+nav.on-dark .burger i{background:#fcfcfd}
+nav .logo,nav .divider,nav .nav-sep,nav .dash,nav .dash i,
+nav .talk,nav .talk .wave-text,nav .burger i{transition:color .5s var(--ease),background .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease)}
+
+/* ============ SECTION 1 — HERO ============ */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:clamp(150px,20vh,220px) 24px clamp(110px,16vh,170px);overflow:hidden}
+/* דהייה רכה וארוכה אל צבע הדף — בלי שום צבע זר */
+.hero::after{content:"";position:absolute;z-index:4;left:0;right:0;bottom:0;height:26vh;
+  pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(241,239,237,.45) 55%,var(--paper) 100%)}
+.light{display:none;position:absolute;z-index:0;top:-8%;left:50%;translate:-50% 0;width:84vw;height:118%;border-radius:50%;background:var(--light);filter:blur(26px)}
+.blobs{display:none;position:absolute;z-index:1;top:-8%;left:50%;translate:-50% 0;width:84vw;height:118%;
+  -webkit-mask-image:radial-gradient(closest-side,#000 58%,transparent 100%);mask-image:radial-gradient(closest-side,#000 58%,transparent 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);will-change:transform}
+.b1{width:38%;height:32%;top:4%;right:10%;opacity:.95;background:radial-gradient(circle,var(--orange) 0%,var(--orange-soft) 42%,transparent 68%);animation:f1 18s ease-in-out infinite}
+.b2{width:30%;height:26%;top:30%;right:0;opacity:.8;background:radial-gradient(circle,var(--orange) 0%,transparent 66%);animation:f2 24s ease-in-out infinite}
+.b3{width:34%;height:28%;bottom:4%;left:6%;opacity:.9;background:radial-gradient(circle,var(--orange) 0%,var(--orange-soft) 45%,transparent 70%);animation:f3 21s ease-in-out infinite}
+.b4{width:24%;height:22%;bottom:26%;left:0;opacity:.6;background:radial-gradient(circle,var(--orange-soft) 0%,transparent 70%);animation:f1 28s ease-in-out infinite reverse}
+@keyframes f1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-4%,7%) scale(1.2)}}
+@keyframes f2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7%,-9%) scale(.85)}}
+@keyframes f3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(9%,-6%) scale(1.15)}}
+.grain{position:absolute;z-index:2;inset:0;pointer-events:none;opacity:.45;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E")}
+.content{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center}
+h1{font-weight:200;font-size:clamp(38px,6.6vw,96px);line-height:1.22;letter-spacing:-.015em;max-width:17ch}
+h1 strong{font-weight:700}
+h1 .ln{display:block;overflow:hidden}
+h1 .ln>span{display:inline-block;transform:translateY(105%);opacity:0;animation:rise 1.2s var(--ease) forwards}
+.ln:nth-child(1)>span{animation-delay:.25s}.ln:nth-child(2)>span{animation-delay:.4s}
+@keyframes rise{to{transform:none;opacity:1}}
+.lede{margin-top:clamp(30px,4.5vh,48px);max-width:56ch;font-size:clamp(15px,1.45vw,19px);font-weight:300;line-height:1.8;opacity:0;animation:fade 1s var(--ease) .95s forwards}
+.lede .dim{color:var(--gray)}
+@keyframes fade{to{opacity:1}}
+/* ── הכפתור הראשי ──────────────────────────────────────────
+   אין טרנספורם בסיס, אז scale בהובר לא מתנגש בכלום.
+   הצל מתהדק יחד עם הכיווץ — כמו עצם שנלחץ אל המשטח. */
+.cta{display:inline-flex;align-items:center;gap:18px;white-space:nowrap;flex:0 0 auto;
+  background:var(--ink);color:#fff;padding:20px 46px;
+  font-size:15px;letter-spacing:.1em;
+  border-radius:100px;
+  box-shadow:0 22px 45px -22px rgba(20,27,36,.7);
+  scale:1;
+  transition:scale .45s var(--ease),
+             box-shadow .45s var(--ease);
+  will-change:transform,scale}
+.cta .arw-box{width:22px;height:22px}
+
+.cta:hover{box-shadow:0 12px 26px -16px rgba(20,27,36,.55)}
+.cta:active{box-shadow:0 8px 18px -14px rgba(20,27,36,.6);
+  transition-duration:.12s}
+
+@media(prefers-reduced-motion:reduce){
+  .cta,.cta:hover,.cta:active{transform:none}
+}
+.hero .cta{margin-top:clamp(38px,5.5vh,60px);opacity:0;animation:fade 1s var(--ease) 1.15s forwards}
+.ticks{position:absolute;z-index:3;bottom:34px;left:50%;translate:-50% 0;display:flex;gap:26px}
+.ticks i{width:1px;height:22px;background:rgba(20,27,36,.35);animation:blink 2.4s infinite}
+.ticks i:nth-child(2){animation-delay:.2s}.ticks i:nth-child(3){animation-delay:.4s}.ticks i:nth-child(4){animation-delay:.6s}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* ============ SECTION 2 — FRAME SEQUENCE ============ */
+.sphere-sec{position:relative;min-height:100svh;overflow:hidden;background:transparent;display:flex}
+/* הקנבס — full-bleed, ממלא את כל הסקשן כמו רקע */
+#seq{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 240px,#000 calc(100% - 240px),transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 240px,#000 calc(100% - 240px),transparent 100%)}
+/* דהיות עדינות למעלה ולמטה — למיזוג עם הסקשנים השכנים, בלי סקרים על הצדדים */
+/* בלי פס עליון. רק דהייה תחתונה ארוכה אל הסקשן הבא. */
+.sphere-sec::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,transparent 82%,var(--paper) 100%)}
+/* שני בלוקי טקסט על הפריים — כמו ברפרנס: כותרת שמאל-למטה, משני ימין-למטה */
+.sphere-grid{position:relative;z-index:3;width:100%;min-height:100svh;
+  display:grid;grid-template-columns:1fr 1fr;align-items:end;
+  padding:120px clamp(24px,5vw,72px) clamp(50px,7vh,84px);gap:40px}
+/* לא ch: היחידה נמדדת מול ה-font-size של האלמנט עצמו, ול-.s-head
+   אין כזה. 20ch נפתר מול ה-16px שנירשו מה-body ונתן טור של ~160px,
+   בעוד ה-h2 מרונדר ב-72px. כל מילה ארוכה מהטור נחתכה ע"י
+   .w{max-width:100%;overflow:hidden} במקום לגלוש. */
+.s-head{grid-column:1;max-width:min(100%,46rem)}
+.s-head h2{font-weight:200;font-size:clamp(32px,4.6vw,72px);line-height:1.05;letter-spacing:-.02em;
+  text-shadow:0 2px 30px rgba(236,236,238,.6)}
+.s-head h2 strong{font-weight:700}
+.s-head p{margin-top:22px;max-width:34ch;color:#6E6E76;font-weight:400;font-size:clamp(14px,1.1vw,17px);line-height:1.6}
+.s-head .cta{margin-top:30px}
+.s-side{grid-column:2;justify-self:end;align-self:end;text-align:start}
+.s-side p{font-size:clamp(14px,1.1vw,17px);font-weight:400;line-height:1.65;color:var(--ink)}
+.s-side .dim{color:#8A8A92}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{border:1px solid rgba(20,27,36,.3);border-radius:100px;padding:8px 16px;font-size:11px;letter-spacing:.1em;
+  transition:.35s var(--ease);cursor:default;background:rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+.chip:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media(max-width:900px){
+  .sphere-sec{min-height:auto}
+  /* הפריים תופס את החלק העליון בלבד */
+  #seq{height:62svh;bottom:auto}
+  /* דהייה שממיסה את תחתית הפריים אל רקע הטקסט */
+  .sphere-sec::after{background:linear-gradient(180deg,transparent 0%,transparent 52%,var(--paper) 78%)}
+  .sphere-grid{grid-template-columns:1fr;align-items:start;gap:20px;min-height:auto;
+    padding:calc(62svh - 40px) clamp(20px,5vw,40px) 70px}
+  .s-head,.s-side{grid-column:1;max-width:100%;justify-self:stretch}
+  .s-head h2{text-shadow:none;font-size:clamp(30px,8vw,46px)}
+  .s-head p,.s-side p{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}h1 .ln>span,.lede,.hero .cta{opacity:1;transform:none}}
+
+/* ============ עיגולי רקע (glow orbs) — PNG עם שקיפות אמיתית, בלי blend mode ============ */
+.orb-bg{position:absolute;pointer-events:none;background-size:contain;background-repeat:no-repeat;
+  background-position:center;z-index:0;will-change:transform}
+/* סקשן 1 — העיגול.
+   התיקון הקריטי: aspect-ratio נועל את היחס המקורי של הנכס (ריבועי),
+   ו-background-size:contain מבטיח שהוא לעולם לא נמתח.
+   הרוחב נגזר מהציר הגדול (max) — כך הוא תמיד גולש מעבר לקצוות בלי להימעך. */
+/* ── עיגול הרקע ──────────────────────────────────────────────
+   העוטף פשוט ממלא את ההירו (inset:0) — אין גבהים קבועים בכלל.
+   העיגול מצויר כרקע עם background-size:cover: הוא ממלא את הרוחב,
+   שומר על היחס המקורי (בלי מתיחה), וגולש מעבר לקצוות — "מרחף" מאחורי התוכן.
+   background-position ממסגר אנכית כך ששתי הקשתות נשארות בתוך המסך. */
+/* המסכה מדהה את תחתית העיגול, כך ש-overflow:hidden של ההירו
+   לא קוטם אותו בקו ישר בגבול הסקשנים. */
+.hero .orb-wrap{position:absolute;inset:0;z-index:1;
+  pointer-events:none;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 68%,transparent 96%);
+  mask-image:linear-gradient(180deg,#000 0%,#000 68%,transparent 96%)}
+.hero .orb-bg{position:absolute;inset:0;
+  background-image:url('/assets/orb-arcs.png');
+  background-size:cover;
+  background-position:center 45%;
+  background-repeat:no-repeat}
+@media(max-width:900px){
+  .hero .orb-bg{background-position:center 42%}
+}
+
+/* ============ מחוון סקשנים בתחתית ============ */
+/* ===== מחוון הסקשנים התחתון ===== */
+/* נעלמים בכניסה לפרויקטים — ה-JS מוסיף .is-gone.
+   הכלל הזה נדרס בהעלאת הקבצים, כך שה-JS הוסיף מחלקה
+   שאיש לא הקשיב לה. זו הסיבה שהפסים נשארו. */
+.bars-indicator.is-gone{opacity:0;pointer-events:none}
+.bars-indicator{
+  position:fixed; left:50%; bottom:2.5rem; z-index:7;
+  transform:translate(-50%,0);
+  user-select:none;
+  transition:opacity 1s ease-out;
+  display:flex;
+  align-items:flex-end;
+  gap:32px;
+  height:23px;
+}
+
+/* כל הפסים זהים לחלוטין — משתנה רק המיקום האנכי */
+.bars-indicator .bar{
+  width:2px;
+  height:23px;
+  background-color:var(--color-black-dark);
+  cursor:pointer;
+  transform:translateY(10px);
+  opacity:.4;
+  transition:transform .5s var(--ease), opacity .5s var(--ease);
+  will-change:transform;
+}
+
+/* הפס הפעיל עולה — הגובה לא משתנה */
+.bars-indicator[data-active-bar="1"] .bar-1,
+.bars-indicator[data-active-bar="2"] .bar-2,
+.bars-indicator[data-active-bar="3"] .bar-3,
+.bars-indicator[data-active-bar="4"] .bar-4,
+.bars-indicator[data-active-bar="5"] .bar-5{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* קו-התקדמות גלילה: רכבת דקה מרחפת בקצה ימין, נמסך מתחת ל-nav.
+   הרקע = מסילה כמעט-שקופה, המילוי כתום נמתח מלמעלה לפי ההתקדמות.
+   pointer-events:none — לעולם לא חוסם קליקים. */
+.scroll-prog{position:fixed;right:6px;top:64px;bottom:16px;width:3px;z-index:8;
+  pointer-events:none;background:rgba(16,24,32,.06);border-radius:3px}
+.scroll-prog__fill{display:block;width:100%;height:100%;border-radius:inherit;
+  transform:scaleY(0);transform-origin:top center;
+  background:var(--orange);opacity:.9;will-change:transform}
+html.menu-open .scroll-prog{opacity:0}
+
+@media(max-width:900px){.bars-indicator{bottom:1.75rem;gap:24px}}
+
+/* ============ SECTION 4 — SHOWREEL ============ */
+/* Option B — sticky: הסקשן גבוה מ-100vh כדי לתת מרווח גלילה, וה-reel-wrap
+   "נדבק" (position:sticky) בראש המסך בזמן שהסקשן נגלל תחתיו — משכפל את
+   ה"מוחזק ואז נסוג" של mdx בלי GSAP pin (בלי חישוב cross-pin שביר).
+   אין overflow:hidden — הוא שובר sticky. */
+.showreel{position:relative;min-height:185vh;
+  padding:0;background:var(--paper)}
+
+/* clip-path ולא border-radius+width: הצורה נחתכת מתוך בלוק מלא,
+   ולכן אפשר להנפיש אותה מ-8% ל-0% והווידאו נפתח החוצה.
+   8% הוא ברירת המחדל, כך שגם בלי JS הצורה נכונה. */
+.reel-wrap{position:sticky;top:0;width:100%;height:100vh;
+  clip-path:inset(3% round 2.2rem);
+  background:var(--color-black-soft);
+  transform-origin:center center;
+  will-change:clip-path,transform}
+
+.reel-video{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block}
+
+.reel-scrim{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(58% 58% at 50% 50%,rgba(0,0,0,.46) 0%,rgba(0,0,0,.2) 62%,rgba(0,0,0,.34) 100%)}
+
+/* ── כפתור הניגון ── */
+.reel-play{position:absolute;inset:0;margin:auto;
+  width:max-content;height:max-content;
+  display:flex;align-items:center;gap:clamp(16px,1.8vw,30px);
+  padding:16px 20px;border:0;background:none;color:#fff;
+  font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+.reel-label{font-size:clamp(22px,2.6vw,46px);font-weight:200;
+  letter-spacing:.005em;line-height:1.25;
+  text-shadow:0 2px 26px rgba(0,0,0,.4)}
+
+.reel-bar{flex:none;width:1px;height:clamp(20px,1.8vw,30px);
+  background:rgba(255,255,255,.55)}
+
+/* ── האייקון: שני משולשים בתוך מסגרת חותכת ──
+   אותו דפוס כמו .arw-box בניווט — עותק אחד יוצא, השני נכנס. */
+.reel-ico{position:relative;flex:none;display:grid;overflow:hidden;
+  width:clamp(52px,4.6vw,74px);aspect-ratio:1;
+  border:1px solid rgba(255,255,255,.7);border-radius:50%;
+  transition:background .55s var(--ease),border-color .55s var(--ease),transform .55s var(--ease)}
+.reel-ico .ply{grid-area:1/1;place-self:center;
+  width:36%;height:36%;margin-inline-start:5%;
+  transition:transform .55s var(--ease),color .55s var(--ease)}
+.reel-ico .p2{transform:translateX(-170%)}          /* ממתין מחוץ למסגרת */
+
+.reel-play:hover .p1{transform:translateX(170%)}    /* יוצא */
+.reel-play:hover .p2{transform:translateX(0)}       /* נכנס */
+.reel-play:hover .reel-ico{background:#fff;border-color:#fff}
+.reel-play:hover .reel-ico .ply{color:var(--ink)}
+.reel-play:active .reel-ico{transform:scale(.96)}
+.reel-play:focus-visible{outline:2px solid var(--orange);outline-offset:8px;border-radius:10px}
+
+@media(max-width:768px){
+  .showreel{min-height:auto}
+  .reel-wrap{min-height:78vh;clip-path:inset(4% round 1.4rem)}
+  .reel-play{gap:14px;padding:10px 14px}
+  .reel-label{font-size:19px}
+  .reel-ico{width:50px}
+}
+
+/* ============ מנוע האנימציה ============ */
+/* .w הוא החלון החותך, .w-i הוא מה שנע בתוכו.
+   ה-padding/margin מונע חיתוך של אותיות יורדות בעברית (ק, ן, ך). */
+/* max-width מונע מ-inline-block לגלוש: inline-block לא נשבר באמצע
+   מילה, ומילה ארוכה מהמיכל הייתה יוצאת ממנו במקום להתקפל. */
+.w{display:inline-block;overflow:hidden;vertical-align:top;
+   max-width:100%;
+   padding-bottom:.14em;margin-bottom:-.14em}
+.w-i{display:inline-block;will-change:transform}
+[data-animate]{will-change:transform,opacity}
+
+@media(prefers-reduced-motion:reduce){
+  .w-i{transform:none !important}
+  [data-animate]{opacity:1 !important;transform:none !important}
+}
+
+/* ============ SECTION 3 — IDEAS ============ */
+.ideas{position:relative;min-height:100vh;
+  display:flex;justify-content:center;align-items:center;
+  padding:clamp(110px,14vh,170px) clamp(20px,5vw,72px) max(15vh,140px);
+  overflow:hidden;background:var(--paper);
+  isolation:isolate}   /* קבוצת המיזוג */
+
+/* ── מכולת הרקע: פלקסבוקס ממרכז את השכבות ────────────────
+   בלי top ובלי translate — ואז ScrollTrigger לא יכול לשבור
+   את המיקום, כי אין ערך מיקום שתלוי בגלילה. */
+/* בלי pointer-events:none — כדי שאפשר יהיה לבחור את השכבות ב-DevTools.
+   הטקסט מעליהן בסדר ה-DOM ולכן נשאר לחיץ. */
+.ideas-bg{position:absolute;inset:0;
+  display:flex;justify-content:center;align-items:center}
+
+/* כל השכבות זו על גבי זו במרכז — position:absolute בתוך פלקס
+   ממורכז, כך שאף אחת לא דוחפת את השנייה */
+.ideas-layer{position:absolute;
+  will-change:transform;backface-visibility:hidden}
+
+/* 1 — עיגול CSS: ליבה חמה ורוויה */
+.ideas-layer--css{width:min(37vw,760px);aspect-ratio:1;
+  background:#ffaa52;border-radius:50%;
+  filter:blur(230px);
+  opacity:1;
+  /* הזחה אנכית דרך margin ולא top/transform:
+     האלמנט ממורכז ע"י הפלקס ההורה, ו-top היה מבטל את המירכוז.
+     transform שמור ל-GSAP (data-parallax), ו-z-index היה לוכד
+     את ה-mix-blend-mode של השכבה השכנה בתוך stacking context. */
+  margin-top:15px}
+
+/* 2 — הזוהר התמונתי.
+   ערכים מה-DevTools של הרפרנס: 500x450 (יחס 10:9, לא ריבוע),
+   top 72.7px = 8vh, ממורכז אופקית, mix-blend-mode:multiply.
+   cover ולא contain — כך הזוהר ממלא את המלבן במקום להצטמצם
+   לריבוע בתוכו ולהשאיר רצועות ריקות בצדדים. */
+.ideas-layer--glow{top:8vh;
+  width:min(26vw,500px);aspect-ratio:10/9;
+  background:url('/assets/orange-glow.png') center/cover no-repeat;
+  mix-blend-mode:multiply;
+  opacity:1}
+/* מצב אבחון — html.debug-layers מפעיל אותו מהקונסול */
+html.debug-layers .ideas-layer{outline:2px dashed rgba(255,0,0,.8);mix-blend-mode:normal !important}
+html.debug-layers .ideas-layer--css{outline-color:rgba(255,0,0,.9)}
+html.debug-layers .ideas-layer--glow{outline-color:rgba(0,120,255,.9)}
+html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
+
+/* דהייה בקצה העליון.
+   הטשטוש של עיגול ה-CSS מגיע 132px מעבר לראש הסקשן ונקטם שם
+   שטוח ע"י overflow:hidden — זה מה שיצר את הקו מול הסקשן הקודם.
+   השכבה הזו מחזירה את צבע הדף בהדרגה ומוחקת את החיתוך.
+   בלי mix-blend-mode, ולכן היא לא משפיעה על המיזוג של השכבות שמתחת. */
+.ideas-fade{position:absolute;top:0;left:0;right:0;height:30vh;
+  background:linear-gradient(180deg,var(--paper) 0%,rgba(241,239,237,.55) 45%,transparent 100%);
+  pointer-events:none}
+
+/* 3 — הכיפה: התמונה כמו שהיא.
+   בלי מסכה, בלי mix-blend-mode, בלי opacity, בלי filter. */
+/* ערכים מה-DevTools של הרפרנס: רוחב 1130px (= 58.9vw ב-1920,
+   וגם הגודל הטבעי של הנכס), top 200px (= 22vh), ממורכז אופקית.
+   הצמדה ל-top ולא מירכוז: הכיפה תופסת רק 48% מגובה הנכס,
+   ומירכוז דחף את הכתר המעוקל אל מחוץ למסך. */
+.ideas-layer--dome{top:22vh;width:min(59vw,1130px);height:auto;display:block}
+
+/* ── שכבה 4: התוכן — מעל לפי סדר DOM ────────────────────── */
+.ideas-grid{position:relative;
+  display:grid;justify-items:center;
+  width:100%;max-width:min(95vw,1560px);
+  text-align:center}
+
+/* ── טיפוגרפיה ──────────────────────────────────────────── */
+.ideas .eyebrow{margin:0 0 clamp(20px,3vh,34px);
+  color:var(--orange);
+  font-size:clamp(10px,.8vw,12px);font-weight:500;letter-spacing:.24em}
+
+.ideas-title{font-weight:200;margin:0;
+  font-size:clamp(38px,7.4vw,116px);
+  line-height:1.05;letter-spacing:-.03em;
+  text-wrap:balance}
+.ideas-title strong{font-weight:700}
+
+.ideas-lede{margin:clamp(24px,3.4vh,42px) 0 0;max-width:500px;
+  color:#6E6E76;font-weight:300;
+  font-size:clamp(15px,1.3vw,18px);line-height:1.7}
+.ideas-lede .dim{color:#9A9AA2}
+
+@media(max-width:768px){
+
+  /* ── ניווט ─────────────────────────────────────────────
+     ברפרנס המובייל: לוגו, מפריד ועיגול בצד אחד, המבורגר בשני.
+     ה-CTA הטקסטואלי יורד — אין לו מקום והוא זה שדחס את השורה. */
+  nav{padding:26px 20px}
+  nav.stuck{padding:16px 20px}
+  .logo{font-size:15px;letter-spacing:.14em}
+  .brand{gap:11px}
+  .divider{height:14px}
+  .dash{width:26px;height:26px}
+  .talk{display:none}          /* ← מה שגרם לצפיפות */
+  .nav-sep{display:none}
+  .talk{font-size:14px;gap:7px}
+  .talk .arw-box{width:18px;height:18px}
+  .right{gap:0}
+  .burger{width:44px;padding:17px 0;gap:6px;align-items:center}
+  .burger i{width:34px;height:2px}
+  /* הגדלת אזור המגע של קישורי התפריט בלי לשנות פריסה: padding חיובי
+     שממלא את המרווח + margin שלילי שמבטל אותו. המיקום הוויזואלי זהה,
+     אבל הלחיצה גדלה מ-19px ל-~29px ומרצפת את כל הטור בלי אזורים מתים. */
+  .menu__navigation-item{padding-block:5px;margin-block:-5px}
+
+  /* ── סקשן הפריימים ─────────────────────────────────────
+     הדהייה הייתה 240px קבועים בכל קצה. במסך 800px זה 480px
+     מתוך 800 — הסרטון היה שם אבל כמעט שקוף לכל אורכו. */
+  /* רצועה מעוגנת למעלה. 44svh במקום 62svh: סקשן לאורך מכריח פריים
+     16:9 להתנפח כדי לכסות לגובה, ורצועה נמוכה יותר מחזירה חדות
+     (x1.32 במקום x4.5). הטקסט יושב מתחתיה, לא עליה. */
+  #seq{top:0;bottom:auto;height:44svh;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4svh,#000 calc(100% - 7svh),transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 4svh,#000 calc(100% - 7svh),transparent 100%)}
+  .sphere-sec::after{background:linear-gradient(180deg,transparent 0%,transparent 34%,var(--paper) 52%)}
+  .sphere-grid{padding:calc(44svh + 10px) 20px 88px;gap:26px;align-items:start}
+
+  /* ── טיפוגרפיה ומרווחים ─────────────────────────────── */
+  .s-head h2{font-size:clamp(26px,7.6vw,36px);line-height:1.18;text-shadow:none}
+  .s-head p{font-size:15px;line-height:1.6;margin-top:14px;max-width:none}
+  .s-head .cta{margin-top:24px}
+  .s-side{margin-top:4px}
+  .s-side p{font-size:14px;line-height:1.65}
+
+  /* ── מטרות מגע: 48px מינימום לכפתור, 40px לצ'יפ ──────── */
+  .cta{padding:0 26px;min-height:48px;font-size:14px;gap:12px}
+  .chips{gap:8px;margin-top:18px}
+  .chip{min-height:40px;display:inline-flex;align-items:center;
+    padding:0 15px;font-size:11px}
+
+  /* ── הירו ───────────────────────────────────────────── */
+  .hero{padding:clamp(96px,16vh,130px) 20px clamp(80px,12vh,110px)}
+
+  /* ── סקשן שלישי ────────────────────────────────────────
+     הזוהר גבוה וקטן, הכיפה רחבה מתחתיו, הטקסט ממורכז. */
+  .ideas{padding:clamp(90px,12vh,130px) 20px max(16vh,130px)}
+  .ideas-layer--css{width:86vw;height:52vh;filter:blur(90px);opacity:.9}
+  .ideas-layer--glow{top:12vh;width:min(62vw,300px)}
+  .ideas-layer--dome{top:26vh;width:min(150vw,620px)}
+  .ideas-fade{height:20vh}
+  .ideas .eyebrow{font-size:10px;letter-spacing:.2em;margin-bottom:16px}
+  .ideas-title{font-size:clamp(28px,8.4vw,44px);line-height:1.15}
+  .ideas-lede{font-size:14px;line-height:1.65;margin-top:18px;max-width:90%}
+
+  /* ── מחוון הסקשנים ─────────────────────────────────── */
+  .bars-indicator{bottom:1.6rem;gap:18px;height:16px}
+  .bars-indicator .bar{height:16px}
+}
+
+
+/* ════════════════ SECTION 5 — WORK / פרויקטים ════════════════
+   כותרת + כפתור "כל הפרויקטים" בשורה אחת, פילטרים, רשת 2 טורים.
+   הפילטור הוא CSS בלבד (attribute hidden) — לא אנימציה, ולכן
+   לא יכול "להעלים תוכן בשקט" אם GSAP נכשל. */
+.work{position:relative;
+  background:#000;
+  padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px) clamp(110px,16vh,175px);
+  display:flex;flex-direction:column;gap:clamp(26px,3.6vh,44px)}
+
+.work-head{display:flex;align-items:center;justify-content:space-between;
+  gap:24px;flex-wrap:wrap}
+.work-title{margin:0;font-weight:500;color:#fcfcfd;
+  font-size:clamp(34px,5vw,65px);line-height:1.02;letter-spacing:-.02em}
+.work-title strong{font-weight:700}
+
+/* כפתור המתאר — אותו דפוס חץ כמו ה-CTA, בגרסה שקופה.
+   על רקע כהה: מסגרת בהירה, טקסט בהיר, הובר הופך ללבן מלא. */
+.ghost{display:inline-flex;align-items:center;gap:14px;flex:0 0 auto;
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid rgba(255,255,255,.28);border-radius:100px;
+  padding:0 clamp(20px,1.8vw,30px);min-height:clamp(42px,3.2vw,48px);
+  background:transparent;color:#fcfcfd;text-decoration:none;
+  font-family:inherit;font-size:clamp(12px,.95vw,14px);letter-spacing:.1em;
+  cursor:pointer;transition:color .45s var(--ease),border-color .45s var(--ease)}
+.ghost:hover{border-color:transparent}
+/* כשהמילוי הכתום מכסה את הכפתור, החץ הכתום נעלם — צובעים אותו כהה
+   כדי שיישאר נראה על הרקע הכתום. */
+.ghost:hover .arw{stroke:var(--ink)}
+.ghost .arw-box{width:17px;height:17px}
+.ghost:hover .a1{transform:translate(-115%,-115%)}
+.ghost:hover .a2{transform:translate(0,0)}
+
+/* ── פילטרים ─────────────────────────────────────────────── */
+.work-filters{display:flex;flex-wrap:wrap;gap:clamp(8px,.9vw,15px)}
+.filt{display:inline-flex;align-items:center;
+  position:relative;overflow:hidden;isolation:isolate;
+  border:1px solid #454545;border-radius:100px;
+  padding:0 clamp(22px,2.6vw,42px);min-height:clamp(46px,3.6vw,58px);
+  background:transparent;color:#fcfcfd;
+  font-family:inherit;font-size:clamp(14px,1.15vw,19px);font-weight:400;letter-spacing:.04em;
+  cursor:pointer;white-space:nowrap;
+  transition:background .45s var(--ease),color .45s var(--ease),border-color .45s var(--ease)}
+/* אפקט Origin: מילוי מעגלי שמתרחב בדיוק מנקודת כניסת הסמן וקורס
+   לכיוון היציאה. --ox/--oy = מיקום הסמן, --od = קוטר כיסוי, --os =
+   מצב הסקייל (0/1) — כולם נקבעים ב-JS. התנועה על עקומת החתימה.
+   z-index:-1 + isolation מציבים אותו מאחורי הטקסט; overflow חותך לפיל. */
+.filt::before,.ghost::before{content:'';position:absolute;z-index:-1;
+  left:var(--ox,50%);top:var(--oy,50%);
+  width:var(--od,320px);height:var(--od,320px);
+  margin-left:calc(var(--od,320px) / -2);margin-top:calc(var(--od,320px) / -2);
+  border-radius:50%;background:var(--orange);
+  transform:scale(var(--os,0));transform-origin:center;
+  transition:transform .55s var(--ease)}
+.filt[aria-pressed="true"]::before{transform:scale(0)}
+.filt:hover{border-color:transparent}
+.filt[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+.filt:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+
+/* ── רשת הכרטיסים ────────────────────────────────────────── */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);
+  gap:clamp(30px,3.6vh,52px) clamp(18px,2.2vw,34px)}
+.card{display:block;text-decoration:none;color:inherit}
+.card[hidden]{display:none}
+
+.card-media{position:relative;overflow:hidden;
+  border-radius:clamp(18px,1.6vw,30px);aspect-ratio:16/10;background:var(--silver)}
+/* השכבה שזזה — נפרדת מהמסגרת החותכת, ולכן ההגדלה לא מזיזה את הפינות */
+.card-shot{position:absolute;inset:0;
+  transition:transform 1.1s var(--ease);will-change:transform}
+.card:hover .card-shot{transform:scale(1.05)}
+
+/* ⚠ ממלאי מקום. החלף ב-<img> של צילום הפרויקט האמיתי. */
+.shot-a{background:radial-gradient(125% 125% at 22% 14%,#FFD9AE 0%,#FF8A3D 46%,#E4550C 100%)}
+.shot-b{background:radial-gradient(125% 125% at 78% 20%,#FFC7B6 0%,#E24B3C 48%,#7C1D14 100%)}
+.shot-c{background:radial-gradient(125% 125% at 28% 82%,#D2ECF7 0%,#4FA9D8 46%,#123A54 100%)}
+
+.card-foot{display:flex;flex-direction:column-reverse;align-items:flex-start;
+  gap:clamp(8px,1vh,16px);margin-top:clamp(18px,2.4vh,30px)}
+.card-tags{color:#8c8c8c;font-size:clamp(13px,1.05vw,20px);letter-spacing:.04em;text-transform:uppercase}
+.card-name{display:inline-flex;align-items:center;gap:clamp(10px,1.2vw,18px);color:#fcfcfd;
+  font-size:clamp(24px,3vw,40px);font-weight:400;letter-spacing:.01em}
+.card-name .arw-box{width:clamp(22px,2.4vw,32px);height:clamp(22px,2.4vw,32px)}
+.card:hover .card-name .a1{transform:translate(-115%,-115%)}
+.card:hover .card-name .a2{transform:translate(0,0)}
+
+.work-more{display:flex;justify-content:center;margin-top:clamp(14px,2vh,26px)}
+
+
+
+
+/* ════════════════ SECTION 6 — LET'S TALK ════════════════
+   מדידות מגיליון הסגנון של הרפרנס. שם html{font-size:0.5208vw},
+   כלומר ב-1920px רוחב 1rem שווה בדיוק 10px — לפי זה הומרו
+   כל הערכים. עטפתי אותם ב-clamp כדי שיישארו במערכת שלנו
+   במקום לייבא את פריצת ה-rem-מבוסס-vw שלהם. */
+
+/* הרפרנס מעמיד את כל האזור על #fff. הכרטיס שם הוא לבן ב-25%
+   על לבן, כלומר המילוי בלתי נראה במכוון — מה שמגדיר אותו הוא
+   הצל בלבד. בלי הרקע הבהיר הכרטיס לא יכול לעבוד. */
+.contact{position:relative;background:#FCFCFC;
+  padding:clamp(60px,10vh,100px) clamp(12px,2.6vw,50px) clamp(24px,4vh,40px)}
+
+/* המסגרת יושבת על מכולת ה-flex עצמה, לא על עטיפה נפרדת.
+   זו הייתה הטעות: המצאתי .contact-card כשהרפרנס נותן את
+   הרקע, הפינות והצל ל-.lets-talk-flex.
+   align-items:flex-end — שני הטורים מיושרים לתחתית. */
+.lets-talk-flex{position:relative;z-index:1;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:clamp(40px,6.8vw,130px);
+  padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
+  border-radius:clamp(20px,1.6vw,30px);
+  background:rgba(255,255,255,.25);
+  /* ערכי הרפרנס במדויק. הטבעת שלהם היא rgb(230,236,242) ב-8% —
+     כחלחלה־בהירה. שמתי כהה ב-5.5%, ועל רקע בהיר טבעת כהה הופכת
+     לקו חד. זה היה הסטרוק. */
+  box-shadow:0 10px 36px rgba(16,24,32,.06),
+             0 0 0 1px rgba(230,236,242,.08);
+  max-width:1820px;margin-inline:auto}
+
+/* הזוהר. גרדיאנטים ולא filter:blur() — מסנן בתוך overflow:hidden
+   נחתך בגבול והדפדפן משאיר שם קצה חד. */
+.lets-talk__ellipse{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(56vw 52vw at 96% 0%,
+      rgba(245,135,47,.24) 0%, rgba(248,158,86,.15) 26%,
+      rgba(255,184,120,.08) 48%, rgba(255,214,178,.02) 74%,
+      rgba(255,214,178,0) 100%),
+    radial-gradient(44vw 40vw at 0% 100%,
+      rgba(245,135,47,.15) 0%, rgba(255,184,120,.06) 46%,
+      rgba(255,214,178,0) 100%)}
+
+/* ── טור המידע ── */
+.lets-talk__info{display:grid;flex-shrink:0}
+
+.lets-talk__info-connect{display:flex;align-items:center;
+  gap:clamp(9px,.8vw,15px);margin:0 0 clamp(18px,1.5vw,28px);
+  color:var(--orange);font-weight:400;
+  font-size:clamp(12px,1.05vw,20px)}
+.lets-talk__info-connect-icon{width:10px;height:10px;border-radius:50%;
+  background:var(--orange);flex:none}
+
+.lets-talk__info-heading{margin:0;font-weight:200;
+  font-size:clamp(32px,4.2vw,80px);line-height:1;
+  letter-spacing:-.01em;max-width:min(100%,800px)}
+.lets-talk__info-heading strong{font-weight:700}
+
+.lets-talk__info-divider{width:71px;height:1px;background:#8a8f8d;
+  margin-block:clamp(28px,3.2vw,60px) clamp(16px,1.4vw,25px);
+  display:block;flex-shrink:0}
+
+/* margin-bottom הגדול הוא מה שדוחף את הרשתות והמייל לתחתית
+   הטור, בשילוב עם align-items:flex-end על ההורה. */
+.lets-talk__info-subheading{margin:0 0 clamp(60px,11.5vw,220px);
+  color:#5b6871;font-weight:300;
+  font-size:clamp(14px,1vw,19px);line-height:1.2;
+  max-width:min(100%,34ch)}
+
+.lets-talk__socials{display:flex;align-items:center;gap:10px}
+.lets-talk__socials.--is-desktop{margin-bottom:clamp(16px,1.6vw,30px)}
+.lets-talk__socials.--is-mobile{display:none}
+.lets-talk__socials-link{position:relative;border-radius:50%;
+  width:clamp(30px,1.9vw,35px);height:clamp(30px,1.9vw,35px);
+  border:1px solid #5b6871;display:grid;place-items:center;
+  color:#5b6871;transition:.4s var(--ease)}
+.lets-talk__socials-link:hover{background:var(--ink);color:#fff;
+  border-color:var(--ink)}
+.lets-talk__socials-link svg{width:17px;height:15px;fill:currentColor}
+
+.lets-talk__contact-Email{display:flex;align-items:center;gap:10px;
+  margin-top:clamp(16px,1.6vw,30px);
+  transition:opacity .3s ease-out}
+.lets-talk__contact-Email:hover{opacity:.8}
+.lets-talk__contact-Email svg{width:23px;height:25px;flex-shrink:0;
+  fill:none;stroke:currentColor;stroke-width:1.6}
+.lets-talk__contact-Email span:last-child{color:#5b6871;
+  font-size:clamp(13px,1.05vw,20px);text-decoration:underline}
+.lets-talk__info-connect-icon.--mail{width:auto;height:auto;
+  background:none;border-radius:0;display:grid;place-items:center;
+  color:#5b6871}
+
+/* ── הטופס ── */
+.lets-talk__form-wrapper{display:grid;height:100%;
+  gap:clamp(24px,2.6vw,50px);
+  min-width:min(100%,747px);flex:1}
+.lets-talk__form-title{margin:0;font-weight:500;
+  font-size:clamp(26px,2.4vw,45px);line-height:1.1;letter-spacing:.03em}
+.lets-talk__form{display:grid;gap:10px;width:100%}
+
+.form-group{display:flex;gap:clamp(14px,1.3vw,25px);align-items:center}
+.form-group.--is-submit{margin-top:clamp(16px,1.3vw,25px);display:grid}
+
+.form-group-field{position:relative;flex-grow:1}
+
+/* התוויות מוסתרות ויזואלית ונשארות לקוראי מסך.
+   הרפרנס מציג את שם השדה כ-placeholder, לא כתווית צפה —
+   ולכן כל מנגנון התווית הצפה שבניתי קודם הוסר. */
+.form-label{position:absolute;width:0;height:0;overflow:hidden;
+  margin:0;padding:0;clip-path:inset(50%)}
+
+.form-input{color:var(--ink);font-family:inherit;font-weight:300;
+  font-size:clamp(15px,.9vw,17px);line-height:1.3;
+  background-color:transparent;border:none;
+  border-bottom:1px solid rgba(20,27,36,.55);
+  padding-block:clamp(12px,.85vw,16px);width:100%;
+  border-radius:0;outline:none;
+  transition:border-color .4s var(--ease)}
+.form-input::placeholder{color:#8a8f8d}
+.form-input:focus{border-bottom-color:var(--orange)}
+.form-input.is--textarea{resize:none;width:100%;
+  min-height:min(146px,14.6vh)}
+
+/* חריץ שגיאה לכל שדה, בגובה שמור מראש כדי שהופעת
+   ההודעה לא תקפיץ את הפריסה. */
+.form-error{height:15px;margin-top:5px;width:100%;
+  font-size:13px;letter-spacing:.2px;color:#D24B2E;
+  opacity:0;transition:opacity .3s ease-out}
+.form-group-field.--has-error .form-error{opacity:1}
+.form-group-field.--has-error .form-input{border-bottom-color:#D24B2E}
+
+.form-group-field.--is-checkbox{margin-top:clamp(10px,1vw,18px)}
+.form-label.--is-static{all:unset;color:#8a8f8d;display:block;
+  font-family:inherit;font-size:clamp(14px,.9vw,17px);
+  margin-bottom:clamp(12px,1vw,20px)}
+
+.interest-options{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.interest-option{border-radius:30px;border:1px solid var(--color-black-soft);
+  overflow:hidden;background:transparent;color:var(--color-black-soft);
+  font-family:inherit;font-weight:300;line-height:1;
+  font-size:clamp(13px,.9vw,17px);
+  padding:clamp(9px,.65vw,12px) clamp(15px,1.3vw,25px);
+  cursor:pointer;transition:all .3s ease-out}
+.interest-option:hover{background:rgba(16,24,32,.06)}
+.interest-option[aria-pressed="true"]{background:var(--color-black-soft);
+  color:#fcfcfd}
+
+.cta-1{width:100%;min-height:clamp(52px,3.6vw,68px);
+  display:inline-flex;align-items:center;justify-content:center;gap:14px;
+  border:0;border-radius:100px;background:var(--ink);color:#fff;
+  font-family:inherit;font-size:clamp(14px,1.1vw,17px);letter-spacing:.06em;
+  cursor:pointer;
+  transition:transform .4s var(--ease),background .4s var(--ease)}
+.cta-1:hover{transform:scale(.96);background:var(--color-black-dark)}
+.cta-1:active{transform:scale(.965)}
+.cta-1 .arw-box{width:19px;height:19px}
+.cta-1:hover .a1{transform:translate(-115%,-115%)}
+.cta-1:hover .a2{transform:translate(0,0)}
+.cta-1:disabled{pointer-events:none;opacity:.5;user-select:none}
+
+.form-status{height:15px;width:100%;margin-top:6px;
+  font-size:14px;letter-spacing:.2px;text-align:center;
+  transition:all .3s ease-out;color:#6E6E76}
+.form-status.--is-error{color:#D24B2E}
+.form-status.--is-success{color:#1F7A4D}
+
+@media(max-width:768px){
+  .contact{padding:clamp(50px,9vh,95px) 10px clamp(30px,6vh,65px)}
+  .lets-talk-flex{flex-direction:column;align-items:flex-start;
+    justify-content:flex-start;
+    padding:clamp(40px,7vh,55px) 24px clamp(56px,10vh,80px);
+    border-radius:20px;gap:clamp(40px,8vh,85px)}
+  .lets-talk__info-heading{width:100%;max-width:none;font-size:clamp(28px,9vw,40px)}
+  .lets-talk__info-connect{margin-bottom:clamp(20px,4vh,35px)}
+  .lets-talk__info-divider{margin-block:clamp(28px,5vh,45px) clamp(18px,3vh,30px)}
+  /* הרפרנס מסתיר את תת-הכותרת במובייל לגמרי */
+  .lets-talk__info-subheading{display:none}
+  .lets-talk__socials.--is-desktop{display:none}
+  .lets-talk__socials.--is-mobile{display:flex;margin:clamp(16px,3vh,26px) 0}
+  .lets-talk__contact-Email{margin-bottom:0}
+  .lets-talk__form-wrapper{gap:clamp(22px,4vh,35px);min-width:0;width:100%}
+  .lets-talk__form-title{font-size:30px}
+  .form-group{flex-direction:column;gap:0;align-items:stretch}
+  .form-input{font-size:16px}
+  .form-input.is--textarea{min-height:90px;margin-top:10px}
+  .interest-option{font-size:13px;padding:8px 14px}
+  .form-error{font-size:11px}
+}
+
+/* ════════════════ SECTION 7 — FOOTER ════════════════ */
+.foot{position:relative;background:#000;color:#fcfcfd;overflow-x:clip;
+  padding:clamp(70px,10vh,120px) clamp(20px,3.2vw,40px) clamp(34px,5vh,56px)}
+.foot-in{max-width:1560px;margin-inline:auto}
+
+.foot-top{display:grid;grid-template-columns:1.35fr 1fr;
+  gap:clamp(40px,5vw,90px);align-items:start;
+  margin-bottom:clamp(30px,4vh,56px)}
+.foot-q{margin:0;font-weight:200;
+  font-size:clamp(26px,3.6vw,52px);line-height:1.16;letter-spacing:-.022em}
+.foot-q .dim{color:#7C8188}
+
+.foot-mail{display:inline-flex;align-items:center;gap:14px;
+  margin-top:clamp(26px,3.6vh,46px);color:#fff;text-decoration:none;
+  font-size:clamp(19px,2.1vw,32px);font-weight:300}
+.foot-mail svg{width:1em;height:1em;flex:none;fill:currentColor}
+.foot-mail span{transition:color .4s var(--ease)}
+.foot-mail:hover span{color:var(--orange)}
+
+.foot-awards{display:flex;flex-direction:column;align-items:flex-end;
+  gap:clamp(16px,2.2vh,24px);text-align:left}
+.foot-awards h3{margin:0;font-weight:200;
+  font-size:clamp(21px,2.4vw,36px);letter-spacing:-.02em}
+.foot-awards p{margin:0;max-width:34ch;
+  color:#8A8F95;font-weight:300;font-size:clamp(13px,1vw,15px);line-height:1.65}
+.foot-badges{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:clamp(18px,2.4vw,40px);
+  align-items:center;color:#C9CCD0;
+  font-size:clamp(12px,1vw,15px);letter-spacing:.06em}
+
+.foot-rule{height:2px;background:#8a8f8d;opacity:.3;
+  margin:clamp(38px,5.5vh,72px) 0 clamp(30px,4vh,50px)}
+
+/* מדידות מגיליון הרפרנס. שם 1rem=10px ב-1920px רוחב,
+   ולכן 3.11rem הפך ל-31px, 1.63rem ל-16px וכן הלאה. */
+.foot-cols{display:flex;justify-content:space-between;gap:clamp(20px,2vw,32px);flex-wrap:wrap}
+.foot-col{width:clamp(140px,16vw,306px);gap:clamp(12px,1.4vw,20px)}
+.foot-col h4{margin:0 0 clamp(16px,2.2vh,26px);color:#7C8188;font-weight:400;
+  font-size:clamp(11px,.85vw,13px);letter-spacing:.14em}
+.foot-col ul{list-style:none;margin:0;padding:0;display:grid;gap:clamp(9px,1.3vh,15px)}
+.foot-col a{color:#EDEBE9;text-decoration:none;font-weight:300;
+  font-size:clamp(14px,1.15vw,18px);transition:color .35s var(--ease)}
+.foot-col a:hover{color:var(--orange)}
+
+/* ── ה-wordmark ── */
+.foot-mark{display:flex;justify-content:space-between;align-items:flex-start;
+  width:100%;margin:clamp(30px,5vh,64px) 0 clamp(24px,3vw,42px);
+  direction:ltr;line-height:.82;
+  font-weight:800;letter-spacing:-.02em;color:#fcfcfd;
+  -webkit-user-select:none;user-select:none;overflow:visible}
+/* 13.4vw נתן ~257px, ושתי המילים יחד תפסו כ-1900px בתוך מכולה
+   של 1560 — האותיות נחתכו בקצה הימני. 9vw משאיר מרווח ביניהן. */
+.foot-mark__inner{font-size:clamp(28px,9vw,175px);display:block;white-space:nowrap}
+
+/* ── שורת התחתית ── */
+.foot-bottom{display:grid;grid-template-areas:"stack";
+  padding-top:clamp(16px,2vw,28px);
+  border-top:1px solid rgba(255,255,255,.12)}
+
+.foot-soc{grid-area:stack;justify-self:start;align-self:center;
+  display:flex;align-items:center;gap:clamp(18px,3.4vw,45px)}
+.foot-soc__link{color:#8a8f8d;transition:color .3s ease-out}
+.foot-soc__link:hover{color:#fcfcfd}
+.foot-soc__link svg{width:19px;height:19px;fill:currentColor;display:block}
+
+.foot-copy{grid-area:stack;justify-self:center;align-self:center;
+  display:flex;align-items:center;gap:clamp(16px,4.6vw,64px);
+  color:#8a8f8d;font-weight:400;font-size:clamp(12px,1.1vw,17px)}
+.foot-copy a{color:inherit;text-decoration:none;transition:color .3s ease-out}
+.foot-copy a:hover{color:#fcfcfd}
+
+.foot-backtop{grid-area:stack;justify-self:end;align-self:center;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  background:none;border:0;padding:0;color:#fcfcfd;font-family:inherit;
+  transition:opacity .3s ease-out}
+.foot-backtop:hover{opacity:.75}
+.foot-backtop__text{font-weight:500;font-size:clamp(13px,1.3vw,20px);letter-spacing:.03em}
+.foot-backtop__icon{width:22px;height:22px;flex-shrink:0}
+.scroll-top{display:inline-flex;align-items:center;justify-content:center;
+  width:clamp(38px,3vw,46px);height:clamp(38px,3vw,46px);border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);background:transparent;color:#EDEBE9;
+  cursor:pointer;flex-shrink:0;transition:background .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
+.scroll-top:hover{background:#EDEBE9;color:var(--ink);border-color:#EDEBE9}
+
+/* המחוון כהה כברירת מחדל ונבלע בפוטר — מתהפך רק שם */
+
+
+/* ════════════════ מובייל — שלושת הסקשנים החדשים ════════════════ */
+@media(max-width:768px){
+  .work{padding:clamp(70px,10vh,110px) 20px clamp(80px,12vh,120px);gap:24px}
+  .work-head{gap:16px}
+  .work-title{font-size:clamp(26px,7.6vw,38px)}
+  .ghost{min-height:44px;font-size:12px}
+  /* גלילה אופקית לפילטרים — עדיף על שבירה לשלוש שורות */
+  .work-filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    margin-inline:-20px;padding-inline:20px;-webkit-overflow-scrolling:touch}
+  .work-filters::-webkit-scrollbar{display:none}
+  .filt{min-height:42px;font-size:13px;padding:0 18px}
+  .work-grid{grid-template-columns:1fr;gap:32px}
+  .card-name{font-size:26px}
+  .card-tags{font-size:14px}
+
+
+  .foot{padding:70px 20px 34px}
+  .foot-top{grid-template-columns:1fr;gap:40px}
+  .foot-q{font-size:clamp(23px,6.6vw,32px)}
+  .foot-mail{font-size:20px;margin-top:24px}
+  .foot-cols{gap:30px 20px}
+  .foot-col{width:calc(50% - 20px)}
+  .foot-mark{margin-bottom:28px}
+  .foot-mark__inner{font-size:clamp(30px,12.5vw,64px)}
+  .foot-bottom{grid-template-areas:"copy copy" "soc top";row-gap:clamp(24px,5vh,48px)}
+  .foot-soc{grid-area:soc;justify-self:start;gap:16px}
+  .foot-copy{grid-area:copy;justify-self:stretch;
+    justify-content:space-between;gap:8px;font-size:11px}
+  .foot-backtop{grid-area:top;justify-self:end}
+  .foot-backtop__text{font-size:13px}
+  .foot-col a{font-size:15px}
+  /* המחוון מסתיר תוכן בפוטר הצפוף */
+}
+
+
+/* ════════ תיקוני מובייל — סבב צילומים 1–5 ════════ */
+@media(max-width:768px){
+
+  /* 1 — הניווט. שקוף לפי עיצוב, אבל במובייל הוא נופל על התוכן:
+     הלוגו נבלע בפוטר הכהה, וכרטיס הפרויקט הראשון עובר מתחתיו
+     בלי הפרדה. רקע מטושטש קריא על רקע בהיר וכהה כאחד.
+     הפיך: מחיקת הבלוק מחזירה שקיפות מלאה. */
+  nav{background:rgba(241,239,237,.72);
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(20,27,36,.07)}
+
+  /* 2 — מחוון הסקשנים יושב על שורת הצ'יפים ועל הכרטיסים.
+     במובייל הוא ממילא לא ניתן ללחיצה נוחה. */
+  .bars-indicator{display:none}
+
+  /* 3 — כותרת הפרויקטים. הכפתור נדחק לצד כותרת דו-שורתית
+     ומתיישר למרכזה. עמודה, שניהם מיושרים להתחלה. */
+  .work-head{flex-direction:column;align-items:flex-start;gap:18px}
+  .work-head .ghost{align-self:flex-start}
+
+  /* 4 — כותרת הכרטיס. space-between דחף את התגיות לקצה אחד
+     ואת השם לשני. ברפרנס הם מוערמים ומיושרים לאותו קו. */
+  .card-foot{flex-direction:column;align-items:flex-start;gap:6px}
+  .card-tags{order:-1}
+}
+
+/* .s-side נשא את אותו דפוס כמו .s-head: max-width ב-ch מול
+   ה-16px שנירשו מה-body, כלומר טור של ~304px. הוא לא נחתך
+   כי פסקה נשברת בין מילים, אבל הוא צר מהנדרש. */
+.s-side{max-width:min(100%,30rem)}
+
+
+
+
+/* ════════════════ SERVICES / CRAFT — סקשן עצמאי ════════════════
+   שלוש שכבות באותו מרחב מוצמד:
+   .vimeo-bg(0) → .craft-pills(2) → .craft-flex ו-.craft-copy(3) */
+
+.craft{position:relative;
+  background:
+    radial-gradient(38vw 40vw at -6% 32%,
+      rgba(255,103,17,.10) 0%, rgba(255,184,120,.05) 40%, transparent 70%),
+    radial-gradient(34vw 38vw at 106% 68%,
+      rgba(255,103,17,.09) 0%, rgba(255,184,120,.045) 42%, transparent 70%),
+    var(--paper);overflow:hidden;
+  min-height:100svh;isolation:isolate;
+  padding:clamp(90px,13vh,150px) clamp(20px,3.2vw,40px)}
+
+/* ── שכבה 0: הלופ ──
+   הרקע מתחת לווידאו הוא לא קישוט: אם הסרטון לא נטען,
+   הסקשן נראה מכוון במקום מלבן שחור. */
+/* ── הסרטון המרכזי ──
+   ממוקם נמוך יותר ממרכז הסקשן (translateY חיובי) כמו ברפרנס,
+   וממוסך ב-radial-gradient כך שהקצה האפרפר של הסרטון נמס אל
+   הנייר במקום להיחתך בריבוע. mask ולא filter:blur — blur בתוך
+   מסגרת יוצר קצה קשה, המסכה נותנת מעבר אמיתי. */
+.craft-video{position:absolute;inset:0;z-index:0;pointer-events:none;
+  display:grid;place-items:center}
+.craft-video__el{
+  /* הוכפל: היה 720 עם cover שחתך אותו. עכשיו contain כדי
+     לראות את מלוא הסרטון, ורחב יותר. */
+  width:min(130vh,88vw,1360px);aspect-ratio:16/9;
+  object-fit:contain;
+  transform:translateY(7%);           /* יורד נמוך יותר */
+  -webkit-mask-image:radial-gradient(ellipse 54% 54% at 50% 50%,
+     #000 46%, rgba(0,0,0,.55) 66%, transparent 84%);
+          mask-image:radial-gradient(ellipse 54% 54% at 50% 50%,
+     #000 46%, rgba(0,0,0,.55) 66%, transparent 84%)}
+
+
+/* שאריות מ-.vimeo-bg, לא בשימוש עוד אבל נשמר למקרה */
+.vimeo-bg{position:absolute;inset:0;z-index:0;overflow:hidden;
+  pointer-events:none;
+  background:
+    radial-gradient(46vw 44vw at 50% 52%,
+      rgba(255,214,178,.55) 0%, rgba(255,232,210,.28) 45%, transparent 74%),
+    var(--paper)}
+.vimeo-bg video{width:100%;height:100%;object-fit:cover;display:block}
+/* דהייה בארבעת הקצוות. mask פועל על אלפא ולכן הקצה באמת נעלם,
+   בניגוד ל-mix-blend-mode שפועל על צבע בלבד. */
+.vimeo-bg.is--loop{
+  -webkit-mask-image:radial-gradient(ellipse 70% 64% at 50% 50%,#000 40%,transparent 100%);
+          mask-image:radial-gradient(ellipse 70% 64% at 50% 50%,#000 40%,transparent 100%)}
+
+/* ── שכבה 3: הטקסט העליון ── */
+.craft-flex{position:relative;z-index:3;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:clamp(28px,5vw,90px);flex-wrap:wrap;
+  max-width:1560px;margin-inline:auto}
+.craft-heading{margin:0;font-weight:200;
+  font-size:clamp(28px,4.2vw,60px);line-height:1.1;letter-spacing:-.025em;
+  max-width:min(100%,34rem)}
+.craft-heading strong{font-weight:700}
+.craft-text{margin:0;max-width:min(100%,26rem);align-self:flex-start;
+  color:#9A9AA2;font-weight:300;
+  font-size:clamp(14px,1.15vw,17px);line-height:1.65}
+.craft-text span{color:var(--ink)}
+
+/* ── שכבה 2: הגלולות ── */
+.craft-pills{position:absolute;inset:0;z-index:2;pointer-events:none}
+
+/* שתי שכבות: שכבת-מיקום חיצונית (.craft-pill-pos) נושאת את הפיזור
+   (spread) והמרכוז; הגלולה עצמה (.craft-pill) נושאת את הריחוף. כך
+   הגלולה כולה מרחפת והטקסט תמיד ממורכז בתוכה, בלי ששתי האנימציות
+   מתנגשות על אותו אלמנט. */
+.craft-pill-pos{position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;will-change:transform}
+.craft-pill{position:relative;pointer-events:auto;text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:clamp(10px,1.1vw,15px);
+  padding:clamp(14px,1.7vw,23px) clamp(22px,2.5vw,34px);
+  border-radius:68px;
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(8.5px);-webkit-backdrop-filter:blur(8.5px);
+  box-shadow:12px 16px 60px rgba(0,0,0,.07);
+  color:#101820;font-weight:400;white-space:nowrap;
+  font-size:clamp(18px,1.9vw,30px);letter-spacing:.03em;line-height:1;
+  will-change:transform;
+  transition:box-shadow .5s var(--ease)}
+
+.craft-pill::before{content:"";position:absolute;inset:0;
+  border-radius:inherit;padding:1px;
+  background:linear-gradient(to right,
+    #ffb263, #ffb16335 20%, transparent 40% 60%, #ffb16335 80%, #ffb263);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+          mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none}
+
+.craft-pill:hover{box-shadow:16px 20px 70px rgba(0,0,0,.12)}
+.craft-pill:focus-visible{outline:2px solid var(--orange);outline-offset:4px}
+
+.craft-pill__icon{width:clamp(22px,1.9vw,28px);height:auto;flex:none;color:#101820}
+.craft-pill__text{display:inline-block}
+
+/* ── שכבה 3: הקופי המרכזי ── */
+.craft-copy{position:absolute;inset:0;z-index:3;
+  display:grid;place-items:center;pointer-events:none;
+  padding-inline:clamp(20px,4vw,40px);text-align:center}
+.craft-copy>div{max-width:min(92vw,920px)}
+.craft-copy h3{margin:0;font-weight:200;
+  font-size:clamp(30px,5.6vw,84px);line-height:1.06;letter-spacing:-.03em;
+  text-wrap:balance;
+  /* הילה לבנה — הטקסט יושב מעל וידאו בעל ניגודיות משתנה.
+     text-shadow עוקב אחרי צורת האות במקום לצייר מלבן מטושטש. */
+  text-shadow:0 0 14px rgba(255,255,255,.9),
+              0 0 40px rgba(255,255,255,.7),
+              0 0 84px rgba(255,255,255,.5)}
+.craft-copy h3 strong{font-weight:700}
+.craft-copy p{margin:clamp(14px,2vh,24px) auto 0;max-width:46ch;
+  color:var(--ink);font-weight:300;
+  font-size:clamp(14px,1.2vw,18px);line-height:1.65;
+  text-shadow:0 0 10px rgba(255,255,255,.95),
+              0 0 26px rgba(255,255,255,.72)}
+.craft-copy p span{color:#9A9AA2}
+
+/* ── מובייל ──
+   הטקסט העליון נערם, והגלולות מתקרבות לקצוות כי 10% מ-390px
+   הם 39px בלבד והתווית הייתה נחתכת. */
+@media(max-width:768px){
+  .craft{padding:clamp(70px,10vh,110px) 20px}
+  .craft-flex{flex-direction:column;gap:16px}
+  .craft-heading{font-size:clamp(26px,7.6vw,38px)}
+  .craft-text{font-size:14px}
+  .craft-pill{min-height:38px;padding-inline:14px;font-size:13px}
+  /* אין מעבר-גלילה במובייל (מושבת מתחת ל-769px), אז מציגים את מצב
+     המנוחה הנקי: כותרת + וידאו + הגלולות מפוזרות ב-2×2 קריא סביב
+     הנורה, במקום ערימה במרכז. הקופי המרכזי — מצב ה"נחשף" בגלילה —
+     מוסתר כדי שלא ייערם על הכותרת והגלולות. */
+  .craft-copy{display:none}
+  .craft-pill--ux {transform:translate(calc(-50% - 82px), calc(-50% - 70px))}
+  .craft-pill--dev{transform:translate(calc(-50% + 82px), calc(-50% - 70px))}
+  .craft-pill--brd{transform:translate(calc(-50% - 82px), calc(-50% + 70px))}
+  .craft-pill--aut{transform:translate(calc(-50% + 82px), calc(-50% + 70px))}
+  .craft-copy h3{font-size:clamp(26px,8.2vw,40px)}
+  .craft-copy p{font-size:14px;max-width:34ch}
+}
+
+
+/* ════════════════ MENU OVERLAY ════════════════
+   מדידות מגיליון הרפרנס, 1rem=10px ב-1920.
+   .menu הוא מכולה שקופה; הכרטיס הוא .menu__wrapper — הוא זה
+   שנושא את הרקע, הטשטוש והפינות. 1920 פחות 50px מכל צד = 1820,
+   בדיוק המידה שנמדדה ב-DevTools. */
+
+.menu{position:fixed;inset:0;z-index:60;
+  width:100%;height:100dvh;
+  padding:8px clamp(10px,5vw,50px) clamp(14px,5vw,50px);
+  pointer-events:none;
+  visibility:hidden;opacity:0;
+  transition:opacity .5s var(--ease),visibility .5s var(--ease)}
+.menu.is-open{visibility:visible;opacity:1}
+/* מצב ביניים: האלמנט נצבע אך שקוף לחלוטין. זה מאלץ את
+   הדפדפן להרכיב את שכבת הטשטוש לפני שהתפריט באמת נפתח. */
+.menu.is-warm{visibility:visible}
+/* הטשטוש קבוע ולעולם לא מונפש. הנפשת backdrop-filter מכריחה
+   את הדפדפן לטשטש מחדש 1820x874 בכל פריים — זה היה מקור
+   הקפיצה, לא הפתרון לה. */
+
+.menu__ellipse{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(50vw 46vw at 78% 0%,
+      rgba(245,135,47,.20) 0%, rgba(255,184,120,.09) 46%, transparent 76%),
+    radial-gradient(40vw 38vw at 6% 96%,
+      rgba(245,135,47,.13) 0%, rgba(255,184,120,.05) 48%, transparent 78%)}
+
+/* ── הכרטיס ── */
+/* הכרטיס מקבל קליקים רק כשהתפריט באמת פתוח. במצב החימום
+   הוא visibility:visible עם opacity:0, ובלי השורה הזו הוא
+   שכבה בלתי נראה שחוטפת את הקליק על ההמבורגר — ואז התפריט
+   לא נפתח כלל. */
+.menu:not(.is-open) .menu__wrapper,
+.menu:not(.is-open) .menu-close{pointer-events:none}
+.menu__wrapper{position:relative;pointer-events:auto;
+  /* שני טורים מפורשים ולא repeat(12,1fr) עם grid-column.
+     חשבון טורים ב-RTL הפיל את שני הבלוקים לאותו צד; כאן
+     טור 1 הוא ההתחלה (ימין בעברית) וטור 2 הסוף, בלי אמצע. */
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:1fr auto;
+  column-gap:clamp(30px,5vw,90px);
+  width:100%;height:100%;
+  padding-inline:clamp(24px,5.7vw,110px);
+  padding-block:clamp(70px,5.2vw,100px) clamp(24px,2.6vw,50px);
+  /* רקע אטום יותר וטשטוש נמוך יותר מהרפרנס: אצלם הכרטיס יושב
+     על #fff, אצלנו על תוכן כהה. .51 עם blur(40) נתן פריים ראשון
+     שקוף מדי, וגם היה יקר יותר להרכבה. */
+  background-color:rgba(255,255,255,.66);
+  backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
+  border-radius:clamp(18px,2.1vw,40px);
+  /* המתאר נבנה ב-JS. border-radius כאן הוא נפילה-לאחור. */
+          mask-image:radial-gradient(circle var(--notch) at 100% 0,
+     transparent calc(var(--notch) - 1px), #000 var(--notch));
+  transform:translate3d(0,14px,0);
+  /* translateZ מקדם את השכבה מראש כדי שהטשטוש כבר יהיה
+     מורכב כשהתפריט נפתח, במקום להיבנות באותו פריים. */
+  will-change:transform,opacity;
+  transition:transform .55s var(--ease)}
+.menu.is-open .menu__wrapper{transform:translate3d(0,0,0)}
+
+/* ה-X יושב מחוץ לכרטיס, בפינה של המכולה */
+.menu-close{position:absolute;pointer-events:auto;
+  /* ממורכז על קו ההמבורגר: אותו clamp ששימש כריפוד הימני
+     של שורת הניווט, וגובה שמתלכד עם מרכזה. */
+  top:13px;right:clamp(20px,4vw,48px);inset-inline-end:auto;
+  width:64px;height:64px;
+  display:grid;place-items:center;
+  background:none;border:0;padding:0;cursor:pointer;color:var(--ink);
+  transition:transform .3s ease-out,opacity .3s ease-out;z-index:3}
+.menu-close svg{width:42px;height:42px;display:block}
+.menu-close:hover{transform:scale(.9);opacity:.8}
+
+/* ── בלוק ההתחברות ── */
+.menu__connect{grid-column:1;grid-row:1;align-self:center;
+  display:grid;gap:min(30px,3vh);align-content:center;justify-items:start}
+.menu__connect-heading{display:flex;align-items:center;gap:15px;margin:0}
+.menu__connect-heading-icon{width:10px;height:10px;border-radius:50%;
+  background:var(--orange);flex:none}
+.menu__connect-heading-text{color:var(--orange);font-weight:400;
+  font-size:clamp(14px,1.05vw,20px)}
+.menu__connect-text{margin:0;color:var(--ink);font-weight:500;
+  font-size:min(clamp(28px,3.4vw,65px),6.5vh);
+  line-height:1;letter-spacing:.02em;max-width:min(100%,650px)}
+.menu__line{width:70px;height:1px;background:#8a8f8d;display:block}
+.menu__contact-email{display:flex;align-items:center;gap:10px;
+  transition:opacity .3s ease-out}
+.menu__contact-email:hover{opacity:.75}
+.menu__contact-email svg{width:20px;height:20px;flex:none}
+.menu__contact-email span{color:#5b6871;font-weight:400;
+  font-size:clamp(14px,1.05vw,20px);text-decoration:underline}
+.menu__cta{margin-top:min(20px,2vh)}
+
+/* ── טורי הניווט ── */
+.menu-nav__wrapper{grid-column:2;grid-row:1;align-self:center;
+  display:flex;align-items:flex-start;
+  gap:clamp(24px,3.6vw,70px)}
+
+/* min-width:0 חובה. ברירת המחדל של פריט flex היא min-width:auto,
+   כלומר הוא מסרב להצטמצם מתחת לרוחב התוכן — ולכן טור עם תווית
+   ארוכה דחף את שכנו והשניים נחתו זה על זה. */
+.menu-nav__wrapper > .menu__navigation,
+.menu__col{flex:1 1 0;min-width:0}
+.menu__col{display:flex;flex-direction:column;gap:min(40px,4vh)}
+
+/* איפוס הכלל הגלובלי nav{}. שורת הניווט של האתר מוגדרת על
+   סלקטור האלמנט nav — position:fixed, top/right/left:0, z-index,
+   direction:ltr וריפוד. שלושת התפריטים כאן הם <nav>, ולכן ירשו
+   את כל אלה ונערמו כולם על אותה נקודה מחוץ לזרימה.
+   זו הייתה החפיפה. */
+.menu__navigation{position:static;top:auto;right:auto;left:auto;
+  z-index:auto;direction:rtl;padding:0;transition:none;
+  /* גם רקע וטשטוש. בגרסת המובייל של nav{} יש רקע מטושטש,
+     ושלושת אלמנטי ה-nav כאן ירשו אותו — אלה היו המלבנים
+     האפורים מאחורי הרשימות. */
+  background:none;backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:0;box-shadow:none;
+  height:fit-content;
+  display:grid;gap:min(30px,3vh);justify-items:start}
+
+.menu__navigation--header{width:100%;padding-bottom:min(20px,1.5vh);
+  border-bottom:1px solid rgba(140,141,145,.47)}
+.menu__navigation--header h4{margin:0;color:#334049;font-weight:400;
+  font-size:clamp(13px,1vw,19px);line-height:1.2}
+
+.menu__navigation-item{position:relative;display:block}
+/* inset-inline-start בלבד — translate באחוזים לא מתהפך ב-RTL */
+.menu__navigation-icon{position:absolute;top:50%;
+  inset-inline-start:-22px;
+  width:12px;height:12px;border-radius:50%;background:var(--orange);
+  transform:translateY(-50%) scale(0);
+  transition:transform .35s var(--ease)}
+.menu__navigation-text{display:inline-block;color:var(--ink);
+  font-weight:500;line-height:1;letter-spacing:.02em;
+  font-size:min(clamp(19px,2.3vw,44px),3.5vh);
+  transition:opacity .35s var(--ease)}
+
+.menu__navigation:hover .menu__navigation-text{opacity:.45}
+.menu__navigation-item:hover .menu__navigation-text{opacity:1}
+.menu__navigation-item:hover .menu__navigation-icon{
+  transform:translateY(-50%) scale(1)}
+.menu__navigation-item:focus-visible{outline:2px solid var(--orange);
+  outline-offset:6px}
+
+/* ── פוטר התפריט ── */
+.menu__socials{grid-column:1 / -1;grid-row:2;
+  display:grid;justify-items:center;width:100%;align-self:end}
+.menu__socials-divider{width:100%;height:1px;background:#8a8f8d;
+  margin-bottom:min(35px,3.5vh);display:block;opacity:.5}
+.menu__socials--footer{position:relative;width:100%;
+  display:flex;align-items:center;justify-content:space-between}
+.menu__socials--copyright{color:#334049;font-weight:400;
+  font-size:clamp(12px,.9vw,16px);line-height:1.2}
+.menu__socials-list{position:absolute;top:50%;inset-inline-start:50%;
+  transform:translate(50%,-50%);
+  display:flex;align-items:center;gap:10px}
+.menu__socials-link{position:relative;
+  width:clamp(30px,3.5vw,35px);height:clamp(30px,3.5vw,35px);
+  border-radius:50%;border:1px solid rgba(91,104,113,.55);
+  display:grid;place-items:center;color:#5b6871;
+  transition:.35s var(--ease)}
+.menu__socials-link:hover{background:var(--ink);color:#fff;
+  border-color:var(--ink)}
+.menu__socials-link svg{width:15px;height:15px;fill:currentColor}
+.menu__socials--terms{display:flex;align-items:center;
+  gap:clamp(20px,3vw,60px)}
+.menu__socials--terms a{color:#334049;text-decoration:none;
+  font-size:clamp(12px,.9vw,16px);transition:color .3s ease-out}
+.menu__socials--terms a:hover{color:var(--ink)}
+
+/* הבלוק הזה קיים רק במובייל. ברפרנס המייל וה-CTA יורדים
+   מתחת לרשימות ולא יושבים מתחת לכותרת. */
+.menu__cta-mobile{display:none}
+html.menu-open,html.menu-open body{overflow:hidden}
+/* ההמבורגר נשאר מצויר מתחת לתפריט ונראה כקו זר ליד ה-X.
+   נעלם בזמן שהתפריט פתוח; ה-X מחליף אותו באותו מקום. */
+/* מכווצים את הקווים ולא את המכולה. המכולה שומרת על רוחבה
+   ולכן "בואו נדבר" והמפריד לא זזים כשהתפריט נפתח — זה מה
+   שהרפרנס עושה עם [data-nav="open"] .navbar__menu-bar. */
+html.menu-open .burger{pointer-events:none}
+html.menu-open .burger i{transform:scaleX(0);opacity:0}
+
+
+/* מובייל: הרפרנס מעביר את הרקע והטשטוש ל-.menu עצמו,
+   מאפס את הריפוד והכרטיס הופך לשקוף ומלא-מסך. */
+@media(max-width:900px){
+  .menu{padding:0;
+    background:rgba(255,255,255,.74);
+    backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px)}
+  .menu__ellipse{display:none}
+
+  .menu__wrapper{grid-template-columns:1fr;
+    grid-template-rows:auto 1fr auto auto;column-gap:0;
+    background-color:transparent;backdrop-filter:none;
+    -webkit-backdrop-filter:none;border-radius:0;transform:none;
+    padding-inline:24px;
+    padding-block:min(90px,10vh) min(28px,3vh);
+    overflow:auto}
+
+  /* התיבה הייתה 24 בזמן שהאייקון 42 — הוא גלש והופיע לא ממורכז */
+  .menu-close{top:16px;right:16px;inset-inline-end:auto;width:48px;height:48px}
+  .menu-close svg{width:30px;height:30px}
+
+  .menu__connect{grid-column:1;grid-row:1;align-self:start;justify-items:center;
+    text-align:center;gap:14px;margin-bottom:min(40px,2.5vh)}
+  .menu__connect-text{font-size:min(clamp(24px,7.4vw,38px),3.5vh);
+    line-height:1.1;letter-spacing:0}
+  .menu__connect .menu__line{display:none}
+  /* המייל וה-CTA העליונים יורדים; הגרסה התחתונה נכנסת */
+  .menu__connect .menu__contact-email,
+  .menu__connect .menu__cta{display:none}
+  .menu__cta-mobile{grid-column:1;grid-row:3;
+    display:grid;justify-items:center;gap:18px;
+    margin-top:min(30px,3vh)}
+  .menu__cta-mobile .menu__contact-email{display:flex}
+
+  .menu-nav__wrapper{grid-column:1;grid-row:2;align-self:start;
+    flex-direction:column;gap:min(28px,2vh);width:100%}
+  .menu-nav__wrapper > .menu__navigation,.menu__col{flex:0 0 auto;width:100%}
+  .menu__col{gap:min(28px,2vh)}
+  .menu__navigation{gap:min(20px,1.2vh);margin-bottom:min(30px,2.5vh);
+    width:100%}
+  .menu__navigation--header h4{font-size:min(15px,1.5vh)}
+  .menu__navigation-text{font-size:min(24px,2vh);line-height:.9}
+  .menu__navigation-icon{inset-inline-start:-16px;width:9px;height:9px}
+
+  .menu__socials{grid-column:1;grid-row:4}
+  .menu__socials-divider{margin-bottom:min(20px,2vh)}
+  .menu__socials--footer{justify-content:center}
+  .menu__socials--copyright,.menu__socials--terms{display:none}
+  .menu__socials-list{position:static;transform:none;gap:12px}
+}
