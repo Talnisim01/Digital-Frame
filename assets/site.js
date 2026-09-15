@@ -387,3 +387,33 @@
   addEventListener('scroll', sync, {passive:true});
   sync();
 })();
+
+/* ── נגן הרקע של Vimeo ──
+   ה-iframe נטען ריק ומקבל src רק כשהסקשן מתקרב למסך. שתי סיבות:
+   לא לשלם רוחב פס על סרטון שאולי לא יגיעו אליו, ובעיקר — הפעלה
+   בקוד במקום להסתמך על autoplay, שנדחה בנייד ובמצב חיסכון סוללה.
+   background=1 נותן נגן בלי ממשק: בלי כפתורים, מושתק, בלולאה. */
+(function(){
+  var box = document.querySelector('.reel-video[data-vimeo-id]');
+  if(!box) return;
+  var frame = box.querySelector('.reel-frame');
+  if(!frame) return;
+
+  function load(){
+    /* getAttribute ולא .src — כש-src ריק, המאפיין מחזיר את כתובת
+       הדף (ערך אמיתי), והשומר הזה היה חוסם את הטעינה הראשונה. */
+    if(frame.getAttribute('src')) return;
+    var id = box.dataset.vimeoId;
+    frame.src = 'https://player.vimeo.com/video/' + id +
+                '?background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1';
+    /* is-ready רק אחרי onload — אחרת ה-poster נעלם לפני שיש
+       מה להציג במקומו, ורואים מלבן שחור. */
+    frame.addEventListener('load', function(){ box.classList.add('is-ready'); });
+  }
+
+  if(!('IntersectionObserver' in window)){ load(); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ load(); io.disconnect(); } });
+  }, { rootMargin: '600px 0px' });   /* מקדימים בגלילה אחת, לא ברגע האחרון */
+  io.observe(box);
+})();
