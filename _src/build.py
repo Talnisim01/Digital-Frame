@@ -194,24 +194,70 @@ SERVICES = [
    ('זמינות', 'ערוץ ישיר לתקלות דחופות.')]),
 ]
 
-# (slug, שם, תגיות, shot class, תיאור קצר, [(כותרת, [פסקאות])], מטא)
+# ⚠ תמונות: הקבצים מתארחים כרגע ב-Framer. כל עוד זה המצב, יום שבו
+#   אתר ה-Framer ייסגר ישבור את התמונות כאן. להחליף בקבצים מקומיים
+#   תחת /assets/work/ ברגע שיהיו.
+FRAMER = 'https://framerusercontent.com/images/'
+
+# (slug, שם, קטגוריה, תגיות-סינון, shot/img, קישור חי, תיאור)
 PROJECTS = [
- ('jepeto-style', 'Jepeto Style', 'מיתוג / UI/UX', 'shot-a',
-  'מותג רהיטים בהתאמה אישית — שפה ויזואלית חדשה ומערכת מכירה שמלווה אותה.',
-  [('האתגר', ['⚠ טקסט זמני. כאן נכנס התיאור האמיתי של נקודת הפתיחה: מה היה, מה לא עבד, ומה הלקוח ביקש שישתנה.']),
-   ('הפתרון', ['⚠ טקסט זמני. מה נבנה בפועל — מיתוג, קטלוג, מערכת, קמפיין — ולמה דווקא ככה.']),
-   ('התוצאה', ['⚠ טקסט זמני. מספרים אם יש, ואם אין — מה השתנה בעבודה היומיומית.'])],
-  [('לקוח', 'Jepeto Style'), ('שנה', '2026'), ('שירותים', 'מיתוג · UI/UX'), ('היקף', 'פרויקט מלא')]),
+ ('roommate', 'RoomMate', 'UI/UX', 'ux', FRAMER + '6Q5ZLsV0rnGoGM2Kp0pfMUwLxEE.png?width=1024', '',
+  'אפליקציה למציאת שותפים לדירה — אפיון מלא של חוויית המשתמש, מהחיפוש ועד ההתאמה.'),
 
- ('redbeary', 'RedBeary', 'פיתוח / UI/UX', 'shot-b',
-  'מותג מזרנים ומצעים — חנות מהירה בעברית ומסלול קנייה מקוצר.',
-  [('האתגר', ['⚠ טקסט זמני.']), ('הפתרון', ['⚠ טקסט זמני.']), ('התוצאה', ['⚠ טקסט זמני.'])],
-  [('לקוח', 'RedBeary'), ('שנה', '2026'), ('שירותים', 'פיתוח · UI/UX'), ('היקף', 'חנות אונליין')]),
+ ('woodly', 'Woodly', 'UI/UX', 'ux', FRAMER + '1o2WvDhvCml3D3U7gAhnWudSnRA.png?width=1024', '',
+  'חנות ומותג בעולם העץ — ממשק נקי שמעמיד את המוצר עצמו במרכז.'),
 
- ('piece4you', 'Piece4You', 'פיתוח / אוטומציה', 'shot-c',
-  'מערכת ניהול הזמנות שמחברת לקוחות, ספקים ווואטסאפ לתהליך אחד.',
-  [('האתגר', ['⚠ טקסט זמני.']), ('הפתרון', ['⚠ טקסט זמני.']), ('התוצאה', ['⚠ טקסט זמני.'])],
-  [('לקוח', 'Piece4You'), ('שנה', '2026'), ('שירותים', 'פיתוח · אוטומציה'), ('היקף', 'מערכת ניהול')]),
+ ('fintechpro', 'FinTechPro', 'UI/UX', 'ux', FRAMER + 'QRZotjKyfzQfReboynBHygD38.png?width=393', 'https://fintechpro.framer.ai/',
+  'ממשק למוצר פינטק — הצגת נתונים פיננסיים בצורה שקריאה גם למי שלא מהתחום.'),
+
+ ('zion-covenant-gateways', 'Zion Covenant Gateways', 'UI/UX', 'ux', FRAMER + 'aWukSlwHGksZjJroc5x6qzZU.png?width=214', 'https://zioncovenantgateways.lovable.app/',
+  'אתר תדמית שנבנה מקצה לקצה — אפיון, עיצוב ופיתוח.'),
+
+ ('find-eat', 'Find Eat', 'UI/UX', 'ux', 'shot-a', '',
+  'אפליקציה למציאת מקומות אוכל — דגש על מסלול החלטה קצר ככל האפשר.'),
+
+ ('lohemet', 'המשפחה הלוחמת', 'UI/UX', 'ux', 'shot-b', '',
+  'אתר לארגון קהילתי, עם דגש על נגישות ובהירות לקהל רחב.'),
+
+ ('gimlaim', 'אתר הגימלאים', 'UI/UX', 'ux', 'shot-c', '',
+  'אתר לקהל מבוגר — טיפוגרפיה גדולה, ניגודיות גבוהה וניווט שאי אפשר ללכת בו לאיבוד.'),
+
+ ('rak-ayom', 'סופר רק היום', 'עיצוב', 'design', 'shot-a', '',
+  'שפה ויזואלית לרשת סופרמרקט — מהלוגו ועד חומרי המדף.'),
+
+ ('ptorzakan', 'פרויקט מזוקנים', 'עיצוב', 'design', 'shot-b', '',
+  'מיתוג ועיצוב לפרויקט תוכן, כולל התאמה לרשתות החברתיות.'),
+
+ ('ey-project', 'עיצוב מספרה', 'עיצוב', 'design', 'shot-c', '',
+  'זהות ויזואלית לעסק בתחום העיצוב האישי — מהשלט ועד כרטיס הביקור.'),
+
+ ('972beard', '972Beard', 'עיצוב', 'design', 'shot-a', '',
+  'מיתוג למותג טיפוח לגברים, בשפה כהה ואיכותית.'),
+]
+
+# עבודות גרפיות — פריטי גלריה, בלי דף פרויקט משלהם.
+# הטקסטים הם של טל, מתוך התיק שלו.
+CREATIVE = [
+ ('קרדלפ\'ס וויסקי', 'waW4cabHgqewTM9fRtbwcxNwxA0.png?width=1080',
+  'עיצוב דרמטי ואקסקלוסיבי לוויסקי פרימיום — שילוב בין יוקרה, אלגנטיות וטעם מעודן.'),
+ ('קפה נמס עלית', 'vikfSGS9aWNJM0PeY8fKuAigds.png?width=1080',
+  'עיצוב חם ומעורר השראה לקפה של הבוקר הישראלי — נוסטלגיה וקלאסיקה עם טאץ\' מודרני.'),
+ ('המקוריסטית', 'a7HIjSruz4JbbqL7DFpblTb2Wqk.png?width=1024',
+  'עיצוב תדמית לעסק צעיר בתחום הלקים. מודרניות, נשיות וסטייל צבעוני שמדגישים את היופי שבפשטות.'),
+ ('פוסטר לאפליקציית אישורי הגעה', 'ZxrLr0LoXMtJz3nNQkDiPTwnh4.png?width=1555',
+  'אסתטיקה נקייה וטכנולוגיה, במטרה להפוך את ניהול האירוע לקל, מסודר ובטוח.'),
+ ('CraftFest', 'XJWhVBabFeuyWn9wxNY4jO5gA.png?width=1080',
+  'פוסטר לאירוע גיימינג — עתידנות, צבעוניות דינמית וכל הכוכבים בפריים אחד.'),
+ ('New DJ', '8PGZsgmEhC7VLNYMs36iJPa8Cis.png?width=1080',
+  'מיתוג ורקע לדי-ג\'יי — מוזיקה, אנרגיה וחופש יצירתי בווייב צעיר.'),
+ ('פלייר לפנסיון כלבים', 'frNyKovJMTC5cObKI9HyT4tFk.png?width=666',
+  'עיצוב קליל ואנרגטי שמשדר ביטחון ואמינות לבעלי כלבים.'),
+ ('טורניר CS:GO', '0aZPK5lANpIFxRsD8Eq85u78Ho.png?width=1080',
+  'פוסטר הכרזה בסגנון אורבני ובועט, שמדגיש את האדרנלין של עולם הגיימינג.'),
+ ('לוגו לעסק בלונים', 'wQHJqBeA5wewo85kdPROi8BFhko.png?width=1000',
+  'מיתוג ולוגו לעסק עיצובי בלונים לאירועים — מודרני, שמח ובלתי נשכח.'),
+ ('פוסטר בעלי מקצוע', 'iiIMovDqecAXuf8bzrALiprVt4.png?width=2048',
+  'שירותי צביעה וחידוש הבית — ויזואליות נקייה וחלוקת צבעים שמשדרת מקצועיות.'),
 ]
 
 
@@ -421,6 +467,11 @@ ARROW = ('<span class="arw-box">'
 def cta(href, label, cls='cta'):
     return f'<a href="{href}" class="{cls}"><span class="wave-text">{label}</span>\n      {ARROW}</a>'
 
+def cta_btn(href, label):
+    ext = ' target="_blank" rel="noopener"' if href.startswith('http') else ''
+    return f'<a href="{href}" class="cta"{ext}><span class="wave-text">{label}</span>\\n      {ARROW}</a>'
+
+
 def head(eyebrow, title, lede='', button=None):
     """ראש דף אחיד — הדפוס חוזר בכל הדפים הפנימיים.
 
@@ -445,13 +496,24 @@ def head(eyebrow, title, lede='', button=None):
     out.append('</section>')
     return '\n'.join(out)
 
-def card(slug, name, tags, shot):
-    return (f'    <a class="card" href="/projects/{slug}" data-animate="fade-up">\n'
-            f'      <div class="card-media"><div class="card-shot {shot}"></div></div>\n'
+def media_of(src, alt):
+    """גרדיאנט זמני או תמונה אמיתית — לפי מה שיש לפרויקט."""
+    if src.startswith('http') or src.startswith('/'):
+        return (f'<img class="card-img" src="{src}" alt="{alt}" '
+                f'loading="lazy" decoding="async">')
+    return f'<div class="card-shot {src}"></div>'
+
+
+def card(slug, name, cat, tag, src, live=''):
+    """כרטיס פרויקט. data-tags הוא מה שהפילטר ב-site.js מחפש —
+    בלעדיו כל לחיצה על פילטר הייתה מסתירה את כל הרשת."""
+    return (f'    <a class="card" href="/projects/{slug}" data-tags="{tag}" data-animate="fade-up">\n'
+            f'      <div class="card-media">{media_of(src, name)}</div>\n'
             f'      <div class="card-foot">\n'
             f'        <span class="card-name">{name}\n          {ARROW}\n        </span>\n'
-            f'        <span class="card-tags">{tags}</span>\n'
+            f'        <span class="card-tags">{cat}</span>\n'
             f'      </div>\n    </a>')
+
 
 def canonical_of(path):
     """'services/index.html' -> 'https://.../services'  |  '404.html' -> None"""
@@ -566,7 +628,7 @@ def tpl_service(slug, name, eyebrow, lede, includes, steps):
       </div>
     </div>''' for t, d in steps)
 
-    cards = '\n'.join(card(s, n, tg, sh) for s, n, tg, sh, *_ in PROJECTS)
+    cards = '\n'.join(card(sl, n, c, t, m, lv) for sl, n, c, t, m, lv, _ in PROJECTS[:3])
 
     body = f'''{head(eyebrow, name, lede, (f'/contact', 'לדבר על זה'))}
 
@@ -633,7 +695,17 @@ def tpl_services_index():
 
 
 def tpl_projects_index():
-    cards = '\n'.join(card(s, n, tg, sh) for s, n, tg, sh, *_ in PROJECTS)
+    cards = '\n'.join(card(sl, n, c, t, m, lv) for sl, n, c, t, m, lv, _ in PROJECTS)
+
+    gallery = '\n'.join(
+        f'''    <figure class="art" data-animate="fade-up">
+      <img src="{FRAMER}{img}" alt="{title}" loading="lazy" decoding="async">
+      <figcaption>
+        <b>{title}</b>
+        <span>{desc}</span>
+      </figcaption>
+    </figure>''' for title, img, desc in CREATIVE)
+
     body = f'''<section class="work work--page" id="work">
 
   <div class="work-head">
@@ -642,56 +714,84 @@ def tpl_projects_index():
   </div>
 
   <div class="work-filters" role="group" aria-label="סינון פרויקטים" data-animate="fade-up">
-    <button class="filt" type="button" data-filter="all"   aria-pressed="true">הכול</button>
-    <button class="filt" type="button" data-filter="ux"    aria-pressed="false">UI/UX</button>
-    <button class="filt" type="button" data-filter="dev"   aria-pressed="false">פיתוח</button>
-    <button class="filt" type="button" data-filter="brand" aria-pressed="false">מיתוג</button>
-    <button class="filt" type="button" data-filter="auto"  aria-pressed="false">אוטומציה</button>
+    <button class="filt" type="button" data-filter="all"    aria-pressed="true">הכול</button>
+    <button class="filt" type="button" data-filter="ux"     aria-pressed="false">UI/UX</button>
+    <button class="filt" type="button" data-filter="design" aria-pressed="false">עיצוב ומיתוג</button>
+  </div>
+
+  <div class="work-grid" id="workGrid">
+{cards}
   </div>
 
   <span class="scroll-cue" aria-hidden="true">
     <span class="scroll-cue__track"><span class="scroll-cue__dot"></span></span>
   </span>
 
-  <div class="work-grid" id="workGrid">
-{cards}
-  </div>
-
-</section>'''
-    return page('projects/index.html', 'פרויקטים — Digital Frame',
-                'עבודות נבחרות של Digital Frame — מיתוג, UI/UX, פיתוח ואוטומציה.', body)
-
-
-def tpl_case(i, slug, name, tags, shot, summary, sections, meta):
-    nxt = PROJECTS[(i + 1) % len(PROJECTS)]
-    metas = '\n'.join(f'    <div><dt>{k}</dt><dd>{v}</dd></div>' for k, v in meta)
-    secs = '\n'.join(
-        f'''  <section class="sec lay case-body">
-    <h2 data-animate="fade-up">{t}</h2>
-    <div data-animate="fade-up">
-{"".join(f"      <p>{p}</p>" for p in ps)}
-    </div>
-  </section>''' for t, ps in sections)
-
-    body = f'''{head(tags, name, summary)}
-
-<section class="lay" data-animate="scale-in">
-  <!-- ⚠ מילוי גרדיאנט זמני. להחליף ב-<img loading="lazy"> של הפרויקט. -->
-  <div class="case-visual"><div class="card-shot {shot}"></div></div>
 </section>
 
+<section class="sec lay" id="creative">
+  <div class="sec-head">
+    <h2 class="sec-title" data-animate="title">עבודות <strong>גרפיות</strong></h2>
+    <p class="sec-sub" data-animate="fade-up">פוסטרים, לוגואים ומיתוג — עבודות בודדות מתוך העשייה השוטפת.</p>
+  </div>
+  <div class="art-grid">
+{gallery}
+  </div>
+</section>'''
+    return page('projects/index.html', 'פרויקטים — Digital Frame',
+                'עבודות נבחרות של Digital Frame — UI/UX, מיתוג, עיצוב ופיתוח.', body)
+
+
+def tpl_case(i, slug, name, cat, tag, src, live, summary):
+    nxt = PROJECTS[(i + 1) % len(PROJECTS)]
+    cta = ''
+    if live:
+        cta = f'''
+  <div class="lay" data-animate="fade-up" style="padding-top:clamp(20px,3vh,36px)">
+    {cta_btn(live, 'לצפייה באתר')}
+  </div>'''
+
+    body = f'''{head(cat, name, summary)}
+
+<section class="lay" data-animate="scale-in">
+  <div class="case-visual">{media_of(src, name)}</div>
+</section>
+{cta}
+
 <dl class="case-meta lay">
-{metas}
+    <div><dt>תחום</dt><dd>{cat}</dd></div>
+    <div><dt>שנה</dt><dd>⚠ שנה</dd></div>
+    <div><dt>מה נעשה</dt><dd>⚠ שירותים</dd></div>
+    <div><dt>היקף</dt><dd>⚠ היקף</dd></div>
 </dl>
 
 <hr class="rule">
 
-{secs}
+  <section class="sec lay case-body">
+    <h2 data-animate="fade-up">האתגר</h2>
+    <div data-animate="fade-up">
+      <p>⚠ טקסט זמני. נקודת הפתיחה: מה היה, מה לא עבד, ומה הלקוח ביקש שישתנה.</p>
+    </div>
+  </section>
+
+  <section class="sec lay case-body">
+    <h2 data-animate="fade-up">הפתרון</h2>
+    <div data-animate="fade-up">
+      <p>⚠ טקסט זמני. מה נבנה בפועל, ולמה דווקא ככה.</p>
+    </div>
+  </section>
+
+  <section class="sec lay case-body">
+    <h2 data-animate="fade-up">התוצאה</h2>
+    <div data-animate="fade-up">
+      <p>⚠ טקסט זמני. מספרים אם יש, ואם אין — מה השתנה בעבודה היומיומית.</p>
+    </div>
+  </section>
 
 <a class="case-next" href="/projects/{nxt[0]}">
   <div class="lay">
     <span class="case-next__label">הפרויקט הבא</span>
-    <span class="case-next__name" dir="ltr">{nxt[1]} {ARROW}</span>
+    <span class="case-next__name"{' dir="ltr"' if all(ord(ch) < 0x590 for ch in nxt[1]) else ''}>{nxt[1]} {ARROW}</span>
   </div>
 </a>'''
     return page(f'projects/{slug}/index.html', f'{name} — Digital Frame', summary, body)
@@ -834,8 +934,8 @@ def main():
         out.append(write(f'{s[0]}/index.html', tpl_service(*s)))
 
     out.append(write('projects/index.html', tpl_projects_index()))
-    for i, p in enumerate(PROJECTS):
-        out.append(write(f'projects/{p[0]}/index.html', tpl_case(i, *p)))
+    for i, pr in enumerate(PROJECTS):
+        out.append(write(f'projects/{pr[0]}/index.html', tpl_case(i, *pr)))
 
     out.append(write('about-us/index.html', tpl_about()))
     out.append(write('contact/index.html', tpl_contact()))
