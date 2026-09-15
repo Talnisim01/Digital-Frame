@@ -8,6 +8,14 @@
 <meta property="og:title" content="Jepeto Style — Digital Frame">
 <meta property="og:description" content="מותג רהיטים בהתאמה אישית — שפה ויזואלית חדשה ומערכת מכירה שמלווה אותה.">
 <meta property="og:type" content="website">
+<script>
+/* חייב לרוץ לפני הצביעה הראשונה — ראו "מניעת הבזק" ב-site.css */
+(function(d){
+  var h = d.documentElement;
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches) h.classList.add('js-anim');
+  setTimeout(function(){ if(!window.gsap) h.classList.remove('js-anim'); }, 4000);
+})(document);
+</script>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">

@@ -353,13 +353,19 @@ function start(){
     const sphereGrid = document.querySelector('.sphere-grid');
     if(sphereGrid){
       const els = sphereGrid.querySelectorAll('[data-animate]');
-      gsap.from(els,{y:60, autoAlpha:0, duration:1.2, ease:'power3.out', stagger:.12,
+      /* fromTo ולא from: from מנפיש אל הערך *הטבעי* של האלמנט,
+         ומאז שה-CSS מסתיר [data-animate] לפני הצביעה הראשונה
+         הערך הטבעי הוא 0 — כלומר האנימציה הייתה רצה מ-0 ל-0
+         והטקסט לא היה חוזר לעולם. מצב הסיום חייב להיות מפורש. */
+      gsap.fromTo(els,{y:60, autoAlpha:0},{y:0, autoAlpha:1,
+        duration:1.2, ease:'power3.out', stagger:.12, immediateRender:true,
         scrollTrigger:{trigger:sphereGrid, start:'top 58%', toggleActions:'play none none reverse'}});
     }
     const workGrid = document.querySelector('.work-grid');
     if(workGrid){
       const cards = workGrid.querySelectorAll('.card');
-      gsap.from(cards,{y:72, autoAlpha:0, duration:1.15, ease:'power3.out', stagger:.13,
+      gsap.fromTo(cards,{y:72, autoAlpha:0},{y:0, autoAlpha:1,
+        duration:1.15, ease:'power3.out', stagger:.13, immediateRender:true,
         scrollTrigger:{trigger:workGrid, start:'top 72%', toggleActions:'play none none reverse'}});
     }
 
