@@ -1,8 +1,5 @@
-# Digital Frame
+# Digital Frame — סביבה זמנית, לפני השקה.
+# האתר עדיין מכיל תוכן זמני ולכן אינו מיועד לאינדוקס.
+# ההיפוך נעשה דרך LIVE ב-_src/build.py.
 User-agent: *
-Allow: /
-
-# מקורות הגנרטור אינם תוכן — אין טעם שיאונדקסו
-Disallow: /_src/
-
-Sitemap: https://digitalframe.co.il/sitemap.xml
+Disallow: /

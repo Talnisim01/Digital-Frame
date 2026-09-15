@@ -50,7 +50,13 @@ MAIL = 'hello@digitalframe.co.il'
 # ⚠ כתובת האתר בייצור. canonical ו-sitemap דורשים כתובות מוחלטות,
 #   וכתובת שגויה כאן גרועה מכלום מבחינת גוגל. אם הדומיין שונה —
 #   זו השורה היחידה שצריך לשנות, והשאר נגזר ממנה.
-SITE = 'https://digitalframe.co.il'
+SITE = 'https://digital-frame-two.vercel.app'
+
+# ⚠ מתג ההשקה. כל עוד False האתר מבקש במפורש לא להיאנדקס —
+#   דומיין זמני עם תוכן זמני שנכנס למנוע החיפוש הופך לגרסה
+#   מתחרה שצריך לנקות אחר כך. ביום המעבר לדומיין האמיתי:
+#   לעדכן SITE, להחליף ל-True, ולהריץ את הגנרטור. זה הכל.
+LIVE = False
 
 # ⚠ פרופילי הרשתות — מקור אחד לכל 25 המופעים בכל דף.
 #   כל עוד הערך הוא '#' הקישור לא מוביל לשום מקום. להחליף בכתובות אמיתיות.
@@ -463,6 +469,8 @@ def page(path, title, desc, body, extra_css=True):
     if url:
         seo = (f'<link rel="canonical" href="{url}">\n'
                f'<meta property="og:url" content="{url}">\n')
+    if not LIVE:
+        seo = '<meta name="robots" content="noindex,nofollow">\n' + seo
     seo += (f'<meta property="og:image" content="{SITE}/og-image.png">\n'
             f'<meta property="og:image:width" content="1200">\n'
             f'<meta property="og:image:height" content="630">\n'
@@ -777,10 +785,34 @@ def tpl_404():
 # דף הבית — החלפת הבלוקים המסומנים בלבד
 # ============================================================
 
+def home_seo():
+    """בלוק ה-SEO של דף הבית — נכתב מאותו מקור כמו שאר הדפים,
+    אחרת ביום ההשקה הוא היה נשאר מאחור עם noindex."""
+    tags = []
+    if not LIVE:
+        tags.append('<meta name="robots" content="noindex,nofollow">')
+    tags += [
+        f'<link rel="canonical" href="{SITE}/">',
+        '<meta name="description" content="Digital Frame — סטודיו שמחבר אסטרטגיה, קריאייטיב, פיתוח ואוטומציה: אתרים, מיתוג, קמפיינים ומערכות ניהול.">',
+        '<meta property="og:title" content="Digital Frame — שיווק דיגיטלי ואוטומציה">',
+        '<meta property="og:description" content="סטודיו שמחבר אסטרטגיה, קריאייטיב, פיתוח ואוטומציה תחת קורת גג אחת.">',
+        '<meta property="og:type" content="website">',
+        f'<meta property="og:url" content="{SITE}/">',
+        f'<meta property="og:image" content="{SITE}/og-image.png">',
+        '<meta property="og:image:width" content="1200">',
+        '<meta property="og:image:height" content="630">',
+        '<meta property="og:site_name" content="Digital Frame">',
+        '<meta property="og:locale" content="he_IL">',
+        '<meta name="twitter:card" content="summary_large_image">',
+    ]
+    return '\n'.join(tags)
+
+
 def patch_home():
     path = os.path.join(ROOT, 'index.html')
     src = open(path, encoding='utf-8').read()
-    for tag, blk in (('nav', NAV), ('menu', MENU), ('contact', CONTACT), ('footer', FOOTER)):
+    for tag, blk in (('nav', NAV), ('menu', MENU), ('contact', CONTACT),
+                     ('footer', FOOTER), ('seo', home_seo())):
         # בדף הבית העוגנים נשארים מקומיים -> {{HOME}} ריק
         new = resolve(blk, '')
         src = re.sub(f'<!--@{tag}-->.*?<!--/@{tag}-->',
@@ -843,7 +875,8 @@ def main():
     sitemap.append('</urlset>')
     out.append(write('sitemap.xml', '\n'.join(sitemap) + '\n'))
 
-    robots = f"""# Digital Frame
+    if LIVE:
+        robots = f"""# Digital Frame
 User-agent: *
 Allow: /
 
@@ -851,6 +884,13 @@ Allow: /
 Disallow: /_src/
 
 Sitemap: {SITE}/sitemap.xml
+"""
+    else:
+        robots = """# Digital Frame — סביבה זמנית, לפני השקה.
+# האתר עדיין מכיל תוכן זמני ולכן אינו מיועד לאינדוקס.
+# ההיפוך נעשה דרך LIVE ב-_src/build.py.
+User-agent: *
+Disallow: /
 """
     out.append(write('robots.txt', robots))
 
