@@ -8,7 +8,7 @@
 
 אני טל, בעל הפרויקט והמפתח הראשי של **Digital Frame** — אתר סטודיו עברי/RTL פרימיום ב-`digital-frame-two.vercel.app`, בנוי כקובץ `index.html` יחיד עם GSAP + ScrollTrigger + Lenis. האתר מעוצב בהשראת `mdx.so` (הרפרנס).
 
-**חלוקת התפקידים:** אני מספק צילומי מסך, נתוני DevTools, החלטות כיווניות ומשוב ברור. אתה (Claude) המפתח המבצע — עורך קוד, מריץ פעולות Git, ומדבג.
+**חלוקת התפקידים:** אני מספק צילומי מסך, נתוני DevTools, החלטות כיווניות ומשוב ברור. הצד השני הוא המפתח המבצע — עורך קוד, מריץ פעולות Git, ומדבג.
 
 **אני מתקשר בעברית.** תשמור על אותו סגנון — עברית, ישיר, טכני.
 
@@ -28,7 +28,7 @@
 ## היכולת הכי חשובה שגילינו: רינדור ומדידה
 
 **יש לך Chromium זמין בקונטיינר** דרך מודול playwright:
-`/home/claude/.npm-global/lib/node_modules/playwright`, מריצים עם `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node script.js`.
+`~/.npm-global/lib/node_modules/playwright`, מריצים עם `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node script.js`.
 
 זה מאפשר **לרנדר את הדף ולמדוד את הפריסה בפועל** במקום להסיק אותה מקריאת קוד. זה תפס באגים שהיו בלתי נראים בקריאת CSS (למשל: אלמנטי `<nav>` שירשו `position:fixed` מכלל גלובלי). **לפני כל commit שנוגע בפריסה או ב-JS — לרנדר ולמדוד.**
 
@@ -44,7 +44,7 @@
 ## תהליך העבודה (Git)
 
 - Repo: `github.com/Talnisim01/Digital-Frame`, ענף `main`. Vercel עושה auto-deploy על push.
-- Contributors: claude + Talnisim01.
+- Contributors: Talnisim01.
 - **⚠️ אבטחה:** PAT שותף בשיחה וצריך להישלל/להתחלף. בצ'אט החדש אצטרך לספק PAT חדש.
 - זרימה: clone עם token ל-`/tmp/wX` → עריכה ב-python heredocs → אימות תחביר (`node --check` על סקריפטים מחולצים, איזון סוגריים ב-CSS, `pin:true` תמיד =2) → commit → push → clone טרי `--depth 1` לאימות → אני מצלם לאישור.
 - **הודעות commit באנגלית**, מסבירות את השורש ולא רק את התיקון.
@@ -126,7 +126,7 @@ hero → 3D canvas (`#about`) → ideas (`#services`) → showreel → **craft**
 
 ## מה פתוח / הצעד הבא
 
-1. **⏳ הסרטון החדש (ממתין לטל).** הסרטון הנוכחי (`assets/craft-video.mp4` + `.webm`) בעייתי — יש לו שני פריימים עם רקע כהה שלא יוצאים טוב. **טל יוצר סרטון חדש ויעלה אותו.** כשמגיע: לשים ב-`assets/` באותם שמות (`craft-video.mp4` / `craft-video.webm`) והוא יתחבר אוטומטית, או להעלות לצ'אט ו-Claude ימיר ויחבר. הסרטון ממוקם ב-`.craft-video__el`: `object-fit:contain`, רוחב `min(112vh,82vw,1180px)`, `translateY(7%)` (יורד נמוך), עם מסכת `radial-gradient` להמסת הקצוות.
+1. **⏳ הסרטון החדש (ממתין לטל).** הסרטון הנוכחי (`assets/craft-video.mp4` + `.webm`) בעייתי — יש לו שני פריימים עם רקע כהה שלא יוצאים טוב. **טל יוצר סרטון חדש ויעלה אותו.** כשמגיע: לשים ב-`assets/` באותם שמות (`craft-video.mp4` / `craft-video.webm`) והוא יתחבר אוטומטית, או להעביר את הקובץ להמרה וחיבור. הסרטון ממוקם ב-`.craft-video__el`: `object-fit:contain`, רוחב `min(112vh,82vw,1180px)`, `translateY(7%)` (יורד נמוך), עם מסכת `radial-gradient` להמסת הקצוות.
 
 2. **הגלולות — לאישור/כוונון.** נבנו מחדש מהמפרט המדויק (`62eea1c`). טל צריך לאשר שהן נראות נכון עכשיו, או לציין ספציפית מה סוטה (צל/צבע/גודל/מיקום) לתיקון פרט-פרט מול ערכי הרפרנס.
 
