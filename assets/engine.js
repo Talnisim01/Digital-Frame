@@ -324,7 +324,11 @@ function start(){
              ממלא את הכרטיס תמיד (scale על כל הכרטיס, לא על תוכן פנימי).
              pinSpacing:true => שומר מקום בזרימה, אין קריסה. */
       const START='inset(20% 40% 0% 40% round 3rem)', FULL='inset(3% round 2.2rem)';
-      gsap.fromTo(el,{clipPath:START},{clipPath:FULL,
+      /* opacity מפורש בשני הקצוות. clip-in הוא הסוג היחיד שלא נגע
+         בשקיפות — הוא פותח צורה בלבד. מרגע שה-CSS מסתיר כל
+         [data-animate] לפני הצביעה הראשונה, זה השאיר את הסקשן
+         שקוף לצמיתות: הצורה נפתחה על אלמנט בלתי נראה. */
+      gsap.fromTo(el,{clipPath:START, opacity:0},{clipPath:FULL, opacity:1,
         duration:1.5, ease:'power3.out', immediateRender:true,
         scrollTrigger:{trigger:el, start:'top 72%', once:true}});
       /* יציאה — Option B (sticky): ה-.reel-wrap דביק (CSS) ומוחזק בראש
