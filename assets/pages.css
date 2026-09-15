@@ -1,0 +1,266 @@
+/* ============================================================
+   pages.css — כל הדפים הפנימיים
+   ============================================================
+   הכללים כאן הם *הפרשים* בלבד. הפלטה, הטיפוגרפיה, הכפתורים
+   (.cta, .ghost, .chip), הכרטיסים (.card) והפוטר מגיעים
+   מ-site.css ואין לשכפל אותם.
+
+   שני עקרונות שנשמרים לאורך הקובץ:
+   1. הניווט שקוף ומרחף. לכל ראש-דף יש מרווח עליון שמפנה לו מקום.
+   2. אין גדלים קבועים בפיקסלים לטיפוגרפיה — clamp() בלבד,
+      כדי שהמובייל לא יישבר.
+   ============================================================ */
+
+/* ---------- מיכל אחיד לכל הדפים הפנימיים ---------- */
+.lay{
+  width:min(1320px, 100% - 2 * clamp(20px, 4vw, 64px));
+  margin-inline:auto;
+}
+
+/* ============ ראש הדף ============
+   הדפוס של הרפרנס: eyebrow קטן, כותרת ענקית, קו מפריד,
+   פסקה אחת, ואז CTA. אותו סדר בכל דף פנימי. */
+.page-head{
+  position:relative;
+  padding-top:clamp(140px, 17vh, 230px);
+  padding-bottom:clamp(48px, 7vh, 96px);
+}
+.page-head .eyebrow{
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; font-weight:500; letter-spacing:.06em;
+  color:var(--gray); margin:0 0 20px;
+}
+.page-head .eyebrow::before{
+  content:''; width:7px; height:7px; border-radius:50%;
+  background:var(--orange); flex:none;
+}
+.page-title{
+  margin:0;
+  font-size:clamp(38px, 6.4vw, 96px);
+  font-weight:300; line-height:1.02; letter-spacing:-.02em;
+  color:var(--ink);
+}
+.page-title strong{ font-weight:700 }
+.page-lede{
+  margin:clamp(24px, 3vh, 40px) 0 0;
+  max-width:62ch;
+  font-size:clamp(15px, 1.15vw, 19px);
+  font-weight:300; line-height:1.72; color:var(--ink);
+}
+.page-lede .dim{ color:var(--gray) }
+.page-head .cta{ margin-top:clamp(28px, 4vh, 48px) }
+
+.rule{
+  height:1px; border:0; margin:0;
+  background:linear-gradient(90deg, transparent, rgba(20,27,36,.14), transparent);
+}
+
+/* ============ סקשן תוכן כללי ============ */
+.sec{ padding-block:clamp(64px, 9vh, 128px) }
+.sec-head{ margin-bottom:clamp(36px, 5vh, 64px) }
+.sec-title{
+  margin:0;
+  font-size:clamp(26px, 3.2vw, 46px);
+  font-weight:300; line-height:1.12; letter-spacing:-.015em; color:var(--ink);
+}
+.sec-title strong{ font-weight:700 }
+.sec-sub{
+  margin:14px 0 0; max-width:56ch;
+  font-size:clamp(14px, 1vw, 17px); font-weight:300;
+  line-height:1.7; color:var(--gray);
+}
+
+/* ============ רשת כרטיסים (שירותים, "מה כלול") ============ */
+.tiles{
+  display:grid; gap:clamp(12px, 1.4vw, 20px);
+  grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+.tile{
+  position:relative; display:block; isolation:isolate;
+  padding:clamp(24px, 2.4vw, 36px);
+  border-radius:clamp(16px, 1.6vw, 24px);
+  background:var(--light);
+  border:1px solid rgba(20,27,36,.07);
+  color:var(--ink); text-decoration:none;
+  transition:border-color .5s var(--ease), transform .5s var(--ease);
+}
+a.tile:hover{ border-color:rgba(255,103,17,.45); transform:translateY(-4px) }
+.tile__num{
+  display:block; font-size:12px; letter-spacing:.1em;
+  color:var(--orange); margin-bottom:18px;
+}
+.tile__title{
+  margin:0 0 12px; font-size:clamp(18px, 1.5vw, 23px);
+  font-weight:500; line-height:1.25; color:var(--ink);
+}
+.tile__text{
+  margin:0; font-size:14px; font-weight:300;
+  line-height:1.7; color:var(--gray);
+}
+.tile__go{
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:22px; font-size:13px; font-weight:500; color:var(--ink);
+}
+a.tile:hover .tile__go{ color:var(--orange) }
+
+/* ============ שלבי תהליך ============
+   מספור דרך counter כדי שהמארקאפ יישאר סמנטי ולא יישא מספרים ידניים. */
+.steps{ counter-reset:step; display:grid; gap:0 }
+.step{
+  counter-increment:step;
+  display:grid; gap:clamp(8px, 1.4vw, 32px);
+  grid-template-columns:minmax(0, 88px) minmax(0, 1fr);
+  align-items:start;
+  padding-block:clamp(22px, 3vh, 38px);
+  border-top:1px solid rgba(20,27,36,.09);
+}
+.step:last-child{ border-bottom:1px solid rgba(20,27,36,.09) }
+.step::before{
+  content:'0' counter(step);
+  font-size:clamp(13px, 1vw, 15px); font-weight:500;
+  letter-spacing:.08em; color:var(--orange); padding-top:.35em;
+}
+.step h3{
+  margin:0 0 8px; font-size:clamp(17px, 1.5vw, 24px);
+  font-weight:400; color:var(--ink);
+}
+.step p{
+  margin:0; max-width:64ch; font-size:14px;
+  font-weight:300; line-height:1.72; color:var(--gray);
+}
+
+/* ============ דף הפרויקטים ============
+   .work מגיע מ-site.css (סקשן כהה). כאן רק ההפרשים שנובעים
+   מכך שהוא עכשיו ראש הדף ולא סקשן באמצע גלילה. */
+.work--page{ padding-top:clamp(140px, 16vh, 220px); min-height:100vh }
+.work--page .work-head{ display:block }
+.work--page .work-title{ margin:0 }
+.work--page .eyebrow{ color:rgba(255,255,255,.55); margin-bottom:18px }
+.work--page + .contact{ margin-top:0 }
+
+/* ============ דף פרויקט (Case Study) ============ */
+.case-visual{
+  border-radius:clamp(16px, 2vw, 32px);
+  overflow:hidden; aspect-ratio:16/9; width:100%;
+}
+.case-visual > .card-shot{ width:100%; height:100% }
+
+.case-meta{
+  display:grid; gap:clamp(16px, 2vw, 40px);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  padding-block:clamp(28px, 4vh, 52px);
+}
+.case-meta dt{
+  margin:0 0 8px; font-size:12px; letter-spacing:.07em; color:var(--gray);
+}
+.case-meta dd{
+  margin:0; font-size:clamp(15px, 1.1vw, 18px);
+  font-weight:400; color:var(--ink);
+}
+
+.case-body{
+  display:grid; gap:clamp(24px, 4vw, 80px);
+  grid-template-columns:minmax(0, 1fr);
+}
+@media (min-width:900px){
+  .case-body{ grid-template-columns:minmax(0, 27%) minmax(0, 1fr) }
+}
+.case-body h2{
+  margin:0; font-size:clamp(20px, 2vw, 30px);
+  font-weight:300; color:var(--ink);
+}
+.case-body p{
+  margin:0 0 18px; font-size:clamp(15px, 1.05vw, 17px);
+  font-weight:300; line-height:1.78; color:var(--ink);
+}
+.case-body p:last-child{ margin-bottom:0 }
+
+/* הפרויקט הבא — רצועה כהה בתחתית, כמו ברפרנס */
+.case-next{
+  display:block; background:var(--color-black); color:var(--light);
+  text-decoration:none; padding-block:clamp(56px, 9vh, 120px);
+}
+.case-next__label{
+  display:block; font-size:12px; letter-spacing:.08em;
+  color:rgba(255,255,255,.5); margin-bottom:16px;
+}
+.case-next__name{
+  display:flex; align-items:center; gap:clamp(12px, 1.6vw, 26px);
+  font-size:clamp(30px, 5vw, 76px); font-weight:300;
+  line-height:1.05; letter-spacing:-.02em; color:var(--light);
+  transition:opacity .5s var(--ease);
+}
+.case-next:hover .case-next__name{ opacity:.62 }
+.case-next__name .arw-box{ flex:none }
+
+/* ============ עלינו — שורת מספרים ============ */
+.stats{
+  display:grid; gap:clamp(20px, 3vw, 56px);
+  grid-template-columns:repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  padding-block:clamp(36px, 5vh, 72px);
+  border-top:1px solid rgba(20,27,36,.09);
+  border-bottom:1px solid rgba(20,27,36,.09);
+}
+.stat b{
+  display:block; font-size:clamp(34px, 4.4vw, 68px);
+  font-weight:200; line-height:1; letter-spacing:-.03em; color:var(--ink);
+}
+.stat span{
+  display:block; margin-top:12px; font-size:13px;
+  font-weight:300; color:var(--gray);
+}
+
+/* ============ דפי טקסט (פרטיות / תנאים) ============ */
+.prose{ max-width:74ch; padding-bottom:clamp(64px, 9vh, 120px) }
+.prose h2{
+  margin:clamp(36px, 5vh, 64px) 0 14px;
+  font-size:clamp(19px, 1.7vw, 26px); font-weight:400; color:var(--ink);
+}
+.prose h2:first-child{ margin-top:0 }
+.prose p, .prose li{
+  font-size:15px; font-weight:300; line-height:1.8; color:var(--ink);
+}
+.prose p{ margin:0 0 14px }
+.prose ul{ margin:0 0 14px; padding-inline-start:1.1em }
+.prose li{ margin-bottom:8px }
+.prose .updated{ font-size:13px; color:var(--gray) }
+
+/* ============ 404 ============ */
+.nf{
+  min-height:100svh; display:grid; place-items:center;
+  text-align:center; padding-inline:20px;
+}
+.nf__code{
+  font-size:clamp(90px, 20vw, 260px); font-weight:200;
+  line-height:.9; letter-spacing:-.04em; color:var(--ink); margin:0;
+}
+.nf__code b{ color:var(--orange); font-weight:200 }
+.nf p{
+  margin:clamp(18px, 3vh, 30px) auto clamp(28px, 4vh, 42px);
+  max-width:46ch; font-size:16px; font-weight:300;
+  line-height:1.7; color:var(--gray);
+}
+
+/* ============ מובייל ============ */
+@media (max-width:900px){
+  .page-head{ padding-top:clamp(112px, 15vh, 160px) }
+  .case-body{ gap:16px }
+  .step{ grid-template-columns:minmax(0, 1fr) }
+  .step::before{ padding-top:0 }
+}
+
+/* ============ שמות לועזיים בהקשר RTL ============
+   מפצל הכותרות הופך כל מילה ל-span נפרד, ואז סדר המילים
+   הלטיני מתהפך. dir="ltr" מחזיר את הסדר; היישור נשאר לימין
+   כי זה דף עברי. */
+.page-title[dir="ltr"]{ text-align:right }
+.case-next__name[dir="ltr"]{ flex-direction:row-reverse; justify-content:flex-end }
+
+/* ============ הלוגו בניווט ============
+   הלוגו נעטף בעוגן כדי לחזור הביתה מכל דף. העוגן הוא עכשיו
+   ילד ה-flex של הניווט במקום ה-div, ולכן הוא חייב לרשת את
+   התצוגה ואת הצבע — אחרת הניווט קורס. */
+.logo-link{
+  display:flex; align-items:center;
+  color:inherit; text-decoration:none;
+}

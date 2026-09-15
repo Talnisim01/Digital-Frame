@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>פרויקטים — Digital Frame</title>
-<meta name="description" content="עבודות נבחרות של Digital Frame — מיתוג, UI/UX, פיתוח ואוטומציה.">
-<meta property="og:title" content="פרויקטים — Digital Frame">
+<title>אוטומציה עסקית — Digital Frame</title>
+<meta name="description" content="כל מה שאתה מקליד פעמיים ביום יכול לקרות לבד. אנחנו בונים את מה שביניהם.">
+<meta property="og:title" content="אוטומציה עסקית — Digital Frame">
+<meta property="og:description" content="כל מה שאתה מקליד פעמיים ביום יכול לקרות לבד. אנחנו בונים את מה שביניהם.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
-<link rel="stylesheet" href="/assets/page-work.css">
+<link rel="stylesheet" href="/assets/pages.css">
 </head>
-<body class="page page--work">
+<body class="page">
 
 <nav id="nav">
   <div class="brand">
-    <div class="logo">DIGITAL<b>·</b>FRAME</div>
+    <a href="/" class="logo-link"><div class="logo">DIGITAL<b>·</b>FRAME</div></a>
     <span class="divider"></span>
     <a href="/" class="dash" aria-label="תפריט"><i></i></a>
   </div>
   <div class="right">
-    <a href="#contact" class="talk"><span class="wave-text">בואו נדבר</span>
+    <a href="/#contact" class="talk"><span class="wave-text">בואו נדבר</span>
       <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     <span class="divider nav-sep"></span>
     <button class="burger" aria-label="תפריט"><i></i><i></i></button>
@@ -52,7 +53,7 @@
         <span>hello@digitalframe.co.il</span>
       </a>
 
-      <a class="cta menu__cta" href="#contact" data-menu-link><span class="wave-text">בואו נדבר</span>
+      <a class="cta menu__cta" href="/#contact" data-menu-link><span class="wave-text">בואו נדבר</span>
         <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
     </div>
 
@@ -60,10 +61,10 @@
 
       <nav class="menu__navigation">
         <div class="menu__navigation--header"><h4>ניווט</h4></div>
-        <a class="menu__navigation-item" href="/" data-menu-link>
+        <a class="menu__navigation-item" href="/#hero" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">בית</span></a>
-        <a class="menu__navigation-item" href="/#about" data-menu-link>
+        <a class="menu__navigation-item" href="/about-us" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">עלינו</span></a>
         <a class="menu__navigation-item" href="/#services" data-menu-link>
@@ -72,10 +73,10 @@
         <a class="menu__navigation-item" href="/#showreel" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">שואוריל</span></a>
-        <a class="menu__navigation-item" href="/#work" data-menu-link>
+        <a class="menu__navigation-item" href="/projects" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">פרויקטים</span></a>
-        <a class="menu__navigation-item" href="#contact" data-menu-link>
+        <a class="menu__navigation-item" href="/#contact" data-menu-link>
           <span class="menu__navigation-icon" aria-hidden="true"></span>
           <span class="menu__navigation-text">צור קשר</span></a>
       </nav>
@@ -83,23 +84,23 @@
       <div class="menu__col">
         <nav class="menu__navigation is--services">
           <div class="menu__navigation--header"><h4>שירותים</h4></div>
-          <a class="menu__navigation-item" href="/#services" data-menu-link>
+          <a class="menu__navigation-item" href="/ui-ux" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">אפיון ו-UI/UX</span></a>
-          <a class="menu__navigation-item" href="/#services" data-menu-link>
+          <a class="menu__navigation-item" href="/web-development" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">בניית אתרים</span></a>
-          <a class="menu__navigation-item" href="/#services" data-menu-link>
+          <a class="menu__navigation-item" href="/branding" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">מיתוג</span></a>
-          <a class="menu__navigation-item" href="/#services" data-menu-link>
+          <a class="menu__navigation-item" href="/campaigns" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">קמפיינים</span></a>
         </nav>
 
         <nav class="menu__navigation is--sponsor">
           <div class="menu__navigation--header"><h4>אוטומציה</h4></div>
-          <a class="menu__navigation-item" href="/#services" data-menu-link>
+          <a class="menu__navigation-item" href="/business-automation" data-menu-link>
             <span class="menu__navigation-icon" aria-hidden="true"></span>
             <span class="menu__navigation-text">אוטומציה עסקית</span></a>
         </nav>
@@ -112,7 +113,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6.5l9 6.2 9-6.2"/></svg>
           <span>hello@digitalframe.co.il</span>
         </a>
-        <a class="cta" href="#contact" data-menu-link><span class="wave-text">בואו נדבר</span>
+        <a class="cta" href="/#contact" data-menu-link><span class="wave-text">בואו נדבר</span>
           <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
       </div>
 
@@ -130,8 +131,8 @@
         </div>
 
         <div class="menu__socials--terms">
-          <a href="#">מדיניות פרטיות</a>
-          <a href="#">תנאי שימוש</a>
+          <a href="/privacy-policy">מדיניות פרטיות</a>
+          <a href="/terms">תנאי שימוש</a>
         </div>
       </div>
     </div>
@@ -139,28 +140,88 @@
   </div>
 </div>
 
-<!-- ============ כותרת הדף ============
-     משתמשת במחלקות של סקשן הפרויקטים בדף הבית, עם work--page
-     שמוסיף מרווח עליון לפינוי הניווט. אין כאן קנבס, אין pin. -->
-<section class="work work--page" id="work">
+<section class="page-head lay">
+  <p class="eyebrow" data-animate="fade">תהליכים</p>
+  <h1 class="page-title" data-animate="title">אוטומציה עסקית</h1>
+  <p class="page-lede" data-animate="fade-up">כל מה שאתה מקליד פעמיים ביום יכול לקרות לבד. אנחנו בונים את מה שביניהם.</p>
+  <div data-animate="fade-up"><a href="/contact" class="cta"><span class="wave-text">לדבר על זה</span>
+      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a></div>
+</section>
 
+<hr class="rule">
+
+<section class="sec lay">
+  <div class="sec-head">
+    <h2 class="sec-title" data-animate="title">מה <strong>כלול</strong></h2>
+    <p class="sec-sub" data-animate="fade-up">ארבעה מרכיבים שחוזרים בכל פרויקט מהסוג הזה.</p>
+  </div>
+  <div class="tiles">
+    <div class="tile" data-animate="fade-up">
+      <span class="tile__num">01</span>
+      <h3 class="tile__title">מיפוי תהליך</h3>
+      <p class="tile__text">מה קורה היום, צעד אחר צעד, כולל מה שנשכח.</p>
+    </div>
+    <div class="tile" data-animate="fade-up">
+      <span class="tile__num">02</span>
+      <h3 class="tile__title">חיבור מערכות</h3>
+      <p class="tile__text">CRM, טפסים, חשבוניות ווואטסאפ מדברים ביניהם.</p>
+    </div>
+    <div class="tile" data-animate="fade-up">
+      <span class="tile__num">03</span>
+      <h3 class="tile__title">התראות</h3>
+      <p class="tile__text">הודעה לאדם הנכון ברגע הנכון.</p>
+    </div>
+    <div class="tile" data-animate="fade-up">
+      <span class="tile__num">04</span>
+      <h3 class="tile__title">בקרה</h3>
+      <p class="tile__text">לוח שמראה מה רץ ומה נתקע.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="sec lay">
+  <div class="sec-head">
+    <h2 class="sec-title" data-animate="title">איך זה <strong>עובד</strong></h2>
+    <p class="sec-sub" data-animate="fade-up">ארבעה שלבים, עם נקודת עצירה לאישור בסוף כל אחד.</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>תצפית</h3>
+        <p>יושבים על התהליך הקיים ומודדים כמה זמן הוא לוקח.</p>
+      </div>
+    </div>
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>תכנון</h3>
+        <p>מה מתאמת, מה נשאר אנושי, ולמה.</p>
+      </div>
+    </div>
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>בנייה</h3>
+        <p>התהליך נבנה, נבדק על מקרי קצה, ומועלה.</p>
+      </div>
+    </div>
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>ליווי</h3>
+        <p>חודש ראשון של כוונון מול המציאות.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="work">
   <div class="work-head">
-    <p class="eyebrow" data-animate="fade">פרויקטים</p>
-    <h1 class="work-title" data-animate="title">המלאכה שלנו,<br><strong>הביטוי שלך.</strong></h1>
+    <h2 class="work-title" data-animate="title">עבודות <strong>בתחום</strong></h2>
+    <a href="/projects" class="ghost" data-animate="fade"><span class="wave-text">כל הפרויקטים</span>
+      <span class="arw-box"><svg class="arw a1" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg><svg class="arw a2" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 18L6 6M6 6h9M6 6v9"/></svg></span></a>
   </div>
-
-  <div class="work-filters" role="group" aria-label="סינון פרויקטים" data-animate="fade-up">
-    <button class="filt" type="button" data-filter="all"   aria-pressed="true">הכול</button>
-    <button class="filt" type="button" data-filter="ux"    aria-pressed="false">UI/UX</button>
-    <button class="filt" type="button" data-filter="dev"   aria-pressed="false">פיתוח</button>
-    <button class="filt" type="button" data-filter="brand" aria-pressed="false">מיתוג</button>
-    <button class="filt" type="button" data-filter="auto"  aria-pressed="false">אוטומציה</button>
-  </div>
-
-<div class="work-grid" id="workGrid">
-
-    <!-- ⚠ .card-shot הוא מילוי גרדיאנט זמני. החלף ב-<img loading="lazy"> של הפרויקט. -->
-    <a class="card" href="#" data-tags="brand ux" data-animate="fade-up">
+  <div class="work-grid">
+    <a class="card" href="/projects/jepeto-style" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-a"></div></div>
       <div class="card-foot">
         <span class="card-name">Jepeto Style
@@ -169,8 +230,7 @@
         <span class="card-tags">מיתוג / UI/UX</span>
       </div>
     </a>
-
-    <a class="card" href="#" data-tags="dev ux" data-animate="fade-up">
+    <a class="card" href="/projects/redbeary" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-b"></div></div>
       <div class="card-foot">
         <span class="card-name">RedBeary
@@ -179,8 +239,7 @@
         <span class="card-tags">פיתוח / UI/UX</span>
       </div>
     </a>
-
-    <a class="card" href="#" data-tags="dev auto" data-animate="fade-up">
+    <a class="card" href="/projects/piece4you" data-animate="fade-up">
       <div class="card-media"><div class="card-shot shot-c"></div></div>
       <div class="card-foot">
         <span class="card-name">Piece4You
@@ -189,9 +248,7 @@
         <span class="card-tags">פיתוח / אוטומציה</span>
       </div>
     </a>
-
   </div>
-
 </section>
 
 <section class="contact" id="contact" data-snap>
@@ -323,31 +380,31 @@
       <div class="foot-col">
         <h4>הסטודיו</h4>
         <ul>
-          <li><a href="/#about">עלינו</a></li>
-          <li><a href="/#services">השירותים</a></li>
-          <li><a href="/#work">פרויקטים</a></li>
+          <li><a href="/about-us">עלינו</a></li>
+          <li><a href="/services">השירותים</a></li>
+          <li><a href="/projects">פרויקטים</a></li>
           <li><a href="/#showreel">שואוריל</a></li>
-          <li><a href="#contact">צור קשר</a></li>
+          <li><a href="/#contact">צור קשר</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h4>שירותים</h4>
         <ul>
-          <li><a href="/#services">אפיון ו-UI/UX</a></li>
-          <li><a href="/#services">בניית אתרים</a></li>
-          <li><a href="/#services">מיתוג</a></li>
-          <li><a href="/#services">קמפיינים</a></li>
-          <li><a href="/#services">אוטומציה עסקית</a></li>
+          <li><a href="/ui-ux">אפיון ו-UI/UX</a></li>
+          <li><a href="/web-development">בניית אתרים</a></li>
+          <li><a href="/branding">מיתוג</a></li>
+          <li><a href="/campaigns">קמפיינים</a></li>
+          <li><a href="/business-automation">אוטומציה עסקית</a></li>
         </ul>
       </div>
       <div class="foot-col">
         <h4>עוד</h4>
         <ul>
-          <li><a href="/#services">חנויות אונליין</a></li>
-          <li><a href="/#services">אוטומציית וואטסאפ</a></li>
-          <li><a href="/#services">מערכות ניהול</a></li>
-          <li><a href="/#services">אינטגרציות</a></li>
-          <li><a href="/#services">תחזוקה ותמיכה</a></li>
+          <li><a href="/ecommerce">חנויות אונליין</a></li>
+          <li><a href="/whatsapp-automation">אוטומציית וואטסאפ</a></li>
+          <li><a href="/management-systems">מערכות ניהול</a></li>
+          <li><a href="/integrations">אינטגרציות</a></li>
+          <li><a href="/maintenance">תחזוקה ותמיכה</a></li>
         </ul>
       </div>
       <div class="foot-col">
@@ -379,8 +436,8 @@
 
       <div class="foot-copy">
         <span>© <span id="yr">2026</span> Digital Frame</span>
-        <a href="#">מדיניות פרטיות</a>
-        <a href="#">תנאי שימוש</a>
+        <a href="/privacy-policy">מדיניות פרטיות</a>
+        <a href="/terms">תנאי שימוש</a>
       </div>
 
       <button class="foot-backtop" type="button" aria-label="חזרה למעלה">
