@@ -248,10 +248,22 @@ function start(){
     return tops.map(t=>uniq.indexOf(t));
   }
 
+  /* ── מה שכבר נמצא במסך הראשון נחשף בטעינה ──
+     start:'top 62%' אומר שאלמנט שיושב מתחת ל-62% מגובה המסך נשאר
+     שקוף עד שגוללים. בדף הבית ההירו ממלא את המסך הראשון ולכן אין
+     לזה משמעות; בדף פנימי, שבו הכותרת קצרה, תוכן אמיתי נוחת ברצועה
+     שבין 62% לתחתית המסך — נראה ריק, ולכן הדף נראה כאילו נגמר.
+     אלמנט כזה מקבל טיימליין כניסה עם stagger במקום טריגר גלילה. */
+  let foldSeq = 0;
+  const inFold = el => el.getBoundingClientRect().top < innerHeight - 40;
+
   document.querySelectorAll('[data-animate]').forEach(el=>{
     const kind = el.dataset.animate;
     const sec  = el.closest('section') || el;
-    const st   = {trigger:el, start:'top 62%', toggleActions:'play none none reverse'};
+    const fold = inFold(el);
+    const lead = fold ? 0.15 + (foldSeq++) * 0.09 : 0;
+    const st   = fold ? null
+                      : {trigger:el, start:'top 62%', toggleActions:'play none none reverse'};
     /* #about ו-work מקבלים חשיפה מתואמת עם stagger (בהמשך) — לא פר-אלמנט */
     if(el.closest('.sphere-grid') || el.closest('.work-grid')) return;
 
@@ -264,7 +276,7 @@ function start(){
       gsap.set(el,{opacity:1});
       gsap.fromTo(words,{yPercent:100,opacity:0},{
         yPercent:0, opacity:1,
-        duration:1.3, ease:'mdx',
+        duration:1.3, ease:'mdx', delay:lead,
         immediateRender:true,
         stagger:(i)=>li[i]*0.07 + i*0.01,
         scrollTrigger:st
@@ -301,7 +313,7 @@ function start(){
     } else if(kind === 'scale-in'){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
-         delay:parseFloat(el.dataset.delay)||0,
+         delay:(parseFloat(el.dataset.delay)||0) + lead,
          immediateRender:true, scrollTrigger:{trigger:el, start:'top 62%', toggleActions:'play none none reverse'}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
@@ -309,7 +321,7 @@ function start(){
          היה: y:44, 1.25s, power4.out — איטי כפול ובעקומה אחרת. */
       const from = kind === 'fade' ? {opacity:0} : {y:80, opacity:0};
       gsap.fromTo(el, from, {y:0, opacity:1,
-        duration:1.5, ease:'mdx', delay:parseFloat(el.dataset.delay)||0,
+        duration:1.5, ease:'mdx', delay:(parseFloat(el.dataset.delay)||0) + lead,
         immediateRender:true, scrollTrigger:st});
     }
   });

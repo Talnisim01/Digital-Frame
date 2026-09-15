@@ -234,6 +234,9 @@ def head(eyebrow, title, lede='', button=None):
         out.append(f'  <p class="page-lede" data-animate="fade-up">{lede}</p>')
     if button:
         out.append(f'  <div data-animate="fade-up">{cta(*button)}</div>')
+    out.append("""  <span class="scroll-cue" aria-hidden="true">
+    <span class="scroll-cue__track"><span class="scroll-cue__dot"></span></span>
+  </span>""")
     out.append('</section>')
     return '\n'.join(out)
 
@@ -399,6 +402,10 @@ def tpl_projects_index():
     <button class="filt" type="button" data-filter="brand" aria-pressed="false">מיתוג</button>
     <button class="filt" type="button" data-filter="auto"  aria-pressed="false">אוטומציה</button>
   </div>
+
+  <span class="scroll-cue" aria-hidden="true">
+    <span class="scroll-cue__track"><span class="scroll-cue__dot"></span></span>
+  </span>
 
   <div class="work-grid" id="workGrid">
 {cards}

@@ -334,3 +334,14 @@
   });
 
 })();
+
+/* ── חיווי הגלילה ──
+   נעלם אחרי 60 פיקסלים של גלילה וחוזר בראש הדף. passive כדי
+   לא לעכב את הגלילה עצמה. */
+(function(){
+  const cue = document.querySelector('.scroll-cue');
+  if(!cue) return;
+  const sync = () => cue.classList.toggle('is-gone', scrollY > 60);
+  addEventListener('scroll', sync, {passive:true});
+  sync();
+})();
