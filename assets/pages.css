@@ -307,3 +307,88 @@ a.tile:hover .tile__go{ color:var(--orange) }
 .work--page .scroll-cue__track{
   background:linear-gradient(180deg, rgba(255,255,255,.28), transparent);
 }
+
+/* ============ אישור מדיניות פרטיות בטופס ============
+   שדה חובה לפי תיקון 13: טופס שאוסף פרטים אישיים חייב גילוי
+   והסכמה מפורשת. תיבת הסימון המקורית מוסתרת ויזואלית אך נשארת
+   במקומה — כך היא עדיין ממוקדת במקלדת ונקראת בקורא מסך. */
+.form-group-field.--is-consent{ margin-top:clamp(14px, 1.6vw, 24px) }
+.consent{
+  display:flex; align-items:flex-start; gap:10px;
+  cursor:pointer; user-select:none;
+}
+.consent input{
+  position:absolute; width:1px; height:1px;
+  opacity:0; margin:0;
+}
+.consent__box{
+  flex:none; width:18px; height:18px; margin-top:2px;
+  border:1px solid rgba(20,27,36,.35); border-radius:5px;
+  background:transparent;
+  transition:background .25s var(--ease), border-color .25s var(--ease);
+}
+.consent__box::after{
+  content:''; display:block; width:5px; height:9px;
+  margin:2px auto 0;
+  border:solid #fff; border-width:0 2px 2px 0;
+  transform:rotate(45deg) scale(0);
+  transition:transform .25s var(--ease);
+}
+.consent input:checked + .consent__box{
+  background:var(--orange); border-color:var(--orange);
+}
+.consent input:checked + .consent__box::after{ transform:rotate(45deg) scale(1) }
+.consent input:focus-visible + .consent__box{
+  outline:2px solid var(--orange); outline-offset:3px;
+}
+.consent__text{
+  font-size:13px; font-weight:300; line-height:1.6; color:var(--gray);
+}
+.consent__text a{ color:var(--ink); text-underline-offset:3px }
+.--is-consent.--has-error .consent__box{ border-color:#c2410c }
+
+/* ============================================================
+   נגישות — תקן ישראלי 5568 / WCAG 2.0 AA
+   ============================================================
+   כעוסק פטור יש פטור מלא מהתקנות. הקוד כאן מכין את הקרקע
+   למעבר לעוסק מורשה, שבו הפטור נעלם. */
+
+/* ---------- ניגודיות ----------
+   הטוקן --gray (#A3A6AA) נותן 2.13:1 על רקע הנייר — התקן דורש
+   4.5:1 לטקסט גוף. --gray-aa נותן 6.7:1 ונשאר אפור־קריא.
+   הוא מוחל כאן על הדפים הפנימיים בלבד; החלפתו הגורפת תשנה את
+   מראה דף הבית, וזו החלטת עיצוב שדורשת אישור. */
+:root{ --gray-aa:#565A5F }
+
+.page-lede .dim, .sec-sub, .tile__text, .step p,
+.case-meta dt, .stat span, .prose .updated,
+.consent__text, .scroll-cue__label{ color:var(--gray-aa) }
+
+/* ---------- דילוג לתוכן ----------
+   הקישור הראשון בכל דף. מוסתר עד שהוא מקבל פוקוס מהמקלדת,
+   ואז קופץ פנימה. בלעדיו משתמש מקלדת עובר את כל הניווט
+   והתפריט מחדש בכל דף. */
+.skip{
+  position:fixed; z-index:100;
+  top:12px; inset-inline-start:12px;
+  padding:12px 20px; border-radius:12px;
+  background:var(--ink); color:var(--light);
+  font-size:14px; text-decoration:none;
+  transform:translateY(-160%);
+  transition:transform .25s var(--ease);
+}
+.skip:focus{ transform:translateY(0) }
+
+/* ---------- מיקוד מקלדת ----------
+   :focus-visible ולא :focus — הטבעת מופיעה בניווט מקלדת
+   ולא בלחיצת עכבר. */
+a:focus-visible, button:focus-visible,
+input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--orange);
+  outline-offset:3px;
+  border-radius:6px;
+}
+/* הכתום על רקע כהה שומר על ניגודיות; על נייר בהיר הוא מודגש בצל */
+.work :focus-visible, .foot :focus-visible, .case-next:focus-visible{
+  outline-color:#FFB878;
+}

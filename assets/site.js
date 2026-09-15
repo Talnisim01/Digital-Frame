@@ -296,13 +296,17 @@
 
     if(!name)  bad.push(el['name']);
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) bad.push(el['email']);
+    /* תיקון 13: בלי הסכמה מפורשת אין רשות לאסוף את הפרטים,
+       ולכן זו עצירה ולא אזהרה. */
+    if(el['consent'] && !el['consent'].checked) bad.push(el['consent']);
 
     [].forEach.call(form.querySelectorAll('.form-group-field'), function(f){ f.classList.remove('--has-error'); });
 
     if(bad.length){
       /* כל שדה נושא את השגיאה שלו. ההודעה הגלובלית נשארת כללית
          כדי לא לחזור על אותו מידע פעמיים. */
-      var msgs = {name:'צריך למלא שם מלא', email:'כתובת אימייל לא תקינה'};
+      var msgs = {name:'צריך למלא שם מלא', email:'כתובת אימייל לא תקינה',
+                  consent:'צריך לאשר את מדיניות הפרטיות כדי שנוכל לחזור אליך'};
       bad.forEach(function(i){
         var f = i.closest('.form-group-field');
         f.classList.add('--has-error');
