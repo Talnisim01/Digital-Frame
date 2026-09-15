@@ -183,9 +183,34 @@ function start(){
     (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})();
     lenis.on('scroll',()=>ScrollTrigger.update());
   }
+  /* ── גלילה לעוגן ──
+     המגנוט מושך כל סקשן שנכנס למסך באמצעות lenis.scrollTo(lock:true).
+     בדרך ליעד רחוק חוצים סקשנים אחרים, ה-onEnter שלהם יורה, והגלילה
+     המקורית מבוטלת באמצע — הכפתור "בואו נדבר" נעצר כ-5,400px לפני
+     סקשן צור-הקשר. navScroll מסמן שגלילה יזומה בעיצומה, והמגנוט
+     מוותר כל עוד הדגל דלוק. */
+  let navScroll = false;
+  function goTo(t, opts){
+    opts = opts || {};
+    navScroll = true;
+    const dur  = opts.immediate ? 0 : (opts.duration || 1.25);
+    const done = () => { navScroll = false; };
+    if(window.lenis){
+      window.lenis.scrollTo(t, {duration:dur, lock:true, immediate:!!opts.immediate,
+        easing:x=>1-Math.pow(1-x,3), onComplete:done});
+    } else {
+      t.scrollIntoView({behavior: opts.immediate ? 'auto' : 'smooth'});
+    }
+    setTimeout(done, dur*1000 + 700);   /* רשת ביטחון אם onComplete לא נורה */
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
-    const t=document.querySelector(a.getAttribute('href'));
-    if(t){e.preventDefault();lenis?lenis.scrollTo(t):t.scrollIntoView({behavior:'smooth'})}
+    const href = a.getAttribute('href');
+    if(!href || href === '#') return;
+    const t = document.querySelector(href);
+    if(!t) return;
+    e.preventDefault();
+    goTo(t);
   }));
 
   /* מעבר סקשן 1 -> 2 */
@@ -661,7 +686,7 @@ function start(){
       ScrollTrigger.create({
         trigger: sec, start:'top 58%', end:'top 8%',
         onEnter:()=>{
-          if(pulling) return;
+          if(pulling || navScroll) return;
           pulling = true;
           window.lenis.scrollTo(sec, {duration:.8, lock:true,
             easing:t=>1-Math.pow(1-t,3),
@@ -677,6 +702,15 @@ function start(){
     buildSnap();
   }
   ScrollTrigger.refresh();
+
+  /* ── נחיתה מדף פנימי (/#contact) ──
+     הדפדפן קופץ לעוגן בזמן הטעינה, לפני שה-pins נבנו ולפני
+     ש-ScrollTrigger חישב מחדש את הגבהים — ולכן הוא נוחת במקום
+     הלא נכון. אחרי ה-refresh קופצים שוב, הפעם למיקום האמיתי. */
+  if(location.hash && location.hash.length > 1){
+    const t = document.querySelector(location.hash);
+    if(t) requestAnimationFrame(()=>goTo(t, {immediate:true}));
+  }
 
   /* עכבר (דסקטופ בלבד): פרלקסה עדינה על הכתמים, הפריים והעיגולים */
   if(matchMedia('(hover:hover)').matches){

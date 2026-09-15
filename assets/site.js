@@ -322,19 +322,57 @@
       return c.getAttribute('aria-pressed') === 'true';
     }).map(function(c){ return c.textContent.trim(); });
 
-    var body =
-      'שם: '     + name + '\n' +
-      'חברה: '   + el['company'].value.trim() + '\n' +
-      'אימייל: ' + email + '\n' +
-      'טלפון: '  + el['phone'].value.trim() + '\n' +
-      'מעניין: ' + (interests.join(', ') || '—') + '\n\n' +
-      el['message'].value.trim();
+    var payload = {
+      name:    name,
+      email:   email,
+      phone:   el['phone'].value.trim(),
+      company: el['company'].value.trim(),
+      message: el['message'].value.trim(),
+      interests: interests,
+      consent: true,
+      website: el['website'] ? el['website'].value : '',   /* מלכודת דבש */
+      page: location.pathname
+    };
 
-    window.location.href = 'mailto:' + MAIL_TO +
-      '?subject=' + encodeURIComponent('פנייה מהאתר — ' + name) +
-      '&body='    + encodeURIComponent(body);
+    /* נפילה חזרה ל-mailto. היא קיימת רק למקרה שהשרת לא זמין —
+       אסור שגולש יישאר בלי דרך ליצור קשר בגלל תקלה אצלנו. */
+    function fallbackToMail(){
+      var body =
+        'שם: '     + payload.name + '\n' +
+        'חברה: '   + payload.company + '\n' +
+        'אימייל: ' + payload.email + '\n' +
+        'טלפון: '  + payload.phone + '\n' +
+        'מעניין: ' + (interests.join(', ') || '—') + '\n\n' +
+        payload.message;
+      window.location.href = 'mailto:' + MAIL_TO +
+        '?subject=' + encodeURIComponent('פנייה מהאתר — ' + payload.name) +
+        '&body='    + encodeURIComponent(body);
+      setNote('השליחה הישירה נכשלה — פתחתי לך את תוכנת המייל עם הפרטים.', 'error');
+    }
 
-    setNote('נפתחת אצלך תוכנת המייל עם הפרטים. לא נפתחה? כתוב לנו ל־' + MAIL_TO, 'success');
+    var btn = form.querySelector('[type="submit"]');
+    if(btn) btn.disabled = true;
+    setNote('שולח…', '');
+
+    fetch('/api/contact', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    }).then(function(r){
+      if(r.ok) return r.json();
+      throw new Error('status ' + r.status);
+    }).then(function(){
+      form.reset();
+      [].forEach.call(form.querySelectorAll('.interest-option'), function(c){
+        c.setAttribute('aria-pressed','false');
+      });
+      setNote('תודה — הפנייה התקבלה. נחזור אליך בהקדם.', 'success');
+    }).catch(function(){
+      fallbackToMail();
+    }).then(function(){
+      if(btn) btn.disabled = false;
+    });
+
   });
 
 })();
