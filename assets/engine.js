@@ -508,11 +508,21 @@ function start(){
       /* מצב התחלה: כל הגלולות מקובצות במרכז (x:0,y:0), קטנות ומוסתרות.
          בגלילה הן מתפוצצות החוצה לפינות ונחשפות — כמו הרפרנס.
          xPercent/yPercent:-50 ממרכזים כל גלולה על נקודת ה-50%/50%. */
-      const REST = 0;
+      /* מצב סגור: ארבע הגלולות מקובצות סביב מרכז המכשיר, קטנות
+         אך *גלויות*. קודם הן היו autoAlpha:0 — כלומר עד שלא גללת
+         בתוך הסקשן לא היה שום רמז שיש כאן משהו שנפתח, והמחווה
+         איבדה את ההתחלה שלה. ההיסטים הקטנים מונעים מהן להיערם
+         אחת על השנייה לכתם אחד. */
+      const cluster = [
+        ['.craft-pill--ux',  -96, -62],
+        ['.craft-pill--dev',  94, -54],
+        ['.craft-pill--brd', -86,  58],
+        ['.craft-pill--aut',  92,  66]
+      ];
       gsap.set('.craft-copy', {autoAlpha:0});
-      spread.forEach(([sel,fx,fy]) =>
+      cluster.forEach(([sel,cx,cy]) =>
         gsap.set(sel, {xPercent:-50, yPercent:-50,
-          x:0, y:0, scale:.45, autoAlpha:0}));
+          x:()=>cx*sx(), y:()=>cy*sy(), scale:.58, autoAlpha:1}));
 
       const tl = gsap.timeline({
         scrollTrigger:{
