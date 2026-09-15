@@ -1,0 +1,8 @@
+# Digital Frame
+User-agent: *
+Allow: /
+
+# מקורות הגנרטור אינם תוכן — אין טעם שיאונדקסו
+Disallow: /_src/
+
+Sitemap: https://digitalframe.co.il/sitemap.xml

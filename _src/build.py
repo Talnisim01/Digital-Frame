@@ -47,6 +47,11 @@ NAV, MENU, CONTACT, FOOTER = map(partial, ('nav', 'menu', 'contact', 'footer'))
 
 MAIL = 'hello@digitalframe.co.il'
 
+# ⚠ כתובת האתר בייצור. canonical ו-sitemap דורשים כתובות מוחלטות,
+#   וכתובת שגויה כאן גרועה מכלום מבחינת גוגל. אם הדומיין שונה —
+#   זו השורה היחידה שצריך לשנות, והשאר נגזר ממנה.
+SITE = 'https://digitalframe.co.il'
+
 # ⚠ פרופילי הרשתות — מקור אחד לכל 25 המופעים בכל דף.
 #   כל עוד הערך הוא '#' הקישור לא מוביל לשום מקום. להחליף בכתובות אמיתיות.
 SOCIAL = {
@@ -442,9 +447,28 @@ def card(slug, name, tags, shot):
             f'        <span class="card-tags">{tags}</span>\n'
             f'      </div>\n    </a>')
 
+def canonical_of(path):
+    """'services/index.html' -> 'https://.../services'  |  '404.html' -> None"""
+    if path == '404.html':
+        return None                      # לדף שגיאה אין canonical
+    clean = path[:-len('index.html')].rstrip('/')
+    return SITE + ('/' + clean if clean else '/')
+
+
 def page(path, title, desc, body, extra_css=True):
     """עוטף גוף-דף במעטפת המשותפת ומחזיר HTML שלם."""
     css = '\n<link rel="stylesheet" href="/assets/pages.css">' if extra_css else ''
+    url = canonical_of(path)
+    seo = ''
+    if url:
+        seo = (f'<link rel="canonical" href="{url}">\n'
+               f'<meta property="og:url" content="{url}">\n')
+    seo += (f'<meta property="og:image" content="{SITE}/og-image.png">\n'
+            f'<meta property="og:image:width" content="1200">\n'
+            f'<meta property="og:image:height" content="630">\n'
+            f'<meta property="og:site_name" content="Digital Frame">\n'
+            f'<meta property="og:locale" content="he_IL">\n'
+            f'<meta name="twitter:card" content="summary_large_image">')
     html = f'''<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -455,6 +479,7 @@ def page(path, title, desc, body, extra_css=True):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="website">
+{seo}
 <script>
 /* חייב לרוץ לפני הצביעה הראשונה — ראו "מניעת הבזק" ב-site.css */
 (function(d){{
@@ -793,6 +818,41 @@ def main():
     if os.path.isdir(old):
         shutil.rmtree(old)
         print('הוסר: work/  (redirect ל-/projects ב-vercel.json)')
+
+    # ── sitemap + robots ──
+    # נגזרים מרשימת הדפים שנכתבה בפועל, ולכן לא יכולים להתיישן:
+    # דף חדש בגנרטור מופיע בהם מאליו.
+    from datetime import date
+    today = date.today().isoformat()
+    urls = []
+    for path, _ in out:
+        u = canonical_of(path)
+        if not u:
+            continue
+        # דף הבית ראשון בעדיפות, אחריו אינדקסים, אחריהם השאר
+        depth = u[len(SITE):].strip('/').count('/')
+        prio  = '1.0' if u.rstrip('/') == SITE else ('0.8' if depth == 0 else '0.6')
+        urls.append((u, prio))
+    urls.sort(key=lambda t: (-float(t[1]), t[0]))
+
+    sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
+               '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for u, prio in urls:
+        sitemap += ['  <url>', f'    <loc>{u}</loc>', f'    <lastmod>{today}</lastmod>',
+                    f'    <priority>{prio}</priority>', '  </url>']
+    sitemap.append('</urlset>')
+    out.append(write('sitemap.xml', '\n'.join(sitemap) + '\n'))
+
+    robots = f"""# Digital Frame
+User-agent: *
+Allow: /
+
+# מקורות הגנרטור אינם תוכן — אין טעם שיאונדקסו
+Disallow: /_src/
+
+Sitemap: {SITE}/sitemap.xml
+"""
+    out.append(write('robots.txt', robots))
 
     total = sum(n for _, n in out)
     for p, n in out:
