@@ -430,3 +430,33 @@ input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
   display:block; font-size:13px; font-weight:300;
   line-height:1.65; color:var(--gray-aa);
 }
+
+/* ============ כפתור וואטסאפ צף ============
+   --dock-offset הוא נקודת המפגש של כל מה שמרחף בתחתית המסך.
+   באנר העוגיות בשלב הבא ירים אותו במקום להתנגש בכפתור. */
+:root{ --dock-offset:0px }
+
+.wa{
+  position:fixed; z-index:60;
+  inset-inline-start:clamp(18px, 2.4vw, 34px);
+  bottom:calc(clamp(18px, 2.4vw, 34px) + var(--dock-offset));
+  width:56px; height:56px; border-radius:50%;
+  display:grid; place-items:center;
+  background:#25D366; color:#fff;
+  box-shadow:0 10px 30px rgba(20,27,36,.22);
+  text-decoration:none;
+  opacity:0; visibility:hidden;
+  transform:translateY(14px) scale(.92);
+  transition:opacity .4s var(--ease), transform .4s var(--ease),
+             visibility .4s var(--ease), bottom .4s var(--ease);
+}
+.wa.is-on{ opacity:1; visibility:visible; transform:none }
+.wa svg{ width:29px; height:29px; fill:currentColor; display:block }
+.wa:hover{ transform:translateY(-3px) }
+.wa:focus-visible{ outline:2px solid var(--ink); outline-offset:4px }
+
+@media (prefers-reduced-motion:reduce){
+  .wa{ transition:opacity .2s linear, visibility .2s linear; transform:none }
+  .wa.is-on{ transform:none }
+  .wa:hover{ transform:none }
+}

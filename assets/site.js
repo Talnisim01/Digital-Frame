@@ -422,3 +422,66 @@
   }, { rootMargin: '600px 0px' });   /* מקדימים בגלילה אחת, לא ברגע האחרון */
   io.observe(box);
 })();
+
+/* ============================================================
+   כפתור וואטסאפ צף
+   ============================================================
+   נוצר ב-JS ולא במארקאפ: אלמנט אחד שמופיע ב-33 הדפים במקום
+   שכפול בכל קובץ.
+
+   שלושה כללי נראות, כולם כדי שהוא לא יתחרה במשהו אחר:
+   1. מופיע רק אחרי 400px גלילה — בהירו יש CTA ראשי משלו.
+   2. נעלם כשהתפריט פתוח — הוא מרחף מעל שכבת התפריט.
+   3. נעלם כשסקשן צור-הקשר על המסך — אין טעם בקיצור דרך
+      לטופס שנמצא שלושה סנטימטרים משם.
+
+   ההודעה נגזרת מהדף שממנו לחצו, כך שהפנייה מגיעה עם הקשר. */
+(function(){
+  var PHONE = '972526665582';
+
+  /* שם הדף לתוך ההודעה. נלקח מהכותרת ולא ממפה ידנית, כדי
+     שדף חדש בגנרטור יעבוד מאליו בלי לעדכן כאן שום דבר. */
+  function pageLabel(){
+    if(location.pathname === '/' || location.pathname === '/index.html') return 'הדף הראשי';
+    var t = (document.title || '').split('—')[0].trim();
+    return t || 'האתר';
+  }
+
+  var btn = document.createElement('a');
+  btn.className = 'wa';
+  btn.target = '_blank';
+  btn.rel = 'noopener';
+  btn.setAttribute('aria-label', 'פנייה בוואטסאפ');
+  btn.href = 'https://wa.me/' + PHONE + '?text=' +
+    encodeURIComponent('היי, הגעתי מ' + pageLabel() + ' באתר ואשמח לפרטים.');
+  btn.innerHTML =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.1c-.25.69-1.44 1.32-1.99 1.37-.53.05-1.02.23-3.45-.72-2.9-1.14-4.74-4.1-4.88-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.37c.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.57.81 1.97.88 2.11.07.14.12.31.02.5-.1.19-.14.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.57.17.29.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.3 1.41.29.14.45.12.62-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.64-.14.26.09 1.66.78 1.94.93.29.14.48.21.55.33.07.12.07.69-.17 1.38Z"/>' +
+    '</svg>';
+  document.body.appendChild(btn);
+
+  var root = document.documentElement;
+  var contactNear = false;
+
+  function sync(){
+    var show = scrollY > 400 && !contactNear && !root.classList.contains('menu-open');
+    btn.classList.toggle('is-on', show);
+  }
+
+  addEventListener('scroll', sync, {passive:true});
+
+  var contact = document.querySelector('.contact');
+  if(contact && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      contactNear = es[0].isIntersecting;
+      sync();
+    }, {rootMargin:'-10% 0px -10% 0px'}).observe(contact);
+  }
+
+  /* התפריט לא משדר אירוע — עוקבים אחרי המחלקה על <html> */
+  if('MutationObserver' in window){
+    new MutationObserver(sync).observe(root, {attributes:true, attributeFilter:['class']});
+  }
+
+  sync();
+})();
