@@ -34,8 +34,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 <link rel="stylesheet" href="/assets/pages.css">
+<!-- ============ מעקב ============
+     הסדר כאן אינו העדפה. consent.js מגדיר consent default: denied
+     ורץ ראשון, בלי defer ובלי async. GTM שנטען לפניו יורה פעם
+     אחת בלי הסכמה, ופעם אחת מספיקה כדי להיות הפרה. -->
+<script src="/assets/consent.js"></script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})
+(window,document,'script','dataLayer','GTM-K97TXLG5');</script>
+
 </head>
 <body class="page">
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K97TXLG5"
+  height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
 
 <a href="#main" class="skip">דילוג לתוכן הראשי</a>
 
@@ -409,6 +421,7 @@
         <a href="/privacy-policy">מדיניות פרטיות</a>
         <a href="/terms">תנאי שימוש</a>
         <a href="/accessibility">הצהרת נגישות</a>
+        <a href="#" data-cc-open>הגדרות עוגיות</a>
       </div>
 
       <button class="foot-backtop" type="button" aria-label="חזרה למעלה">

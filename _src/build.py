@@ -52,6 +52,11 @@ MAIL = 'hello@digitalframe.co.il'
 #   זו השורה היחידה שצריך לשנות, והשאר נגזר ממנה.
 SITE = 'https://digital-frame-two.vercel.app'
 
+# מזהי מעקב. הפיקסל נטען דרך GTM ולא ישירות בקוד, כדי שההסכמה
+# תשלוט בו — פיקסל מוטמע קשיח יורה בלי קשר למה שהגולש בחר.
+GTM_ID   = 'GTM-K97TXLG5'
+PIXEL_ID = '1099984849149765'
+
 # ⚠ מתג ההשקה. כל עוד False האתר מבקש במפורש לא להיאנדקס —
 #   דומיין זמני עם תוכן זמני שנכנס למנוע החיפוש הופך לגרסה
 #   מתחרה שצריך לנקות אחר כך. ביום המעבר לדומיין האמיתי:
@@ -581,8 +586,20 @@ def page(path, title, desc, body, extra_css=True, noindex=False):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">{css}
+<!-- ============ מעקב ============
+     הסדר כאן אינו העדפה. consent.js מגדיר consent default: denied
+     ורץ ראשון, בלי defer ובלי async. GTM שנטען לפניו יורה פעם
+     אחת בלי הסכמה, ופעם אחת מספיקה כדי להיות הפרה. -->
+<script src="/assets/consent.js"></script>
+<script>(function(w,d,s,l,i){{w[l]=w[l]||[];w[l].push({{'gtm.start':new Date().getTime(),event:'gtm.js'}});
+var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);}})
+(window,document,'script','dataLayer','{GTM_ID}');</script>
+
 </head>
 <body class="page">
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}"
+  height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
 
 <a href="#main" class="skip">דילוג לתוכן הראשי</a>
 

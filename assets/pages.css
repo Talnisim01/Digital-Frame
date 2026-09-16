@@ -466,3 +466,54 @@ input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
    מוצג תמיד, וזה המצב הנכון — קישור יצירת קשר לא אמור להיעלם
    רק כי סקריפט לא רץ. */
 html:not(.js-anim) .wa{ opacity:1; visibility:visible; transform:none }
+
+/* ============ באנר הסכמת עוגיות ============
+   לא חוסם את הדף: אין שכבת כיסוי ואפשר לגלול ולקרוא בזמן
+   שהוא פתוח. חסימה מלאה היא דפוס אפל, והיא גם מורידה קריאה. */
+.cc{
+  position:fixed; z-index:70;
+  inset-inline:0; bottom:0;
+  background:var(--ink); color:var(--light);
+  box-shadow:0 -14px 40px rgba(20,27,36,.22);
+  transform:translateY(102%);
+  transition:transform .5s var(--ease);
+}
+.cc.is-on{ transform:none }
+
+.cc__in{
+  width:min(1320px, 100% - 2 * clamp(20px, 4vw, 64px));
+  margin-inline:auto;
+  padding-block:clamp(16px, 2.2vh, 26px);
+  display:flex; align-items:center; gap:clamp(14px, 2.4vw, 42px);
+  flex-wrap:wrap;
+}
+.cc__text{
+  flex:1 1 320px; margin:0;
+  font-size:14px; font-weight:300; line-height:1.65;
+  color:rgba(254,253,251,.82);
+}
+.cc__text a{ color:var(--light); text-underline-offset:3px }
+
+.cc__btns{ display:flex; gap:10px; flex:0 0 auto }
+.cc__btn{
+  font:inherit; font-size:14px; font-weight:500;
+  padding:12px 24px; border-radius:999px;
+  border:1px solid rgba(254,253,251,.3);
+  background:transparent; color:var(--light);
+  cursor:pointer;
+  transition:background .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease);
+}
+/* שני הכפתורים באותו גודל ובאותה בולטות. סירוב שדורש יותר
+   מאמץ מאישור אינו הסכמה חופשית. */
+.cc__btn:hover{ border-color:var(--light) }
+.cc__btn--yes{ background:var(--orange); border-color:var(--orange) }
+.cc__btn--yes:hover{ background:#ff7a2e; border-color:#ff7a2e }
+.cc__btn:focus-visible{ outline:2px solid var(--orange-soft); outline-offset:3px }
+
+@media (max-width:600px){
+  .cc__btns{ width:100% }
+  .cc__btn{ flex:1 }
+}
+@media (prefers-reduced-motion:reduce){
+  .cc{ transition:none }
+}

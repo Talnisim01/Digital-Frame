@@ -511,3 +511,88 @@
 
   sync();
 })();
+
+/* ============================================================
+   באנר הסכמת עוגיות
+   ============================================================
+   הבאנר עצמו הוא רק ממשק. ההחלטה המשפטית כבר התקבלה קודם,
+   ב-consent.js, שרץ לפני GTM ומגדיר הכל כ-denied. כאן רק
+   אוספים את הבחירה ומעבירים אותה הלאה.
+
+   שלושה כללים שנגזרים מכך:
+   1. הבאנר לא חוסם את הדף — אפשר לגלול ולקרוא בזמן שהוא פתוח.
+      חסימה מלאה היא דפוס אפל שגם פוגע בשיעור הקריאה.
+   2. "רק הכרחי" זמין באותה בולטות כמו "מאשר". סירוב שדורש
+      שלוש לחיצות יותר מאישור אינו הסכמה חופשית.
+   3. סגירה בלי בחירה אינה הסכמה: הבאנר יחזור בביקור הבא.
+   ============================================================ */
+(function(){
+  var C = window.DFConsent;
+  if(!C) return;
+
+  var root = document.documentElement;
+
+  function build(){
+    var el = document.createElement('div');
+    el.className = 'cc';
+    el.setAttribute('role','dialog');
+    el.setAttribute('aria-live','polite');
+    el.setAttribute('aria-label','הסכמה לשימוש בעוגיות');
+    el.innerHTML =
+      '<div class="cc__in">' +
+        '<p class="cc__text">אנחנו משתמשים בעוגיות כדי להבין איך האתר מתפקד ולשפר אותו. ' +
+        'אפשר לאשר הכול, או להסתפק בהכרחי בלבד. ' +
+        '<a href="/privacy-policy">מדיניות הפרטיות</a></p>' +
+        '<div class="cc__btns">' +
+          '<button type="button" class="cc__btn" data-cc="necessary">רק הכרחי</button>' +
+          '<button type="button" class="cc__btn cc__btn--yes" data-cc="all">מאשר הכול</button>' +
+        '</div>' +
+      '</div>';
+    return el;
+  }
+
+  var banner = null;
+
+  function hide(){
+    if(!banner) return;
+    banner.classList.remove('is-on');
+    root.style.setProperty('--dock-offset','0px');
+    setTimeout(function(){ if(banner){ banner.remove(); banner = null; } }, 450);
+  }
+
+  function lift(){
+    /* מרים את כל מה שמרחף בתחתית המסך — כרגע כפתור הוואטסאפ.
+       נמדד בפועל ולא מוערך, כי גובה הבאנר משתנה עם הטקסט. */
+    if(!banner) return;
+    root.style.setProperty('--dock-offset', Math.round(banner.offsetHeight) + 'px');
+  }
+
+  function show(){
+    banner = build();
+    document.body.appendChild(banner);
+    requestAnimationFrame(function(){
+      banner.classList.add('is-on');
+      lift();
+    });
+    addEventListener('resize', lift, {passive:true});
+
+    banner.addEventListener('click', function(e){
+      var b = e.target.closest('[data-cc]');
+      if(!b) return;
+      var all = b.dataset.cc === 'all';
+      C.save({ analytics: all, ads: all });
+      hide();
+    });
+  }
+
+  if(!C.decided()) show();
+
+  /* פתיחה מחדש מהפוטר — חובה שתהיה דרך לחזור מהחלטה */
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-cc-open]');
+    if(!t) return;
+    e.preventDefault();
+    C.reset();
+    if(!banner) show();
+  });
+})();
