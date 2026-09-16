@@ -1,8 +1,16 @@
 /* ============ הפריימים שלך ============ */
 const FRAME_COUNT = 241;
-// מובייל טוען סט קל יותר (900px) — טעינה מהירה וחיסכון בנתונים
 const isMobile = matchMedia('(max-width:900px)').matches;
-const frameDir = isMobile ? 'frames-m' : 'frames';
+
+/* בחירת ערכת הפריימים. עד עכשיו הקריטריון היה רוחב המסך בלבד,
+   וזה מדד את הדבר הלא נכון: לפטופ על 4G קיבל 18.6MB רק כי המסך
+   רחב, בעוד טלפון על WiFi קיבל דווקא את הערכה הקלה. מה שקובע
+   כאן הוא רוחב הפס, ולכן הרשת נבדקת ראשונה. */
+const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+const slowNet = !!conn.saveData ||
+                ['slow-2g','2g','3g'].indexOf(conn.effectiveType) !== -1 ||
+                (typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < 3);
+const frameDir = (isMobile || slowNet) ? 'frames-m' : 'frames';
 const framePath = i => `/${frameDir}/${String(i).padStart(4,'0')}.webp`;
 
 /* דפים פנימיים לא נושאים את הקנבס. HAS_SEQ הוא המתג היחיד
@@ -37,7 +45,7 @@ const _shx = _sh.getContext('2d');
 
 
 function draw(i){
-  const img = images[i];
+  const img = nearestLoaded(i);
   if(!img || !img.complete || !img.naturalWidth) return;
   const cw=canvas.width, ch=canvas.height;
   ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high';
@@ -101,24 +109,77 @@ function draw(i){
   },1400);
 })();
 
-/* טעינת כל הפריימים עם מד התקדמות + ספירת כשלונות */
+/* ============ טעינה מדורגת ============
+   קודם: המתנה לכל 241 הפריימים לפני הצגת הדף. 18.6MB, כלומר
+   45 שניות על 4G מהיר ומעל 90 על 4G רגיל — נמדד.
+
+   עכשיו: מחזור ראשון טוען כל פריים שישי (41 פריימים, ~3MB),
+   משחרר את הלואדר, וממשיך להשלים את השאר ברקע. איכות הפיקסלים
+   לא משתנה כלל — אותם קבצים בדיוק. מה שמשתנה הוא רק כמה מהם
+   קיימים בשניות הראשונות, ו-draw מציג את הפריים הטעון הקרוב
+   ביותר עד שהאמיתי מגיע. */
+const STRIDE = 6;
+const firstPass = [];
+for(let i=0;i<FRAME_COUNT;i+=STRIDE) firstPass.push(i);
+if(firstPass[firstPass.length-1] !== FRAME_COUNT-1) firstPass.push(FRAME_COUNT-1);
+
 function preload(done){
   if(!HAS_SEQ){ done(); return; }        // אין קנבס — אין מה לטעון
-  for(let i=0;i<FRAME_COUNT;i++){
-    const img=new Image();
-    img.onload=()=>{ ok++; tick(); };
-    img.onerror=()=>{ failed++; tick(); };
-    img.src=framePath(i);
-    images.push(img);
+  for(let i=0;i<FRAME_COUNT;i++) images.push(null);
+
+  let firstDone = 0, released = false;
+
+  function fetchFrame(i, onSettle){
+    const img = new Image();
+    img.onload  = () => { ok++;     images[i] = img; onSettle(); };
+    img.onerror = () => { failed++; onSettle(); };
+    img.src = framePath(i);
   }
+
+  function release(){
+    if(released) return;
+    released = true;
+    done();
+    /* המחזור השני מתחיל רק אחרי השחרור, כדי לא להתחרות
+       על רוחב הפס עם מה שהדף צריך כדי להיראות. */
+    setTimeout(background, 400);
+  }
+
   function tick(){
-    loaded++;
-    const p=Math.round(loaded/FRAME_COUNT*100);
-    const pctEl=document.getElementById('pct'), barEl=document.getElementById('barfill');
-    if(pctEl) pctEl.textContent=p;
-    if(barEl) barEl.style.width=p+'%';
-    if(loaded===FRAME_COUNT) done();
+    firstDone++;
+    const p = Math.round(firstDone / firstPass.length * 100);
+    const pctEl = document.getElementById('pct'), barEl = document.getElementById('barfill');
+    if(pctEl) pctEl.textContent = p;
+    if(barEl) barEl.style.width = p + '%';
+    if(firstDone === firstPass.length) release();
   }
+
+  firstPass.forEach(i => fetchFrame(i, tick));
+
+  function background(){
+    /* בזרם ולא בבת אחת: 240 בקשות במקביל חונקות את החיבור
+       ופוגעות דווקא במי שהרשת שלו איטית. */
+    const queue = [];
+    for(let i=0;i<FRAME_COUNT;i++) if(!images[i]) queue.push(i);
+    let active = 0, at = 0;
+    const PARALLEL = 6;
+    (function pump(){
+      while(active < PARALLEL && at < queue.length){
+        active++;
+        fetchFrame(queue[at++], () => { active--; pump(); });
+      }
+    })();
+  }
+}
+
+/* הפריים הטעון הקרוב ביותר — הגשר בין שני המחזורים */
+function nearestLoaded(i){
+  if(images[i]) return images[i];
+  for(let d=1; d<=STRIDE+1; d++){
+    if(images[i-d]) return images[i-d];
+    if(images[i+d]) return images[i+d];
+  }
+  return null;
 }
 
 /* ============ פיצול טקסט לתווים (אפקט הגלגול) ============
