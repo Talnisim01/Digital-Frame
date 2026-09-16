@@ -600,6 +600,15 @@ def page(path, title, desc, body, extra_css=True, noindex=False):
 
 {FOOTER}
 
+<!-- כפתור וואטסאפ. יושב במעטפת ולא מוזרק ב-JS: המעטפת היא
+     שכבת ה-Layout של כל 33 הדפים, ולכן זה המקום הנכון. כך הוא
+     קיים ב-HTML, נגיש גם בלי JS, ואין הבהוב בכניסה.
+     ההודעה נבנית בקוד לפי הדף — הטקסט כאן הוא ברירת המחדל. -->
+<a class="wa" href="https://wa.me/972526665582" target="_blank" rel="noopener noreferrer"
+   aria-label="צור קשר בוואטסאפ" data-wa-phone="972526665582">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.1c-.25.69-1.44 1.32-1.99 1.37-.53.05-1.02.23-3.45-.72-2.9-1.14-4.74-4.1-4.88-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.37c.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.57.81 1.97.88 2.11.07.14.12.31.02.5-.1.19-.14.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.57.17.29.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.3 1.41.29.14.45.12.62-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.64-.14.26.09 1.66.78 1.94.93.29.14.48.21.55.33.07.12.07.69-.17 1.38Z"/></svg>
+</a>
+
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -994,8 +1003,10 @@ def home_seo():
 def patch_home():
     path = os.path.join(ROOT, 'index.html')
     src = open(path, encoding='utf-8').read()
+    wa = page('index.html', '', '', '')
+    wa = wa[wa.index('<a class="wa"'): wa.index('</a>', wa.index('<svg viewBox="0 0 24 24" aria-hidden')) + 4]
     for tag, blk in (('nav', NAV), ('menu', MENU), ('contact', CONTACT),
-                     ('footer', FOOTER), ('seo', home_seo())):
+                     ('footer', FOOTER), ('seo', home_seo()), ('wa', wa)):
         # בדף הבית העוגנים נשארים מקומיים -> {{HOME}} ריק
         new = resolve(blk, '')
         src = re.sub(f'<!--@{tag}-->.*?<!--/@{tag}-->',

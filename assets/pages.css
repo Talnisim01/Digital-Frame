@@ -460,3 +460,9 @@ input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
   .wa.is-on{ transform:none }
   .wa:hover{ transform:none }
 }
+
+/* בלי JS אין מי שיוסיף is-on. .js-anim מתווסף בסקריפט המוטבע
+   בראש הדף, ולכן הוא סמן אמין לכך ש-JS פעיל: בלעדיו הכפתור
+   מוצג תמיד, וזה המצב הנכון — קישור יצירת קשר לא אמור להיעלם
+   רק כי סקריפט לא רץ. */
+html:not(.js-anim) .wa{ opacity:1; visibility:visible; transform:none }
