@@ -909,8 +909,13 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .foot-soc__link svg{width:19px;height:19px;fill:currentColor;display:block}
 
 .foot-copy{grid-area:stack;justify-self:center;align-self:center;
-  display:flex;align-items:center;gap:clamp(16px,4.6vw,64px);
+  display:flex;align-items:center;flex-wrap:wrap;justify-content:center;
+  /* המרווח היה clamp(16px,4.6vw,64px) — נבנה לשלושה פריטים. עם
+     הוספת "הצהרת נגישות" שלושת המרווחים תפסו 186px, השורה גדלה
+     ל-702px והתנגשה בשתי הקבוצות שחולקות איתה את אותו תא ברשת. */
+  gap:clamp(12px,1.8vw,30px);
   color:#8a8f8d;font-weight:400;font-size:clamp(12px,1.1vw,17px)}
+.foot-copy > *{white-space:nowrap}
 .foot-copy a{color:inherit;text-decoration:none;transition:color .3s ease-out}
 .foot-copy a:hover{color:#fcfcfd}
 

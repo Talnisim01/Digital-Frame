@@ -194,70 +194,72 @@ SERVICES = [
    ('זמינות', 'ערוץ ישיר לתקלות דחופות.')]),
 ]
 
-# ⚠ תמונות: הקבצים מתארחים כרגע ב-Framer. כל עוד זה המצב, יום שבו
-#   אתר ה-Framer ייסגר ישבור את התמונות כאן. להחליף בקבצים מקומיים
-#   תחת /assets/work/ ברגע שיהיו.
-FRAMER = 'https://framerusercontent.com/images/'
-
-# (slug, שם, קטגוריה, תגיות-סינון, shot/img, קישור חי, תיאור)
+# התמונות מוגשות מ-assets/work-web/ (WebP, שלושה רוחבים), שנוצר
+# מ-assets/Work/ על ידי _src/images.py. המקורות נשארים כארכיון.
+#
+# (slug, שם, קטגוריה, תגית-סינון, תמונה, קישור חי, תיאור)
 PROJECTS = [
- ('roommate', 'RoomMate', 'UI/UX', 'ux', FRAMER + '6Q5ZLsV0rnGoGM2Kp0pfMUwLxEE.png?width=1024', '',
+ ('roommate', 'RoomMate', 'UI/UX', 'ux', 'roommate', '',
   'אפליקציה למציאת שותפים לדירה — אפיון מלא של חוויית המשתמש, מהחיפוש ועד ההתאמה.'),
 
- ('woodly', 'Woodly', 'UI/UX', 'ux', FRAMER + '1o2WvDhvCml3D3U7gAhnWudSnRA.png?width=1024', '',
+ ('fintechpro', 'FinTechPro', 'UI/UX', 'ux', 'fintechpro', 'https://fintechpro.framer.ai/',
+  'ממשק למוצר פינטק — תיק השקעות, התראות שוק וניתוח ביצועים במסך אחד, בעברית מלאה.'),
+
+ ('woodly', 'Woodly', 'UI/UX', 'ux', 'woodly', '',
   'חנות ומותג בעולם העץ — ממשק נקי שמעמיד את המוצר עצמו במרכז.'),
 
- ('fintechpro', 'FinTechPro', 'UI/UX', 'ux', FRAMER + 'QRZotjKyfzQfReboynBHygD38.png?width=393', 'https://fintechpro.framer.ai/',
-  'ממשק למוצר פינטק — הצגת נתונים פיננסיים בצורה שקריאה גם למי שלא מהתחום.'),
-
- ('zion-covenant-gateways', 'Zion Covenant Gateways', 'UI/UX', 'ux', FRAMER + 'aWukSlwHGksZjJroc5x6qzZU.png?width=214', 'https://zioncovenantgateways.lovable.app/',
+ ('zion-covenant-gateways', 'Zion Covenant Gateways', 'UI/UX', 'ux', 'ziongateways', 'https://zioncovenantgateways.lovable.app/',
   'אתר תדמית שנבנה מקצה לקצה — אפיון, עיצוב ופיתוח.'),
 
- ('find-eat', 'Find Eat', 'UI/UX', 'ux', 'shot-a', '',
+ ('find-eat', 'Find Eat', 'UI/UX', 'ux', 'findeatpresent', '',
   'אפליקציה למציאת מקומות אוכל — דגש על מסלול החלטה קצר ככל האפשר.'),
 
- ('lohemet', 'המשפחה הלוחמת', 'UI/UX', 'ux', 'shot-b', '',
+ ('lohemet', 'המשפחה הלוחמת', 'UI/UX', 'ux', 'lohemetpresent', '',
   'אתר לארגון קהילתי, עם דגש על נגישות ובהירות לקהל רחב.'),
 
- ('gimlaim', 'אתר הגימלאים', 'UI/UX', 'ux', 'shot-c', '',
+ ('gimlaim', 'אתר הגימלאים', 'UI/UX', 'ux', 'gimlaimpresent', '',
   'אתר לקהל מבוגר — טיפוגרפיה גדולה, ניגודיות גבוהה וניווט שאי אפשר ללכת בו לאיבוד.'),
 
- ('rak-ayom', 'סופר רק היום', 'עיצוב', 'design', 'shot-a', '',
+ ('rak-ayom', 'סופר רק היום', 'עיצוב ומיתוג', 'design', 'rakayom', '',
   'שפה ויזואלית לרשת סופרמרקט — מהלוגו ועד חומרי המדף.'),
 
- ('ptorzakan', 'פרויקט מזוקנים', 'עיצוב', 'design', 'shot-b', '',
+ ('ptorzakan', 'פרויקט מזוקנים', 'עיצוב ומיתוג', 'design', 'ptorzakan', '',
   'מיתוג ועיצוב לפרויקט תוכן, כולל התאמה לרשתות החברתיות.'),
 
- ('ey-project', 'עיצוב מספרה', 'עיצוב', 'design', 'shot-c', '',
+ ('ey-project', 'עיצוב מספרה', 'עיצוב ומיתוג', 'design', 'erazbarbel', '',
   'זהות ויזואלית לעסק בתחום העיצוב האישי — מהשלט ועד כרטיס הביקור.'),
 
- ('972beard', '972Beard', 'עיצוב', 'design', 'shot-a', '',
+ ('972beard', '972Beard', 'עיצוב ומיתוג', 'design', '972beard', '',
   'מיתוג למותג טיפוח לגברים, בשפה כהה ואיכותית.'),
 ]
 
 # עבודות גרפיות — פריטי גלריה, בלי דף פרויקט משלהם.
-# הטקסטים הם של טל, מתוך התיק שלו.
+# (כותרת, תמונה, תיאור)
 CREATIVE = [
- ('קרדלפ\'ס וויסקי', 'waW4cabHgqewTM9fRtbwcxNwxA0.png?width=1080',
-  'עיצוב דרמטי ואקסקלוסיבי לוויסקי פרימיום — שילוב בין יוקרה, אלגנטיות וטעם מעודן.'),
- ('קפה נמס עלית', 'vikfSGS9aWNJM0PeY8fKuAigds.png?width=1080',
-  'עיצוב חם ומעורר השראה לקפה של הבוקר הישראלי — נוסטלגיה וקלאסיקה עם טאץ\' מודרני.'),
- ('המקוריסטית', 'a7HIjSruz4JbbqL7DFpblTb2Wqk.png?width=1024',
-  'עיצוב תדמית לעסק צעיר בתחום הלקים. מודרניות, נשיות וסטייל צבעוני שמדגישים את היופי שבפשטות.'),
- ('פוסטר לאפליקציית אישורי הגעה', 'ZxrLr0LoXMtJz3nNQkDiPTwnh4.png?width=1555',
-  'אסתטיקה נקייה וטכנולוגיה, במטרה להפוך את ניהול האירוע לקל, מסודר ובטוח.'),
- ('CraftFest', 'XJWhVBabFeuyWn9wxNY4jO5gA.png?width=1080',
+ ('ULTRA SHOW — היכל חיפה', 'ultrashow-heifa',
+  'מיתוג לאירוע "האלופים VS הקהל" — פוסטר ההופעה בהיכל חיפה.'),
+ ('ULTRA SHOW — הוט סינמה', 'ultrashow-hot-cinema',
+  'אותה שפה ויזואלית, מותאמת למתחם אחר ולפורמט אחר.'),
+ ('EXODUS Festival', 'exodus-pestival-poster',
+  'פוסטר לפסטיבל — קומפוזיציה דרמטית שנקראת גם ממרחק.'),
+ ('קרדלפ\'ס וויסקי', 'wiskey',
+  'עיצוב דרמטי ואקסקלוסיבי לוויסקי פרימיום — יוקרה, אלגנטיות וטעם מעודן.'),
+ ('קפה נמס עלית', 'coffee-ad',
+  'עיצוב חם לקפה של הבוקר הישראלי — נוסטלגיה וקלאסיקה עם טאץ\' מודרני.'),
+ ('המקוריסטית', 'lakgel-poster',
+  'תדמית לעסק צעיר בתחום הלקים — מודרניות, נשיות וסטייל צבעוני.'),
+ ('אפליקציית אישורי הגעה', 'confirme',
+  'אסתטיקה נקייה וטכנולוגיה, שהופכות את ניהול האירוע לקל ומסודר.'),
+ ('CraftFest', 'craftfast',
   'פוסטר לאירוע גיימינג — עתידנות, צבעוניות דינמית וכל הכוכבים בפריים אחד.'),
- ('New DJ', '8PGZsgmEhC7VLNYMs36iJPa8Cis.png?width=1080',
-  'מיתוג ורקע לדי-ג\'יי — מוזיקה, אנרגיה וחופש יצירתי בווייב צעיר.'),
- ('פלייר לפנסיון כלבים', 'frNyKovJMTC5cObKI9HyT4tFk.png?width=666',
-  'עיצוב קליל ואנרגטי שמשדר ביטחון ואמינות לבעלי כלבים.'),
- ('טורניר CS:GO', '0aZPK5lANpIFxRsD8Eq85u78Ho.png?width=1080',
+ ('טורניר CS:GO', 'csgo-tournament',
   'פוסטר הכרזה בסגנון אורבני ובועט, שמדגיש את האדרנלין של עולם הגיימינג.'),
- ('לוגו לעסק בלונים', 'wQHJqBeA5wewo85kdPROi8BFhko.png?width=1000',
-  'מיתוג ולוגו לעסק עיצובי בלונים לאירועים — מודרני, שמח ובלתי נשכח.'),
- ('פוסטר בעלי מקצוע', 'iiIMovDqecAXuf8bzrALiprVt4.png?width=2048',
-  'שירותי צביעה וחידוש הבית — ויזואליות נקייה וחלוקת צבעים שמשדרת מקצועיות.'),
+ ('פנסיון כלבים', 'pension-poster',
+  'עיצוב קליל ואנרגטי שמשדר ביטחון ואמינות לבעלי כלבים.'),
+ ('פלייר לחדר כושר', 'gym-flyer',
+  'פלייר מכירתי לחדר כושר — היררכיה ברורה וקריאה לפעולה שלא הולכת לאיבוד.'),
+ ('מודעת דרושים — תרגיל עיצוב', 'digital-frame-drushim',
+  'תרגיל עיצוב להדגמת יכולות. לא קמפיין שרץ בפועל.'),
 ]
 
 
@@ -496,12 +498,25 @@ def head(eyebrow, title, lede='', button=None):
     out.append('</section>')
     return '\n'.join(out)
 
-def media_of(src, alt):
-    """גרדיאנט זמני או תמונה אמיתית — לפי מה שיש לפרויקט."""
-    if src.startswith('http') or src.startswith('/'):
-        return (f'<img class="card-img" src="{src}" alt="{alt}" '
+import json as _json
+_MANIFEST_PATH = os.path.join(ROOT, 'assets', 'work-web', 'manifest.json')
+MANIFEST = _json.load(open(_MANIFEST_PATH, encoding='utf-8')) if os.path.exists(_MANIFEST_PATH) else {}
+
+
+def media_of(src, alt, sizes='(max-width:900px) 92vw, 46vw'):
+    """שלושה מצבים:
+       'gradient:shot-a'  — מילוי זמני לפרויקט בלי תמונה
+       slug מהמניפסט      — img עם srcset, כדי שנייד לא יוריד 1600px
+       כתובת מלאה         — img רגיל (שריד, לא בשימוש)"""
+    if src.startswith('gradient:'):
+        return f'<div class="card-shot {src.split(":",1)[1]}"></div>'
+    if src in MANIFEST:
+        ws = MANIFEST[src]
+        srcset = ', '.join(f'/assets/work-web/{src}-{w}.webp {w}w' for w in ws)
+        return (f'<img class="card-img" src="/assets/work-web/{src}-{ws[min(1,len(ws)-1)]}.webp" '
+                f'srcset="{srcset}" sizes="{sizes}" alt="{alt}" '
                 f'loading="lazy" decoding="async">')
-    return f'<div class="card-shot {src}"></div>'
+    return (f'<img class="card-img" src="{src}" alt="{alt}" loading="lazy" decoding="async">')
 
 
 def card(slug, name, cat, tag, src, live=''):
@@ -698,7 +713,7 @@ def tpl_projects_index():
 
     gallery = '\n'.join(
         f'''    <figure class="art" data-animate="fade-up">
-      <img src="{FRAMER}{img}" alt="{title}" loading="lazy" decoding="async">
+      {media_of(img, title, '(max-width:700px) 92vw, 30vw')}
       <figcaption>
         <b>{title}</b>
         <span>{desc}</span>
