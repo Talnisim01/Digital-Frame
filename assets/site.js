@@ -366,7 +366,12 @@
       [].forEach.call(form.querySelectorAll('.interest-option'), function(c){
         c.setAttribute('aria-pressed','false');
       });
-      setNote('תודה — הפנייה התקבלה. נחזור אליך בהקדם.', 'success');
+      setNote('תודה — מעבירים אותך…', 'success');
+      /* replace ולא assign: הדף עם הטופס יוצא מההיסטוריה, כך ש"אחורה"
+         לא מחזיר טופס מלא שאפשר לשלוח שוב. ההפניה קורית רק כאן,
+         בענף ההצלחה — אם השרת נפל, הגולש נשאר עם הודעה כנה במקום
+         עמוד תודה על פנייה שלא הגיעה. */
+      window.location.replace('/thank-you');
     }).catch(function(){
       fallbackToMail();
     }).then(function(){

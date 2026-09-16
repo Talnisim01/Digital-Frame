@@ -538,7 +538,7 @@ def canonical_of(path):
     return SITE + ('/' + clean if clean else '/')
 
 
-def page(path, title, desc, body, extra_css=True):
+def page(path, title, desc, body, extra_css=True, noindex=False):
     """עוטף גוף-דף במעטפת המשותפת ומחזיר HTML שלם."""
     css = '\n<link rel="stylesheet" href="/assets/pages.css">' if extra_css else ''
     url = canonical_of(path)
@@ -546,7 +546,7 @@ def page(path, title, desc, body, extra_css=True):
     if url:
         seo = (f'<link rel="canonical" href="{url}">\n'
                f'<meta property="og:url" content="{url}">\n')
-    if not LIVE:
+    if not LIVE or noindex:
         seo = '<meta name="robots" content="noindex,nofollow">\n' + seo
     seo += (f'<meta property="og:image" content="{SITE}/og-image.png">\n'
             f'<meta property="og:image:width" content="1200">\n'
@@ -882,6 +882,75 @@ def tpl_text(slug, title, eyebrow, sections):
     return page(f'{slug}/index.html', f'{title} — Digital Frame', title, body)
 
 
+def tpl_thanks():
+    """עמוד תודה. מופרד מהטופס בכוונה: כתובת נפרדת היא יעד המרה
+    נקי למעקב, בלי תלות באירועי JS שעלולים לא לירות.
+    noindex תמיד — עמוד תודה שמאונדקס מזהם את נתוני ההמרה, כי
+    גולשים מגיעים אליו מחיפוש בלי למלא טופס."""
+    body = f'''{head('תודה',
+                      'קיבלנו.<br><strong>נחזור אליך.</strong>',
+                      'הפנייה נקלטה אצלנו. אנחנו עוברים על כל פנייה אישית, '
+                      '<span class="dim">ולכן התשובה לוקחת קצת יותר זמן — ושווה אותו.</span>')}
+
+<hr class="rule">
+
+<section class="sec lay">
+  <div class="sec-head">
+    <h2 class="sec-title" data-animate="title">מה <strong>עכשיו</strong></h2>
+  </div>
+  <div class="steps">
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>נקרא את מה שכתבת</h3>
+        <p>לא תבנית אוטומטית. מישהו קורא את הפנייה ומבין מה אתה צריך.</p>
+      </div>
+    </div>
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>נחזור אליך תוך יום עסקים</h3>
+        <p>במייל או בטלפון, לפי מה שהשארת. אם זה דחוף — אפשר גם בוואטסאפ.</p>
+      </div>
+    </div>
+    <div class="step" data-animate="fade-up">
+      <div>
+        <h3>שיחה קצרה, בלי התחייבות</h3>
+        <p>עשר דקות שבהן נבין אם יש כאן התאמה, ומה הכיוון הנכון.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="sec lay">
+  <div class="sec-head">
+    <h2 class="sec-title" data-animate="title">בינתיים, <strong>תעיף מבט</strong></h2>
+    <p class="sec-sub" data-animate="fade-up">כמה מהעבודות האחרונות שלנו.</p>
+  </div>
+  <div class="tiles">
+    <a class="tile" href="/projects" data-animate="fade-up">
+      <h3 class="tile__title">הפרויקטים</h3>
+      <p class="tile__text">עבודות נבחרות — UI/UX, מיתוג, פיתוח ואוטומציה.</p>
+      <span class="tile__go">לצפייה {ARROW}</span>
+    </a>
+    <a class="tile" href="/services" data-animate="fade-up">
+      <h3 class="tile__title">השירותים</h3>
+      <p class="tile__text">מה אנחנו עושים, ואיך זה עובד בפועל.</p>
+      <span class="tile__go">לפרטים {ARROW}</span>
+    </a>
+    <a class="tile" href="/" data-animate="fade-up">
+      <h3 class="tile__title">לדף הבית</h3>
+      <p class="tile__text">חזרה להתחלה.</p>
+      <span class="tile__go">חזרה {ARROW}</span>
+    </a>
+  </div>
+</section>'''
+    html = page('thank-you/index.html', 'תודה — Digital Frame',
+                'הפנייה שלך התקבלה. נחזור אליך תוך יום עסקים.', body, noindex=True)
+    # בעמוד הזה טופס יצירת קשר נוסף רק מבלבל — הפנייה כבר נשלחה
+    return html.replace(resolve(CONTACT, '/'), '')
+
+
 def tpl_404():
     body = f'''<section class="nf">
   <div>
@@ -957,6 +1026,7 @@ def main():
     out.append(write('privacy-policy/index.html', tpl_text('privacy-policy', 'מדיניות פרטיות', 'משפטי', PRIVACY)))
     out.append(write('terms/index.html',          tpl_text('terms', 'תנאי שימוש', 'משפטי', TERMS)))
     out.append(write('accessibility/index.html',  tpl_text('accessibility', 'הצהרת נגישות', 'משפטי', ACCESS)))
+    out.append(write('thank-you/index.html', tpl_thanks()))
     out.append(write('404.html', tpl_404()))
 
     # /work הוחלף ב-/projects (כמו ברפרנס). ה-redirect יושב ב-vercel.json.
