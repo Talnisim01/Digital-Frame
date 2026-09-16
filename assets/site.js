@@ -159,6 +159,33 @@
     menu.hidden = false;
     shapeCard();
 
+    /* דפדפנים ישנים ללא תמיכה ב-inert מקבלים נפילה ל-tabindex="-1"
+       על כל אלמנט ממוקד בתוך התפריט, עם שמירת הערך המקורי. */
+    var INERT_OK = 'inert' in HTMLElement.prototype;
+    function focusables(){
+      return menu.querySelectorAll('a[href],button,input,textarea,select,[tabindex]');
+    }
+    function setInert(on){
+      if(INERT_OK){
+        if(on){ menu.setAttribute('inert',''); menu.setAttribute('aria-hidden','true'); }
+        else  { menu.removeAttribute('inert'); menu.removeAttribute('aria-hidden'); }
+        return;
+      }
+      [].forEach.call(focusables(), function(el){
+        if(on){
+          if(!el.hasAttribute('data-ti')) el.setAttribute('data-ti', el.getAttribute('tabindex') || '');
+          el.setAttribute('tabindex','-1');
+        } else {
+          var prev = el.getAttribute('data-ti');
+          if(prev === '' || prev === null) el.removeAttribute('tabindex');
+          else el.setAttribute('tabindex', prev);
+          el.removeAttribute('data-ti');
+        }
+      });
+      menu.setAttribute('aria-hidden', on ? 'true' : 'false');
+    }
+    setInert(true);          /* התפריט נטען סגור */
+
     function open(){
       lastFocus = document.activeElement;
       shapeCard();
@@ -166,6 +193,7 @@
       menu.classList.remove('is-warm');
       animateIn();
       document.documentElement.classList.add('menu-open');
+      setInert(false);
       burger.setAttribute('aria-expanded','true');
       if(window.lenis) window.lenis.stop();
       if(closeB) closeB.focus();
@@ -175,6 +203,12 @@
       menu.classList.remove('is-open');
       resetAnim();
       document.documentElement.classList.remove('menu-open');
+      /* inert ולא visibility בלבד: התפריט נשאר display:block עם
+         opacity:0 כדי שאנימציית הסגירה תוכל לרוץ, ולכן הדפדפן
+         ממשיך לראות בו אלמנט חי — 22 קישורים בלתי נראים במסלול
+         ה-Tab של כל דף. inert מוציא את כל תת-העץ ממסלול המקלדת
+         ומקוראי מסך, גם באמצע האנימציה. */
+      setInert(true);
       burger.setAttribute('aria-expanded','false');
       if(window.lenis) window.lenis.start();
       if(lastFocus) lastFocus.focus();
