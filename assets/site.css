@@ -141,7 +141,12 @@ nav.on-dark .talk .wave-text{border-bottom-color:rgba(255,255,255,.6)}
 nav.on-dark .talk:hover .wave-text{border-color:var(--orange)}
 nav.on-dark .burger i{background:#fcfcfd}
 nav .logo,nav .divider,nav .nav-sep,nav .dash,nav .dash i,
-nav .talk,nav .talk .wave-text,nav .burger i{transition:color .5s var(--ease),background .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease)}
+/* הכלל הזה נועד למעבר הצבע במצב הכהה, אבל transition היא
+   תכונה מקוצרת: הוא כתב מחדש את כל הרשימה ומחק את transform
+   ש-.burger i מגדיר למעלה — ולכן יישור הקווים ב-hover קפץ
+   בלי אנימציה. ההמבורגר מופרד, עם transform ברשימה שלו. */
+nav .talk,nav .talk .wave-text{transition:color .5s var(--ease),background .5s var(--ease),background-color .5s var(--ease),border-color .5s var(--ease)}
+nav .burger i{transition:transform .45s var(--ease),background .5s var(--ease),background-color .5s var(--ease)}
 
 /* ============ SECTION 1 — HERO ============ */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;align-items:center;
