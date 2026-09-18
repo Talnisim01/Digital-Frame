@@ -550,15 +550,15 @@ html.rlb-open{ overflow:hidden }
 }
 
 .rlb__return{
-  position:absolute; top:clamp(16px,3vh,32px);
-  inset-inline-start:clamp(16px,3vw,40px);
-  display:flex; align-items:center; gap:10px;
-  font:inherit; font-size:15px; font-weight:400;
+  position:absolute; top:clamp(20px,3.4vh,40px);
+  inset-inline-start:clamp(20px,3.4vw,48px);
+  display:flex; align-items:center; gap:14px;
+  font:inherit; font-size:clamp(17px,1.35vw,22px); font-weight:400;
   background:none; border:0; color:#fff; cursor:pointer;
-  opacity:.85; transition:opacity .3s var(--ease);
+  opacity:.9; transition:opacity .3s var(--ease);
 }
 .rlb__return:hover{ opacity:1 }
-.rlb__return svg{ width:20px; height:20px }
+.rlb__return svg{ width:26px; height:26px }
 /* החץ מצביע לכיוון היציאה — ב-RTL זה ימינה */
 [dir="rtl"] .rlb__return svg{ transform:scaleX(-1) }
 
@@ -568,20 +568,22 @@ html.rlb-open{ overflow:hidden }
   display:flex; align-items:center; gap:clamp(14px,2vw,26px);
 }
 .rlb__btn{
-  font:inherit; font-size:13px; font-weight:500; letter-spacing:.08em;
+  font:inherit; font-size:17px; font-weight:500; letter-spacing:.09em;
   background:none; border:0; color:#fff; cursor:pointer;
-  opacity:.85; transition:opacity .3s var(--ease);
+  opacity:.9; transition:opacity .3s var(--ease);
   display:grid; place-items:center;
 }
 .rlb__btn:hover{ opacity:1 }
 .rlb__btn.is-off{ opacity:.45 }
-.rlb__btn svg{ width:22px; height:22px; fill:currentColor }
+.rlb__btn svg{ width:28px; height:28px; fill:currentColor }
+/* המידות מהרפרנס: 100x25 */
+.rlb__mute{ width:100px; height:25px; flex:0 0 100px }
 .rlb__play{ display:none }
 .rlb.is-paused .rlb__play{ display:block }
 .rlb.is-paused .rlb__pause{ display:none }
 
 .rlb__track{
-  flex:1; height:22px; display:flex; align-items:center;
+  flex:1; height:28px; display:flex; align-items:center;
   cursor:pointer;
 }
 .rlb__track::before{
@@ -589,11 +591,11 @@ html.rlb-open{ overflow:hidden }
 }
 .rlb__track{ position:relative }
 .rlb__track::after{
-  content:''; position:absolute; inset-inline:0; height:2px;
+  content:''; position:absolute; inset-inline:0; height:3px;
   background:rgba(255,255,255,.26);
 }
 .rlb__fill{
-  position:absolute; inset-inline-start:0; height:2px; width:0;
+  position:absolute; inset-inline-start:0; height:3px; width:0;
   background:#fff; z-index:1;
 }
 /* פס הזמן מתקדם משמאל לימין גם בדף RTL — זו הציפייה מכל נגן */
@@ -605,3 +607,22 @@ html.rlb-open{ overflow:hidden }
   .rlb, .rlb__stage{ transition:opacity .2s linear }
   .rlb__stage{ transform:none }
 }
+
+/* כפתור הנגינה המרכזי — הפעולה העיקרית במסך מלא, ולכן גדול */
+.rlb__center{
+  position:absolute; inset:0; margin:auto;
+  width:clamp(74px,6.4vw,104px); height:clamp(74px,6.4vw,104px);
+  display:grid; place-items:center;
+  background:none; border:0; color:#fff; cursor:pointer;
+  opacity:0; transition:opacity .3s var(--ease);
+}
+/* מופיע במעבר עכבר ובמצב מושהה — נגן טוב לא מסתיר את הווידאו */
+.rlb__stage:hover .rlb__center,
+.rlb.is-paused .rlb__center,
+.rlb__center:focus-visible{ opacity:1 }
+.rlb__center svg{
+  width:clamp(40px,3.4vw,56px); height:clamp(40px,3.4vw,56px);
+  fill:currentColor;
+  filter:drop-shadow(0 4px 18px rgba(0,0,0,.45));
+}
+.rlb__center:focus-visible{ outline:2px solid var(--orange); outline-offset:6px }

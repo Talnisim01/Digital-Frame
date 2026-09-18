@@ -639,8 +639,12 @@
     if(!frame.getAttribute('src')){
       /* api=1 פותח את ערוץ ה-postMessage. בלעדיו הנגן מתנגן
          אבל לא עונה לשום פקודה. */
+      /* controls=0 הוא מה שמסיר את הפקדים של Vimeo. title/byline/
+         portrait מסירים רק את הכיתוב — הנגן שלהם המשיך להופיע
+         מעל שלנו. keyboard=0 כדי ששני הנגנים לא יגיבו לאותו רווח. */
       frame.src = 'https://player.vimeo.com/video/' + id +
-                  '?api=1&autoplay=1&muted=0&playsinline=1&title=0&byline=0&portrait=0&dnt=1';
+                  '?api=1&autoplay=1&muted=0&playsinline=1&controls=0&keyboard=0' +
+                  '&title=0&byline=0&portrait=0&dnt=1';
     } else {
       send('play');
     }
@@ -696,6 +700,19 @@
   }
 
   opener.addEventListener('click', function(e){ e.preventDefault(); open(); });
+
+  /* לחיצה על גוף הווידאו עצמו מנגנת ומשהה — הציפייה מכל נגן
+     במסך מלא. הכפתור המרכזי הוא הביטוי הוויזואלי של אותה פעולה. */
+  var stage = box.querySelector('.rlb__stage');
+  var center = document.createElement('button');
+  center.type = 'button';
+  center.className = 'rlb__center';
+  center.setAttribute('data-rlb','toggle');
+  center.setAttribute('aria-label','נגן או השהה');
+  center.innerHTML =
+    '<svg class="rlb__pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="3.6" height="16" rx="1.3"/><rect x="13.4" y="4" width="3.6" height="16" rx="1.3"/></svg>' +
+    '<svg class="rlb__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5v15L20 12z"/></svg>';
+  stage.appendChild(center);
 
   box.addEventListener('click', function(e){
     var b = e.target.closest('[data-rlb]');
@@ -758,6 +775,8 @@
       track.setAttribute('aria-valuenow', Math.round(pct));
       return;
     }
-    if(d.event === 'finish'){ playing = false; box.classList.add('is-paused'); }
+    /* ברפרנס אין לופ: בסיום הנגן פשוט נסגר. זו התנהגות טובה
+       יותר מלופ, שכולא את הגולש בסרטון שכבר ראה. */
+    if(d.event === 'finish'){ playing = false; close(); }
   });
 })();
