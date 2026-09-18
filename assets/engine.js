@@ -353,7 +353,7 @@ function start(){
        בתוך אותו סקשן. 'top bottom-=80' חושף ברגע שהאלמנט נכנס
        לתחום הראייה, כך שסקשן שנמצא במלואו על המסך מוצג במלואו. */
     const st   = fold ? null
-                      : {trigger:el, start:'top bottom-=80', toggleActions:'play none none reverse'};
+                      : {trigger:el, start:'top bottom-=8', toggleActions:'play none none reverse'};
     /* #about ו-work מקבלים חשיפה מתואמת עם stagger (בהמשך) — לא פר-אלמנט */
     if(el.closest('.sphere-grid') || el.closest('.work-grid')) return;
 
@@ -395,7 +395,7 @@ function start(){
          שקוף לצמיתות: הצורה נפתחה על אלמנט בלתי נראה. */
       gsap.fromTo(el,{clipPath:START, opacity:0},{clipPath:FULL, opacity:1,
         duration:1.5, ease:'power3.out', immediateRender:true,
-        scrollTrigger:{trigger:el, start:'top bottom-=80', once:true}});
+        scrollTrigger:{trigger:el, start:'top bottom-=8', once:true}});
       /* יציאה — Option B (sticky): ה-.reel-wrap דביק (CSS) ומוחזק בראש
          המסך בזמן שהסקשן נגלל תחתיו. כאן רק מקטינים אותו scale 1→0.82
          לאורך גלילת הסקשן — כך הוא "מוחזק ואז נסוג" לתוך רקע הדף הבהיר.
@@ -408,7 +408,7 @@ function start(){
       gsap.fromTo(el,{scale:.9, opacity:0, y:40},
         {scale:1, opacity:1, y:0, duration:1.5, ease:'mdx',
          delay:(parseFloat(el.dataset.delay)||0) + lead,
-         immediateRender:true, scrollTrigger:{trigger:el, start:'top bottom-=80', toggleActions:'play none none reverse'}});
+         immediateRender:true, scrollTrigger:{trigger:el, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     } else {
       /* תבנית החשיפה של הרפרנס: fade + translateY 80px, ~0.85s,
          עקומת החתימה, עם תמיכה ב-data-delay (מקביל ל-data-fade-delay).
@@ -453,14 +453,14 @@ function start(){
          והטקסט לא היה חוזר לעולם. מצב הסיום חייב להיות מפורש. */
       gsap.fromTo(els,{y:60, autoAlpha:0},{y:0, autoAlpha:1,
         duration:1.2, ease:'power3.out', stagger:.12, immediateRender:true,
-        scrollTrigger:{trigger:sphereGrid, start:'top bottom-=80', toggleActions:'play none none reverse'}});
+        scrollTrigger:{trigger:sphereGrid, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     }
     const workGrid = document.querySelector('.work-grid');
     if(workGrid){
       const cards = workGrid.querySelectorAll('.card');
       gsap.fromTo(cards,{y:72, autoAlpha:0},{y:0, autoAlpha:1,
         duration:1.15, ease:'power3.out', stagger:.13, immediateRender:true,
-        scrollTrigger:{trigger:workGrid, start:'top bottom-=80', toggleActions:'play none none reverse'}});
+        scrollTrigger:{trigger:workGrid, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     }
 
     /* hover scale מנוהל ב-GSAP: על כפתורים שמקבלים reveal (transform של
@@ -814,9 +814,9 @@ function start(){
     /* הקשת (dome) והזוהר (glow) עולים מלמטה כשמגיעים לסקשן — בלי
        הסתרת opacity (כדי לא להתנגש עם הנשימה ולא להיתקע מוסתרים). */
     gsap.from('.ideas-layer--dome',{yPercent:55, duration:2.1, ease:'mdx',
-      scrollTrigger:{trigger:ideas, start:'top bottom-=80', toggleActions:'play none none reverse'}});
+      scrollTrigger:{trigger:ideas, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     gsap.from('.ideas-layer--glow',{yPercent:70, scale:.88, duration:2.1, ease:'mdx', delay:.16,
-      scrollTrigger:{trigger:ideas, start:'top bottom-=80', toggleActions:'play none none reverse'}});
+      scrollTrigger:{trigger:ideas, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     /* נשימה איטית על הזוהר, נפרדת מהגלילה */
     gsap.to('.ideas-layer--glow',{opacity:.82,duration:8,yoyo:true,repeat:-1,ease:'sine.inOut',delay:2});
   }

@@ -66,8 +66,8 @@ LIVE = False
 # ⚠ פרופילי הרשתות — מקור אחד לכל 25 המופעים בכל דף.
 #   כל עוד הערך הוא '#' הקישור לא מוביל לשום מקום. להחליף בכתובות אמיתיות.
 SOCIAL = {
-    'INSTAGRAM': '#',
-    'FACEBOOK':  '#',
+    'INSTAGRAM': 'https://www.instagram.com/digitalframe.il/',
+    'FACEBOOK':  'https://www.facebook.com/profile.php?id=61592325083073',
     'LINKEDIN':  '#',
     'YOUTUBE':   '#',
     'TIKTOK':    '#',

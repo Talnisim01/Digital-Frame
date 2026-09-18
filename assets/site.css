@@ -671,8 +671,12 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 /* הרפרנס מעמיד את כל האזור על #fff. הכרטיס שם הוא לבן ב-25%
    על לבן, כלומר המילוי בלתי נראה במכוון — מה שמגדיר אותו הוא
    הצל בלבד. בלי הרקע הבהיר הכרטיס לא יכול לעבוד. */
+/* הריפוד היה clamp(60px,10vh,100px) למעלה ועוד clamp(60px,16vh,160px)
+   בתוך הכרטיס. במסך 900px הסקשן יצא 1050 גבוה, ושורת האייקונים
+   ושורת המייל נחתו ב-849 וב-925 — מתחת לקצה המסך. הן לא היו
+   חבויות באנימציה, הן פשוט לא היו על המסך. */
 .contact{position:relative;background:#FCFCFC;
-  padding:clamp(60px,10vh,100px) clamp(12px,2.6vw,50px) clamp(24px,4vh,40px)}
+  padding:clamp(40px,6vh,72px) clamp(12px,2.6vw,50px) clamp(20px,3vh,32px)}
 
 /* המסגרת יושבת על מכולת ה-flex עצמה, לא על עטיפה נפרדת.
    זו הייתה הטעות: המצאתי .contact-card כשהרפרנס נותן את
@@ -681,7 +685,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 .lets-talk-flex{position:relative;z-index:1;
   display:flex;align-items:flex-end;justify-content:space-between;
   gap:clamp(40px,6.8vw,130px);
-  padding:min(clamp(60px,16vh,160px),16vh) clamp(24px,3.6vw,70px);
+  padding:min(clamp(40px,10vh,104px),12vh) clamp(24px,3.6vw,70px);
   border-radius:clamp(20px,1.6vw,30px);
   background:rgba(255,255,255,.25);
   /* ערכי הרפרנס במדויק. הטבעת שלהם היא rgb(230,236,242) ב-8% —
