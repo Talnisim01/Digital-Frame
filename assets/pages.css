@@ -568,7 +568,7 @@ html.rlb-open{ overflow:hidden }
   display:flex; align-items:center; gap:clamp(14px,2vw,26px);
 }
 .rlb__btn{
-  font:inherit; font-size:17px; font-weight:500; letter-spacing:.09em;
+  font:inherit; font-size:20px; font-weight:500; letter-spacing:.1em;
   background:none; border:0; color:#fff; cursor:pointer;
   opacity:.9; transition:opacity .3s var(--ease);
   display:grid; place-items:center;
@@ -576,14 +576,21 @@ html.rlb-open{ overflow:hidden }
 .rlb__btn:hover{ opacity:1 }
 .rlb__btn.is-off{ opacity:.45 }
 .rlb__btn svg{ width:28px; height:28px; fill:currentColor }
-/* המידות מהרפרנס: 100x25 */
-.rlb__mute{ width:100px; height:25px; flex:0 0 100px }
+/* המסגרת היא 100x25 כמו ברפרנס, אבל הטקסט בתוכה היה קטן
+   מדי. line-height:1 מאפשר לו למלא את הגובה במקום להצטמצם. */
+.rlb__mute{
+  width:100px; height:25px; flex:0 0 100px;
+  font-size:22px; line-height:1;
+}
 .rlb__play{ display:none }
 .rlb.is-paused .rlb__play{ display:block }
 .rlb.is-paused .rlb__pause{ display:none }
 
 .rlb__track{
-  flex:1; height:28px; display:flex; align-items:center;
+  /* מקוצר ב-40% וממורכז — פס על כל הרוחב גורם לכל דילוג
+     קטן להיות קפיצה גדולה בסרטון */
+  flex:0 1 60%; margin-inline:auto;
+  height:28px; display:flex; align-items:center;
   cursor:pointer;
 }
 .rlb__track::before{
@@ -591,16 +598,20 @@ html.rlb-open{ overflow:hidden }
 }
 .rlb__track{ position:relative }
 .rlb__track::after{
-  content:''; position:absolute; inset-inline:0; height:3px;
+  content:''; position:absolute; inset-inline:0; height:6px;
+  border-radius:999px;
   background:rgba(255,255,255,.26);
 }
 .rlb__fill{
-  position:absolute; inset-inline-start:0; height:3px; width:0;
+  position:absolute; inset-inline-start:0; height:6px; width:0;
+  border-radius:999px;
   background:#fff; z-index:1;
 }
-/* פס הזמן מתקדם משמאל לימין גם בדף RTL — זו הציפייה מכל נגן */
-[dir="rtl"] .rlb__fill{ inset-inline-start:auto; left:0 }
-[dir="rtl"] .rlb__track::after{ left:0; right:0 }
+/* פס הזמן מתקדם משמאל לימין גם בדף RTL — זו הציפייה מכל נגן.
+   הכלל הקודם כתב left:0;right:0 על ה-::after, וזה דרס את
+   inset-inline וביטל את הרדיוס בקצוות. עכשיו רק ה-fill מיושר
+   שמאלה, והמסילה נשארת עם הקצוות העגולים שלה. */
+[dir="rtl"] .rlb__fill{ inset-inline-start:auto; left:0; right:auto }
 .rlb__track:focus-visible{ outline:2px solid var(--orange); outline-offset:6px }
 
 @media (prefers-reduced-motion:reduce){
@@ -611,7 +622,7 @@ html.rlb-open{ overflow:hidden }
 /* כפתור הנגינה המרכזי — הפעולה העיקרית במסך מלא, ולכן גדול */
 .rlb__center{
   position:absolute; inset:0; margin:auto;
-  width:clamp(74px,6.4vw,104px); height:clamp(74px,6.4vw,104px);
+  width:clamp(111px,9.6vw,156px); height:clamp(111px,9.6vw,156px);
   display:grid; place-items:center;
   background:none; border:0; color:#fff; cursor:pointer;
   opacity:0; transition:opacity .3s var(--ease);
@@ -621,8 +632,14 @@ html.rlb-open{ overflow:hidden }
 .rlb.is-paused .rlb__center,
 .rlb__center:focus-visible{ opacity:1 }
 .rlb__center svg{
-  width:clamp(40px,3.4vw,56px); height:clamp(40px,3.4vw,56px);
+  width:clamp(60px,5.1vw,84px); height:clamp(60px,5.1vw,84px);
   fill:currentColor;
   filter:drop-shadow(0 4px 18px rgba(0,0,0,.45));
 }
 .rlb__center:focus-visible{ outline:2px solid var(--orange); outline-offset:6px }
+
+/* ── האייקונים מהקבצים שסופקו ──
+   שניהם מצוירים כקו מתאר מלא, ולכן fill:currentColor ולא stroke.
+   הספרייה עצמה מוסתרת — היא רק מחזיקה את ה-<symbol>. */
+.ico-defs{ position:absolute; width:0; height:0; overflow:hidden }
+.rlb__play, .rlb__pause, .reel-ico .ply{ fill:currentColor }

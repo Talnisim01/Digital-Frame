@@ -710,8 +710,8 @@
   center.setAttribute('data-rlb','toggle');
   center.setAttribute('aria-label','נגן או השהה');
   center.innerHTML =
-    '<svg class="rlb__pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="3.6" height="16" rx="1.3"/><rect x="13.4" y="4" width="3.6" height="16" rx="1.3"/></svg>' +
-    '<svg class="rlb__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5v15L20 12z"/></svg>';
+    '<svg class="rlb__pause" aria-hidden="true"><use href="#ico-pause"/></svg>' +
+    '<svg class="rlb__play" aria-hidden="true"><use href="#ico-play"/></svg>';
   stage.appendChild(center);
 
   box.addEventListener('click', function(e){
