@@ -636,6 +636,41 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
 </a>
 <!--/@wa-->
 
+<!--@rlb-->
+<!-- ============ שכבת הנגן ============
+     נבנית פעם אחת במעטפת ומשותפת לכל הדפים. ה-iframe נטען ריק
+     ומקבל src רק בפתיחה — נגן Vimeo מלא שוקל מאות KB, ואין
+     סיבה לשלם עליהם למי שלא לחץ.
+     inert בזמן סגירה: אחרת שלושת הכפתורים שבתוכה יושבים
+     במסלול ה-Tab של כל דף, כמו שקרה לנו בתפריט. -->
+<div class="rlb" id="reelBox" inert aria-hidden="true" role="dialog"
+     aria-modal="true" aria-label="נגן השואוריל">
+  <div class="rlb__stage">
+    <iframe class="rlb__frame" src="" title="שואוריל Digital Frame"
+            frameborder="0" allow="autoplay; fullscreen; encrypted-media"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+
+  <button class="rlb__return" type="button" data-rlb="close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M3 12h16"/></svg>
+    <span>חזרה</span>
+  </button>
+
+  <div class="rlb__bar">
+    <button class="rlb__btn" type="button" data-rlb="toggle" aria-label="השהה">
+      <svg class="rlb__pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.4" height="14" rx="1.2"/><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"/></svg>
+      <svg class="rlb__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13L19 12z"/></svg>
+    </button>
+    <div class="rlb__track" data-rlb="seek" role="slider" tabindex="0"
+         aria-label="מיקום בסרטון" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <span class="rlb__fill"></span>
+    </div>
+    <button class="rlb__btn rlb__mute" type="button" data-rlb="mute">MUTE</button>
+  </div>
+</div>
+<!--/@rlb-->
+
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
 
 

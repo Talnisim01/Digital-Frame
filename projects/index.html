@@ -619,6 +619,39 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.1c-.25.69-1.44 1.32-1.99 1.37-.53.05-1.02.23-3.45-.72-2.9-1.14-4.74-4.1-4.88-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.37c.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.57.81 1.97.88 2.11.07.14.12.31.02.5-.1.19-.14.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.12.57.17.29.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.3 1.41.29.14.45.12.62-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.64-.14.26.09 1.66.78 1.94.93.29.14.48.21.55.33.07.12.07.69-.17 1.38Z"/></svg>
 </a>
 
+<!-- ============ שכבת הנגן ============
+     נבנית פעם אחת במעטפת ומשותפת לכל הדפים. ה-iframe נטען ריק
+     ומקבל src רק בפתיחה — נגן Vimeo מלא שוקל מאות KB, ואין
+     סיבה לשלם עליהם למי שלא לחץ.
+     inert בזמן סגירה: אחרת שלושת הכפתורים שבתוכה יושבים
+     במסלול ה-Tab של כל דף, כמו שקרה לנו בתפריט. -->
+<div class="rlb" id="reelBox" inert aria-hidden="true" role="dialog"
+     aria-modal="true" aria-label="נגן השואוריל">
+  <div class="rlb__stage">
+    <iframe class="rlb__frame" src="" title="שואוריל Digital Frame"
+            frameborder="0" allow="autoplay; fullscreen; encrypted-media"
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+
+  <button class="rlb__return" type="button" data-rlb="close">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M3 12h16"/></svg>
+    <span>חזרה</span>
+  </button>
+
+  <div class="rlb__bar">
+    <button class="rlb__btn" type="button" data-rlb="toggle" aria-label="השהה">
+      <svg class="rlb__pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.4" height="14" rx="1.2"/><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"/></svg>
+      <svg class="rlb__play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13L19 12z"/></svg>
+    </button>
+    <div class="rlb__track" data-rlb="seek" role="slider" tabindex="0"
+         aria-label="מיקום בסרטון" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <span class="rlb__fill"></span>
+    </div>
+    <button class="rlb__btn rlb__mute" type="button" data-rlb="mute">MUTE</button>
+  </div>
+</div>
+
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

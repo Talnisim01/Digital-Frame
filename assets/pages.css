@@ -517,3 +517,91 @@ html:not(.js-anim) .wa{ opacity:1; visibility:visible; transform:none }
 @media (prefers-reduced-motion:reduce){
   .cc{ transition:none }
 }
+
+/* ============================================================
+   שכבת נגן השואוריל
+   ============================================================ */
+.rlb{
+  position:fixed; inset:0; z-index:90;
+  background:#05070A;
+  display:grid; place-items:center;
+  opacity:0; visibility:hidden;
+  transition:opacity .55s var(--ease), visibility .55s var(--ease);
+}
+.rlb.is-on{ opacity:1; visibility:visible }
+html.rlb-open{ overflow:hidden }
+
+/* הבמה נפתחת מ-92% לגודל מלא — תנועה קטנה שנותנת תחושת פתיחה
+   בלי לדחוף את הווידאו החוצה מהמסך */
+.rlb__stage{
+  position:relative; width:100%; height:100%;
+  transform:scale(.92); opacity:0;
+  transition:transform .6s var(--ease), opacity .5s var(--ease);
+}
+.rlb.is-on .rlb__stage{ transform:none; opacity:1 }
+
+/* ה-iframe הוא 16:9. כאן דווקא contain ולא cover: בשכבה מלאה
+   הגולש בא לראות את הסרטון כולו, ולא רוצה שייחתך בקצוות. */
+.rlb__frame{
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:min(100%, 177.78vh); height:min(100%, 56.25vw);
+  border:0;
+}
+
+.rlb__return{
+  position:absolute; top:clamp(16px,3vh,32px);
+  inset-inline-start:clamp(16px,3vw,40px);
+  display:flex; align-items:center; gap:10px;
+  font:inherit; font-size:15px; font-weight:400;
+  background:none; border:0; color:#fff; cursor:pointer;
+  opacity:.85; transition:opacity .3s var(--ease);
+}
+.rlb__return:hover{ opacity:1 }
+.rlb__return svg{ width:20px; height:20px }
+/* החץ מצביע לכיוון היציאה — ב-RTL זה ימינה */
+[dir="rtl"] .rlb__return svg{ transform:scaleX(-1) }
+
+.rlb__bar{
+  position:absolute; bottom:clamp(18px,4vh,44px);
+  inset-inline:clamp(16px,5vw,80px);
+  display:flex; align-items:center; gap:clamp(14px,2vw,26px);
+}
+.rlb__btn{
+  font:inherit; font-size:13px; font-weight:500; letter-spacing:.08em;
+  background:none; border:0; color:#fff; cursor:pointer;
+  opacity:.85; transition:opacity .3s var(--ease);
+  display:grid; place-items:center;
+}
+.rlb__btn:hover{ opacity:1 }
+.rlb__btn.is-off{ opacity:.45 }
+.rlb__btn svg{ width:22px; height:22px; fill:currentColor }
+.rlb__play{ display:none }
+.rlb.is-paused .rlb__play{ display:block }
+.rlb.is-paused .rlb__pause{ display:none }
+
+.rlb__track{
+  flex:1; height:22px; display:flex; align-items:center;
+  cursor:pointer;
+}
+.rlb__track::before{
+  content:''; position:absolute; inset-inline:inherit;
+}
+.rlb__track{ position:relative }
+.rlb__track::after{
+  content:''; position:absolute; inset-inline:0; height:2px;
+  background:rgba(255,255,255,.26);
+}
+.rlb__fill{
+  position:absolute; inset-inline-start:0; height:2px; width:0;
+  background:#fff; z-index:1;
+}
+/* פס הזמן מתקדם משמאל לימין גם בדף RTL — זו הציפייה מכל נגן */
+[dir="rtl"] .rlb__fill{ inset-inline-start:auto; left:0 }
+[dir="rtl"] .rlb__track::after{ left:0; right:0 }
+.rlb__track:focus-visible{ outline:2px solid var(--orange); outline-offset:6px }
+
+@media (prefers-reduced-motion:reduce){
+  .rlb, .rlb__stage{ transition:opacity .2s linear }
+  .rlb__stage{ transform:none }
+}

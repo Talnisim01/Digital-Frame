@@ -596,3 +596,168 @@
     if(!banner) show();
   });
 })();
+
+/* ============================================================
+   שכבת נגן השואוריל
+   ============================================================
+   הסקשן מציג נגן רקע מושתק. לחיצה על "צפו בשואוריל" פותחת
+   שכבה מלאה עם סאונד ושליטה — פס זמן, השהיה, השתקה וחזרה.
+
+   ארבע החלטות שנגזרות מהמבנה:
+   1. ה-iframe של השכבה נטען ריק ומקבל src רק בפתיחה. נגן Vimeo
+      מלא שוקל מאות KB, ואין סיבה לשלם עליהם למי שלא לחץ.
+   2. Lenis נעצר בזמן שהשכבה פתוחה. בלי זה גלגלת מעל הנגן
+      מגלגלת את הדף שמאחור, והמגנוט מושך לסקשן אחר.
+   3. inert על השכבה הסגורה — אחרת שלושת הכפתורים שבתוכה
+      יושבים במסלול ה-Tab של כל דף, בדיוק כמו שקרה בתפריט.
+   4. השליטה עוברת דרך postMessage ולא דרך Player API של Vimeo:
+      זה אותו פרוטוקול בדיוק, בלי 40KB של ספרייה נוספת.
+   ============================================================ */
+(function(){
+  var box = document.getElementById('reelBox');
+  var opener = document.querySelector('.reel-play');
+  if(!box || !opener) return;
+
+  var frame = box.querySelector('.rlb__frame');
+  var fill  = box.querySelector('.rlb__fill');
+  var track = box.querySelector('[data-rlb="seek"]');
+  var muteB = box.querySelector('[data-rlb="mute"]');
+  var toggl = box.querySelector('[data-rlb="toggle"]');
+  var host  = document.querySelector('.reel-video[data-vimeo-id]');
+  var id    = host ? host.dataset.vimeoId : '';
+  var lastFocus = null, duration = 0, muted = false, playing = false;
+
+  function send(method, value){
+    if(!frame.contentWindow) return;
+    frame.contentWindow.postMessage(JSON.stringify(
+      value === undefined ? {method:method} : {method:method, value:value}
+    ), 'https://player.vimeo.com');
+  }
+
+  function open(){
+    lastFocus = document.activeElement;
+    if(!frame.getAttribute('src')){
+      /* api=1 פותח את ערוץ ה-postMessage. בלעדיו הנגן מתנגן
+         אבל לא עונה לשום פקודה. */
+      frame.src = 'https://player.vimeo.com/video/' + id +
+                  '?api=1&autoplay=1&muted=0&playsinline=1&title=0&byline=0&portrait=0&dnt=1';
+    } else {
+      send('play');
+    }
+    box.removeAttribute('inert');
+    box.removeAttribute('aria-hidden');
+    box.classList.add('is-on');
+    document.documentElement.classList.add('rlb-open');
+    if(window.lenis) window.lenis.stop();
+    playing = true; muted = false;
+    muteB.textContent = 'MUTE';
+
+    /* מלכודת פוקוס: כל שאר הדף הופך inert. בלי זה Tab בורח
+       לכפתורים שמאחורי הנגן — נמדד: הפוקוס נחת על craft-pill.
+       זו הדרך המודרנית במקום ללכוד ידנית את Tab ו-Shift+Tab. */
+    [].forEach.call(document.body.children, function(el){
+      if(el !== box && !el.hasAttribute('inert')){
+        el.setAttribute('inert','');
+        el.setAttribute('data-rlb-inert','');
+      }
+    });
+
+    /* focus() על אלמנט שה-visibility שלו עדיין hidden נופל בשקט,
+       ונמדד שהמעבר לוקח ~200ms. ממתינים לאירוע האמיתי ולא לתזמון
+       מנוחש; transitionend על visibility הוא הסימן שהשכבה באמת שם.
+       ה-setTimeout הוא רשת ביטחון למקרה שהמעבר לא ירה כלל
+       (למשל prefers-reduced-motion). */
+    var closeBtn = box.querySelector('[data-rlb="close"]');
+    var focused = false;
+    function grab(){
+      if(focused) return;
+      if(getComputedStyle(box).visibility !== 'visible') return;
+      focused = true;
+      closeBtn.focus();
+      box.removeEventListener('transitionend', grab);
+    }
+    box.addEventListener('transitionend', grab);
+    setTimeout(grab, 320);
+    setTimeout(grab, 700);
+  }
+
+  function close(){
+    send('pause');
+    box.classList.remove('is-on');
+    box.setAttribute('inert','');
+    box.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('rlb-open');
+    if(window.lenis) window.lenis.start();
+    [].forEach.call(document.querySelectorAll('[data-rlb-inert]'), function(el){
+      el.removeAttribute('inert');
+      el.removeAttribute('data-rlb-inert');
+    });
+    if(lastFocus) lastFocus.focus();
+  }
+
+  opener.addEventListener('click', function(e){ e.preventDefault(); open(); });
+
+  box.addEventListener('click', function(e){
+    var b = e.target.closest('[data-rlb]');
+    /* לחיצה על הרקע סוגרת — ציפייה סטנדרטית משכבה מלאה */
+    if(!b){ if(e.target === box) close(); return; }
+    var act = b.dataset.rlb;
+    if(act === 'close') close();
+    if(act === 'toggle'){ playing = !playing; send(playing ? 'play' : 'pause');
+                          box.classList.toggle('is-paused', !playing);
+                          b.setAttribute('aria-label', playing ? 'השהה' : 'נגן'); }
+    if(act === 'mute'){ muted = !muted; send('setVolume', muted ? 0 : 1);
+                        b.textContent = muted ? 'UNMUTE' : 'MUTE';
+                        b.classList.toggle('is-off', muted); }
+  });
+
+  function seekFromEvent(e){
+    if(!duration) return;
+    var r = track.getBoundingClientRect();
+    /* הדף RTL אבל פס הזמן מתקדם משמאל לימין, כמו בכל נגן */
+    var ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    send('setCurrentTime', ratio * duration);
+    fill.style.width = (ratio * 100) + '%';
+  }
+  track.addEventListener('click', seekFromEvent);
+  track.addEventListener('keydown', function(e){
+    if(!duration) return;
+    var step = e.key === 'ArrowRight' ? -5 : e.key === 'ArrowLeft' ? 5 : 0;
+    if(!step) return;
+    e.preventDefault();
+    send('getCurrentTime');
+    track.dataset.nudge = step;          /* מיושם כשהתשובה חוזרת */
+  });
+
+  addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && box.classList.contains('is-on')) close();
+  });
+
+  /* תשובות מהנגן */
+  addEventListener('message', function(e){
+    if(e.origin !== 'https://player.vimeo.com') return;
+    var d;
+    try { d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(err){ return; }
+
+    if(d.event === 'ready'){
+      send('addEventListener', 'playProgress');
+      send('addEventListener', 'finish');
+      send('getDuration');
+      return;
+    }
+    if(d.method === 'getDuration'){ duration = d.value || 0; return; }
+    if(d.method === 'getCurrentTime' && track.dataset.nudge){
+      send('setCurrentTime', Math.max(0, (d.value || 0) + (+track.dataset.nudge)));
+      track.dataset.nudge = '';
+      return;
+    }
+    if(d.event === 'playProgress' && d.data){
+      duration = d.data.duration || duration;
+      var pct = d.data.percent * 100;
+      fill.style.width = pct + '%';
+      track.setAttribute('aria-valuenow', Math.round(pct));
+      return;
+    }
+    if(d.event === 'finish'){ playing = false; box.classList.add('is-paused'); }
+  });
+})();
