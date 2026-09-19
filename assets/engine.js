@@ -388,7 +388,7 @@ function start(){
              שחורה: מה שמסביב לכרטיס הוא הדף, לא רקע הקופסה. הווידאו
              ממלא את הכרטיס תמיד (scale על כל הכרטיס, לא על תוכן פנימי).
              pinSpacing:true => שומר מקום בזרימה, אין קריסה. */
-      const START='inset(20% 40% 0% 40% round 3rem)', FULL='inset(3% round 2.2rem)';
+      const START='inset(28% 44% round 3rem)', FULL='inset(16.25% 3.3% round 2.2rem)';
       /* opacity מפורש בשני הקצוות. clip-in הוא הסוג היחיד שלא נגע
          בשקיפות — הוא פותח צורה בלבד. מרגע שה-CSS מסתיר כל
          [data-animate] לפני הצביעה הראשונה, זה השאיר את הסקשן

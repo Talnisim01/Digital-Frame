@@ -339,8 +339,12 @@ html.menu-open .scroll-prog{opacity:0}
 /* clip-path ולא border-radius+width: הצורה נחתכת מתוך בלוק מלא,
    ולכן אפשר להנפיש אותה מ-8% ל-0% והווידאו נפתח החוצה.
    8% הוא ברירת המחדל, כך שגם בלי JS הצורה נכונה. */
+/* לפני הפתיחה למסך מלא: 93.4% רוחב ו-67.5% גובה, מה שנמדד
+   ברפרנס (1792x729 על מסך 1920x1080 — יחס 2.46, קולנועי ולא 16:9).
+   מתורגם לאחוזים ולא לפיקסלים, כי אותן מידות על מסך 1512 היו
+   יוצאות 118% מהרוחב, כלומר גולשות החוצה. */
 .reel-wrap{position:sticky;top:0;width:100%;height:100vh;
-  clip-path:inset(3% round 2.2rem);
+  clip-path:inset(16.25% 3.3% round 2.2rem);
   background:var(--color-black-soft);
   transform-origin:center center;
   will-change:clip-path,transform}
