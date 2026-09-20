@@ -894,7 +894,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
    ולכן 3.11rem הפך ל-31px, 1.63rem ל-16px וכן הלאה. */
 .foot-cols{display:flex;justify-content:space-between;gap:clamp(20px,2vw,32px);flex-wrap:wrap}
 .foot-col{width:clamp(140px,16vw,306px);gap:clamp(12px,1.4vw,20px)}
-.foot-col h4{margin:0 0 clamp(16px,2.2vh,26px);color:#7C8188;font-weight:400;
+.foot-col h3{margin:0 0 clamp(16px,2.2vh,26px);color:#7C8188;font-weight:400;
   font-size:clamp(11px,.85vw,13px);letter-spacing:.14em}
 .foot-col ul{list-style:none;margin:0;padding:0;display:grid;gap:clamp(9px,1.3vh,15px)}
 .foot-col a{color:#EDEBE9;text-decoration:none;font-weight:300;
@@ -1286,7 +1286,7 @@ html.debug-layers .ideas-layer--dome{outline-color:rgba(0,180,60,.9)}
 
 .menu__navigation--header{width:100%;padding-bottom:min(20px,1.5vh);
   border-bottom:1px solid rgba(140,141,145,.47)}
-.menu__navigation--header h4{margin:0;color:#334049;font-weight:400;
+.menu__navigation--header h3{margin:0;color:#334049;font-weight:400;
   font-size:clamp(13px,1vw,19px);line-height:1.2}
 
 .menu__navigation-item{position:relative;display:block}
@@ -1386,7 +1386,7 @@ html.menu-open .burger i{transform:scaleX(0);opacity:0}
   .menu__col{gap:min(28px,2vh)}
   .menu__navigation{gap:min(20px,1.2vh);margin-bottom:min(30px,2.5vh);
     width:100%}
-  .menu__navigation--header h4{font-size:min(15px,1.5vh)}
+  .menu__navigation--header h3{font-size:min(15px,1.5vh)}
   .menu__navigation-text{font-size:min(24px,2vh);line-height:.9}
   .menu__navigation-icon{inset-inline-start:-16px;width:9px;height:9px}
 
