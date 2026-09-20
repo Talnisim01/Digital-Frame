@@ -413,10 +413,19 @@ input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
 .art-grid{
   display:grid; gap:clamp(12px, 1.6vw, 22px);
   grid-template-columns:repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  /* start ולא stretch: בלי זה כל הפריטים בשורה נמתחים לגובה
+     הגבוה שבהם, והתמונה מתכווצת כדי לפנות מקום לכיתוב. */
+  align-items:start;
+  align-content:start;
 }
-.art{ margin:0 }
+/* ה-figure יצא בדיוק בגובה התמונה (396px), והכיתוב (83px) נשאר
+   מחוץ לגבולותיו והתנגש בשורה הבאה. עמודת flex מכריחה אותו
+   להכיל את שני ילדיו. */
+.art{
+  margin:0; display:flex; flex-direction:column;
+}
 .art img{
-  width:100%; aspect-ratio:1/1; object-fit:cover;
+  width:100%; aspect-ratio:1/1; object-fit:cover; flex:none;
   border-radius:clamp(12px, 1.4vw, 20px);
   background:var(--silver);
   display:block;
