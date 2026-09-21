@@ -28,6 +28,7 @@
     if(a.contrast) h.classList.add('a11y-contrast');
     if(a.still) h.classList.add('a11y-still');
     if(a.links) h.classList.add('a11y-links');
+    ['font','spacing','gray','cursor','mask'].forEach(function(k){ if(a[k]) h.classList.add('a11y-'+k); });
   } catch(e){}
 
   setTimeout(function(){ if(!window.gsap) h.classList.remove('js-anim'); }, 4000);
@@ -415,20 +416,77 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     <b>התאמות נגישות</b>
     <button class="a11y__close" type="button" data-a11y="close" aria-label="סגירה">&times;</button>
   </div>
-  <div class="a11y__list">
-    <button class="a11y__item" type="button" data-a11y="text" aria-pressed="false">
-      הגדלת טקסט <span class="a11y__state">רגיל</span></button>
-    <button class="a11y__item" type="button" data-a11y="contrast" aria-pressed="false">
-      ניגודיות גבוהה <span class="a11y__state">כבוי</span></button>
-    <button class="a11y__item" type="button" data-a11y="still" aria-pressed="false">
-      עצירת אנימציות <span class="a11y__state">כבוי</span></button>
-    <button class="a11y__item" type="button" data-a11y="links" aria-pressed="false">
-      הדגשת קישורים <span class="a11y__state">כבוי</span></button>
+  <div class="a11y__body">
+    <p class="a11y__group">טקסט</p>
+    <div class="a11y__grid">
+      <button class="a11y__tile" type="button" data-a11y="text" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 6h2l5 12h-2.2l-1.2-3H7.4l-1.2 3H4Zm4.2-5h3.6L10 8.4 8.2 13ZM17 10h2v2h2v2h-2v2h-2v-2h-2v-2h2v-2Z"/></svg>
+        <span class="a11y__label">גודל טקסט</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="font" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v3h-2V6h-4v12h2v2H9v-2h2V6H7v1H5V4Z"/></svg>
+        <span class="a11y__label">גופן קריא</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="spacing" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v2H4V5Zm0 6h16v2H4v-2Zm0 6h16v2H4v-2ZM2 8l2 2-2 2V8Zm20 0v4l-2-2 2-2Z"/></svg>
+        <span class="a11y__label">ריווח טקסט</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+    </div>
+    <p class="a11y__group">תצוגה</p>
+    <div class="a11y__grid">
+      <button class="a11y__tile" type="button" data-a11y="contrast" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 2v14a7 7 0 0 0 0-14Z"/></svg>
+        <span class="a11y__label">ניגודיות</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="gray" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 2a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm0 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+        <span class="a11y__label">גווני אפור</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="links" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.6 13.4a1 1 0 0 1 0-1.4l3.4-3.4a1 1 0 1 1 1.4 1.4L12 13.4a1 1 0 0 1-1.4 0ZM8.5 18a3.5 3.5 0 0 1-2.5-6l2-2 1.4 1.4-2 2a1.5 1.5 0 1 0 2.2 2.2l2-2L13 15l-2 2a3.5 3.5 0 0 1-2.5 1Zm7-7.6L14 9l2-2a1.5 1.5 0 1 0-2.2-2.2l-2 2L10.4 5.4l2-2a3.5 3.5 0 0 1 5 5l-1.9 2Z"/></svg>
+        <span class="a11y__label">הדגשת קישורים</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="cursor" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3l12 9-5.2 1 3 6.1-2.3 1.1-3-6.2L6 18V3Z"/></svg>
+        <span class="a11y__label">סמן גדול</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+    </div>
+    <p class="a11y__group">ריכוז ותנועה</p>
+    <div class="a11y__grid">
+      <button class="a11y__tile" type="button" data-a11y="mask" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v4H3V5Zm0 10h18v4H3v-4Zm0-4h18v2H3v-2Z" opacity=".35"/><path d="M3 11h18v2H3v-2Z"/></svg>
+        <span class="a11y__label">מסכת קריאה</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+      <button class="a11y__tile" type="button" data-a11y="still" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8V5Zm5 0h3v14h-3V5Z"/></svg>
+        <span class="a11y__label">עצירת תנועה</span>
+        <span class="a11y__state">כבוי</span>
+      </button>
+    </div>
+    <p class="a11y__touch-note" hidden>מסכת קריאה זמינה במחשב עם עכבר.</p>
   </div>
-  <button class="a11y__reset" type="button" data-a11y="reset">איפוס ההתאמות</button>
-  <p class="a11y__note">ההתאמות נשמרות בדפדפן שלך בלבד.
-    <a href="/accessibility">להצהרת הנגישות</a></p>
+  <div class="a11y__foot">
+    <button class="a11y__reset" type="button" data-a11y="reset">איפוס</button>
+    <a href="/accessibility">הצהרת נגישות</a>
+  </div>
 </div>
+
+<!-- מסכת הקריאה: שני פאנלים שזזים ב-transform בלבד (קומפוזיטור,
+     בלי layout ובלי paint). הפס עצמו הוא הרווח ביניהם. -->
+<div class="a11y-pane a11y-pane--top" aria-hidden="true"></div>
+<div class="a11y-pane a11y-pane--bot" aria-hidden="true"></div>
+<!-- גווני אפור דרך backdrop-filter על שכבה צפה, ולא filter על
+     התוכן: filter הופך את האלמנט למיכל של כל ה-fixed שבתוכו,
+     ושובר את ה-pin של GSAP ואת הניווט. -->
+<div class="a11y-graylayer" aria-hidden="true"></div>
 
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
 

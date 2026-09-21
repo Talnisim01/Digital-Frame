@@ -688,62 +688,6 @@ html.rlb-open{ overflow:hidden }
 .a11y-btn:focus-visible{ outline:2px solid var(--orange); outline-offset:4px }
 .a11y-btn svg{ width:24px; height:24px; fill:currentColor }
 
-/* ---------- הפאנל ---------- */
-.a11y{
-  position:fixed; z-index:76;
-  left:clamp(16px, 2.2vw, 30px);
-  bottom:calc(clamp(74px, 8vh, 92px) + var(--dock-offset));
-  width:min(320px, calc(100vw - 32px));
-  background:var(--light); color:var(--ink);
-  border-radius:20px; overflow:hidden;
-  box-shadow:0 20px 60px rgba(20,27,36,.26);
-  opacity:0; visibility:hidden; transform:translateY(10px) scale(.97);
-  transition:opacity .35s var(--ease), transform .35s var(--ease), visibility .35s var(--ease);
-}
-.a11y.is-on{ opacity:1; visibility:visible; transform:none }
-
-.a11y__head{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:16px 18px; background:var(--ink); color:var(--light);
-}
-.a11y__head b{ font-size:15px; font-weight:500 }
-.a11y__close{
-  background:none; border:0; color:inherit; cursor:pointer;
-  font-size:22px; line-height:1; padding:2px 6px;
-}
-.a11y__close:focus-visible{ outline:2px solid var(--orange); outline-offset:2px }
-
-.a11y__list{ padding:8px }
-.a11y__item{
-  width:100%; display:flex; align-items:center; justify-content:space-between;
-  gap:12px; padding:13px 12px; border:0; border-radius:12px;
-  background:none; font:inherit; font-size:14px; color:var(--ink);
-  cursor:pointer; text-align:start;
-  transition:background .25s var(--ease);
-}
-.a11y__item:hover{ background:var(--silver) }
-.a11y__item:focus-visible{ outline:2px solid var(--orange); outline-offset:-2px }
-.a11y__state{
-  flex:none; font-size:12px; letter-spacing:.06em;
-  color:var(--gray-aa); border:1px solid rgba(20,27,36,.18);
-  border-radius:999px; padding:4px 11px;
-}
-.a11y__item[aria-pressed="true"] .a11y__state{
-  background:var(--orange); border-color:var(--orange); color:#fff;
-}
-.a11y__reset{
-  width:calc(100% - 16px); margin:4px 8px 12px;
-  padding:11px; border:1px solid rgba(20,27,36,.18); border-radius:12px;
-  background:none; font:inherit; font-size:13px; color:var(--gray-aa);
-  cursor:pointer;
-}
-.a11y__reset:hover{ border-color:var(--ink); color:var(--ink) }
-.a11y__note{
-  padding:0 18px 16px; margin:0;
-  font-size:11px; line-height:1.6; color:var(--gray-aa);
-}
-.a11y__note a{ color:var(--ink) }
-
 /* ============================================================
    המצבים עצמם — חלים רק על מי שבחר
    ============================================================ */
@@ -796,3 +740,129 @@ html.a11y-links a:not(.cta):not(.card):not(.tile){
 }
 html.a11y-links .foot-col a,
 html.a11y-links .menu__navigation-link{ text-decoration:underline !important }
+
+/* ============ פאנל הנגישות — מבנה ============ */
+.a11y{
+  position:fixed; z-index:78;
+  left:clamp(16px, 2.2vw, 30px);
+  bottom:calc(clamp(72px, 8vh, 90px) + var(--dock-offset));
+  width:min(360px, calc(100vw - 32px));
+  max-height:min(640px, calc(100vh - 120px));
+  display:flex; flex-direction:column;
+  background:var(--light); color:var(--ink);
+  border-radius:22px; overflow:hidden;
+  box-shadow:0 22px 64px rgba(20,27,36,.28);
+  opacity:0; visibility:hidden; transform:translateY(10px) scale(.97);
+  transition:opacity .35s var(--ease), transform .35s var(--ease), visibility .35s var(--ease);
+}
+.a11y.is-on{ opacity:1; visibility:visible; transform:none }
+.a11y__head{
+  flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px; background:var(--ink); color:var(--light);
+}
+.a11y__head b{ font-size:15px; font-weight:500 }
+.a11y__close{ background:none; border:0; color:inherit; cursor:pointer; font-size:22px; line-height:1; padding:2px 6px }
+.a11y__body{ flex:1 1 auto; overflow-y:auto; padding:6px 14px 10px; overscroll-behavior:contain }
+.a11y__group{
+  margin:14px 4px 8px; font-size:11px; font-weight:500; letter-spacing:.1em;
+  color:var(--gray-aa);
+}
+.a11y__grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.a11y__tile{
+  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+  padding:13px 12px; border-radius:14px;
+  border:1px solid rgba(20,27,36,.1); background:#fff;
+  font:inherit; color:var(--ink); cursor:pointer; text-align:start;
+  transition:border-color .25s var(--ease), background .25s var(--ease);
+}
+.a11y__tile:hover{ border-color:rgba(20,27,36,.3) }
+.a11y__tile svg{ width:22px; height:22px; fill:currentColor }
+.a11y__label{ font-size:13px; line-height:1.3 }
+.a11y__state{ font-size:11px; color:var(--gray-aa) }
+.a11y__tile[aria-pressed="true"]{ background:var(--ink); border-color:var(--ink); color:#fff }
+.a11y__tile[aria-pressed="true"] .a11y__state{ color:var(--orange) }
+.a11y__tile:focus-visible, .a11y__close:focus-visible, .a11y__reset:focus-visible{
+  outline:2px solid var(--orange); outline-offset:2px
+}
+.a11y__touch-note{ margin:8px 4px 0; font-size:11px; color:var(--gray-aa) }
+.a11y__foot{
+  flex:none; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; border-top:1px solid rgba(20,27,36,.08); font-size:12px;
+}
+.a11y__reset{
+  font:inherit; font-size:12px; padding:8px 16px; border-radius:999px;
+  border:1px solid rgba(20,27,36,.2); background:none; color:var(--ink); cursor:pointer;
+}
+.a11y__foot a{ color:var(--gray-aa) }
+
+/* מובייל: גיליון תחתון */
+@media (max-width:600px){
+  .a11y{ left:8px; right:8px; width:auto; bottom:8px; max-height:78vh; border-radius:20px }
+}
+
+/* ============ המצבים החדשים — רק למי שבוחר ============ */
+
+/* גופן קריא. OpenDyslexic אין בו גליפים לעברית, ולכן גופן
+   מערכת פשוט — זה מה שעוזר בפועל בטקסט עברי. */
+html.a11y-font body, html.a11y-font button, html.a11y-font input,
+html.a11y-font textarea, html.a11y-font select{
+  font-family:Arial, "Segoe UI", "Helvetica Neue", sans-serif !important;
+}
+html.a11y-font main *:not(svg):not(svg *),
+html.a11y-font .foot *:not(svg):not(svg *){ font-family:inherit !important }
+
+/* ריווח טקסט — הערכים המדויקים של WCAG 1.4.12 */
+html.a11y-spacing main :is(p, li, dd, dt, span, a, h1, h2, h3, figcaption),
+html.a11y-spacing .foot :is(p, li, a, h3){
+  line-height:1.5 !important;
+  letter-spacing:.12em !important;
+  word-spacing:.16em !important;
+}
+html.a11y-spacing main p{ margin-bottom:2em !important }
+
+/* הדגשת קישורים — שודרג מקו תחתון למסגרת ורקע */
+html.a11y-links main :is(a, button),
+html.a11y-links .foot :is(a, button),
+html.a11y-links #nav :is(a, button){
+  outline:2px solid var(--orange) !important;
+  outline-offset:2px;
+  background-color:rgba(255,103,17,.12) !important;
+  text-decoration:underline !important;
+  text-underline-offset:3px;
+  border-radius:6px;
+}
+
+/* סמן גדול — 48px, מתחת לתקרת 128px של הדפדפנים */
+html.a11y-cursor, html.a11y-cursor *{
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2l14 10.5-6 1.2 3.4 7-2.7 1.3-3.4-7.1L5 19.5V2z' fill='%23141B24' stroke='%23fff' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E") 6 4, auto !important;
+}
+html.a11y-cursor :is(a, button, [role="button"], label){
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24'%3E%3Cpath d='M5 2l14 10.5-6 1.2 3.4 7-2.7 1.3-3.4-7.1L5 19.5V2z' fill='%23FF6711' stroke='%23fff' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E") 6 4, pointer !important;
+}
+
+/* גווני אפור — שכבה צפה עם backdrop-filter, מעל התוכן ומתחת
+   לפאנל ולכפתורים. filter על התוכן היה שובר את ה-pin ואת ה-fixed. */
+/* שם שונה בכוונה משם המצב: המחלקה a11y-gray יושבת על <html>,
+   וכלל על .a11y-gray היה חל גם על השורש — display:none
+   ו-pointer-events:none על כל הדף. נמדד: אף אלמנט לא היה לחיץ. */
+.a11y-graylayer{
+  position:fixed; inset:0; z-index:74; pointer-events:none;
+  -webkit-backdrop-filter:grayscale(1); backdrop-filter:grayscale(1);
+  display:none;
+}
+html.a11y-gray .a11y-graylayer{ display:block }
+
+/* מסכת קריאה — שני פאנלים שזזים ב-transform בלבד */
+/* 55: מעל הניווט (50), כך שהוא מתעמעם כמו שאר התוכן — ומתחת
+   לוואטסאפ (60), לבאנר (70) ולכפתור הנגישות (75). ב-73 המסכה
+   עמעמה את הוואטסאפ ואת הבאנר, בניגוד לתכנון. */
+.a11y-pane{
+  position:fixed; left:0; right:0; height:100vh; z-index:55;
+  background:rgba(8,12,18,.55); pointer-events:none;
+  will-change:transform; display:none;
+  transition:opacity .25s linear;
+}
+.a11y-pane--top{ top:-100vh }
+.a11y-pane--bot{ top:0 }
+html.a11y-mask .a11y-pane{ display:block }
+html.a11y-mask .a11y-pane.is-out{ opacity:0 }

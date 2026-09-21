@@ -784,10 +784,9 @@
 /* ============================================================
    פאנל נגישות
    ============================================================
-   ההתאמות נשמרות ב-localStorage ומוחלות כמחלקות על <html>.
-   ההחלה הראשונית קורית כבר בסקריפט המוטבע בראש הדף — כאן רק
-   הממשק. כך מי שבחר בהגדלה לא רואה הבזק של גודל רגיל בכל
-   מעבר דף.
+   כל התאמה היא מחלקה על <html>, קיימת רק אחרי שהגולש בחר בה,
+   ונשמרת ב-localStorage. ההחלה הראשונית קורית בסקריפט המוטבע
+   בראש הדף, לפני הצביעה הראשונה — כאן רק הממשק.
    ============================================================ */
 (function(){
   var KEY = 'df_a11y_v1';
@@ -796,89 +795,133 @@
   if(!btn || !panel) return;
   var root = document.documentElement;
 
-  var state = { text:0, contrast:false, still:false, links:false };
+  var BOOLS = ['font','spacing','contrast','gray','links','cursor','mask','still'];
+  var fresh = function(){ var o = {text:0}; BOOLS.forEach(function(k){ o[k]=false; }); return o; };
+  var state = fresh();
   try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
 
-  var TEXT_LABELS = ['רגיל', 'גדול', 'גדול מאוד'];
+  /* מסכת קריאה עם עכבר בלבד — אצבע לא "מרחפת", ופס שעוקב
+     אחרי מגע לא עובד. במכשיר מגע האריח מוסתר עם הסבר. */
+  var canHover = matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(!canHover){
+    var mt = panel.querySelector('[data-a11y="mask"]');
+    if(mt) mt.hidden = true;
+    var note = panel.querySelector('.a11y__touch-note');
+    if(note) note.hidden = false;
+    state.mask = false;
+  }
+
   if(window.lenis && window.lenis.__baseLerp === undefined){
     window.lenis.__baseLerp = window.lenis.options.lerp;
   }
 
+  var TEXT_LABELS = ['רגיל', 'גדול', 'גדול מאוד'];
+  var prevText = state.text;
+
   function apply(){
     root.classList.remove('a11y-text-1','a11y-text-2');
     if(state.text) root.classList.add('a11y-text-' + state.text);
-    root.classList.toggle('a11y-contrast', !!state.contrast);
-    root.classList.toggle('a11y-still',    !!state.still);
-    root.classList.toggle('a11y-links',    !!state.links);
+    BOOLS.forEach(function(k){ root.classList.toggle('a11y-' + k, !!state[k]); });
 
-    /* עצירת אנימציות צריכה גם לעצור את Lenis ואת GSAP, לא רק את
-       מעברי ה-CSS — אחרת הגלילה החלקה והרצף ממשיכים לנוע. */
     if(window.gsap) gsap.globalTimeline.timeScale(state.still ? 0 : 1);
-    /* ההערה הקודמת כאן טענה ש-stop() מחזיר את הגלילה הטבעית.
-       זה לא נכון: stop() חוסם גלילה לגמרי ומוסיף lenis-stopped
-       (overflow:hidden) — הוא נועד לעצירה זמנית בזמן שתפריט
-       פתוח. נמדד: הגלגלת נתקעה ב-1500.
-       smoothWheel:false משאיר את Lenis רץ, רק בלי ההחלקה —
-       הגלילה זזה צעד-צעד כמו בדפדפן רגיל. */
     if(window.lenis){
       window.lenis.options.smoothWheel = !state.still;
       window.lenis.options.lerp = state.still ? 1 : window.lenis.__baseLerp;
     }
 
-    [].forEach.call(panel.querySelectorAll('[data-a11y]'), function(b){
+    /* zoom משנה גבהים, וה-pins של ScrollTrigger מחושבים מראש —
+       בלי refresh הם היו נועלים בנקודות הישנות. */
+    if(state.text !== prevText && window.ScrollTrigger){
+      prevText = state.text;
+      requestAnimationFrame(function(){ ScrollTrigger.refresh(); });
+    }
+
+    mask(state.mask);
+
+    [].forEach.call(panel.querySelectorAll('.a11y__tile'), function(b){
       var k = b.dataset.a11y, lab = b.querySelector('.a11y__state');
-      if(k === 'text'){
-        b.setAttribute('aria-pressed', state.text ? 'true' : 'false');
-        if(lab) lab.textContent = TEXT_LABELS[state.text];
-      } else if(k in state){
-        b.setAttribute('aria-pressed', state[k] ? 'true' : 'false');
-        if(lab) lab.textContent = state[k] ? 'פעיל' : 'כבוי';
-      }
+      var on = k === 'text' ? state.text > 0 : !!state[k];
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if(lab) lab.textContent = k === 'text' ? TEXT_LABELS[state.text] : (on ? 'פעיל' : 'כבוי');
     });
   }
 
-  function save(){
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  /* ---------- מסכת קריאה ----------
+     שני פאנלים ב-transform בלבד → קומפוזיטור, בלי layout ובלי
+     paint. מאזין ה-pointermove רק שומר את ה-Y האחרון; לולאת ה-rAF
+     כותבת לכל היותר פעם אחת לפריים, ולא קוראת שום מדידה מה-DOM. */
+  var topPane = document.querySelector('.a11y-pane--top');
+  var botPane = document.querySelector('.a11y-pane--bot');
+  var BAND = 132, lastY = innerHeight / 2, raf = 0, maskOn = false;
+
+  /* פריים מתוזמן רק כשיש תנועה, ולא לולאה רציפה: לולאת rAF
+     שרצה כל פריים גם בלי תנועה היא התעוררות מיותרת 60 פעם
+     בשנייה. עכשיו — עכבר עומד, אפס עבודה. */
+  function request(){ if(!raf) raf = requestAnimationFrame(frame); }
+  function onMove(e){ lastY = e.clientY; request(); }
+  function onFocus(e){
+    /* משתמש מקלדת: הפס קופץ לאלמנט הממוקד. מדידה אחת לכל
+       שינוי פוקוס — לא בתוך הלולאה. */
+    var r = e.target.getBoundingClientRect && e.target.getBoundingClientRect();
+    if(r && r.height){ lastY = r.top + r.height / 2; request(); }
+  }
+  function onLeave(){ topPane.classList.add('is-out'); botPane.classList.add('is-out'); }
+  function onEnter(){ topPane.classList.remove('is-out'); botPane.classList.remove('is-out'); }
+
+  function frame(){
+    raf = 0;
+    var half = BAND / 2;
+    topPane.style.transform = 'translate3d(0,' + (lastY - half) + 'px,0)';
+    botPane.style.transform = 'translate3d(0,' + (lastY + half) + 'px,0)';
   }
 
+  function mask(on){
+    if(!topPane || !botPane || on === maskOn) return;
+    maskOn = on;
+    if(on){
+      addEventListener('pointermove', onMove, {passive:true});
+      document.addEventListener('focusin', onFocus);
+      document.documentElement.addEventListener('mouseleave', onLeave);
+      document.documentElement.addEventListener('mouseenter', onEnter);
+      request();
+    } else {
+      removeEventListener('pointermove', onMove);
+      document.removeEventListener('focusin', onFocus);
+      document.documentElement.removeEventListener('mouseleave', onLeave);
+      document.documentElement.removeEventListener('mouseenter', onEnter);
+      if(raf){ cancelAnimationFrame(raf); raf = 0; }
+    }
+  }
+
+  /* ---------- פתיחה וסגירה ---------- */
   var lastFocus = null;
   function open(){
     lastFocus = document.activeElement;
-    panel.removeAttribute('inert');
-    panel.removeAttribute('aria-hidden');
-    panel.classList.add('is-on');
-    btn.setAttribute('aria-expanded','true');
-    /* ממתינים למעבר האמיתי: focus() על אלמנט שעדיין
-       visibility:hidden נופל בשקט — כפי שנמדד בנגן. */
-    var first = panel.querySelector('.a11y__item');
-    var done = false;
-    function grab(){
-      if(done || getComputedStyle(panel).visibility !== 'visible') return;
-      done = true; first.focus();
-    }
+    panel.removeAttribute('inert'); panel.removeAttribute('aria-hidden');
+    panel.classList.add('is-on'); btn.setAttribute('aria-expanded','true');
+    var first = panel.querySelector('.a11y__tile:not([hidden])'), done = false;
+    function grab(){ if(done || getComputedStyle(panel).visibility !== 'visible') return; done = true; first.focus(); }
     panel.addEventListener('transitionend', grab, {once:true});
     setTimeout(grab, 380);
   }
   function close(){
-    panel.classList.remove('is-on');
-    panel.setAttribute('inert','');
-    panel.setAttribute('aria-hidden','true');
+    panel.classList.remove('is-on'); panel.setAttribute('inert',''); panel.setAttribute('aria-hidden','true');
     btn.setAttribute('aria-expanded','false');
     if(lastFocus) lastFocus.focus();
   }
 
-  btn.addEventListener('click', function(){
-    panel.classList.contains('is-on') ? close() : open();
-  });
+  btn.addEventListener('click', function(){ panel.classList.contains('is-on') ? close() : open(); });
 
   panel.addEventListener('click', function(e){
     var b = e.target.closest('[data-a11y]');
     if(!b) return;
     var k = b.dataset.a11y;
     if(k === 'close'){ close(); return; }
-    if(k === 'reset'){ state = { text:0, contrast:false, still:false, links:false }; }
-    else if(k === 'text'){ state.text = (state.text + 1) % 3; }
-    else { state[k] = !state[k]; }
+    if(k === 'reset') state = fresh();
+    else if(k === 'text') state.text = (state.text + 1) % 3;
+    else state[k] = !state[k];
     apply(); save();
   });
 
