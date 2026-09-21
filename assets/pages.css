@@ -663,3 +663,132 @@ html.rlb-open{ overflow:hidden }
   padding:0; margin:-1px; overflow:hidden;
   clip-path:inset(50%); white-space:nowrap; border:0;
 }
+
+/* ============================================================
+   פאנל נגישות
+   ============================================================
+   כל ההתאמות כאן חלות רק כשהגולש בחר בהן — הן תלויות
+   במחלקה על <html> שנוספת בלחיצה ונשמרת ב-localStorage.
+   גולש שלא נגע בפאנל רואה את האתר בדיוק כפי שעוצב.
+   ============================================================ */
+
+/* ---------- הכפתור הצף ---------- */
+.a11y-btn{
+  position:fixed; z-index:75;
+  inset-inline-end:auto; left:clamp(16px, 2.2vw, 30px);
+  bottom:calc(clamp(16px, 2.2vw, 30px) + var(--dock-offset));
+  width:46px; height:46px; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--ink); color:var(--light);
+  border:0; cursor:pointer;
+  box-shadow:0 8px 24px rgba(20,27,36,.2);
+  transition:transform .35s var(--ease), background .35s var(--ease), bottom .4s var(--ease);
+}
+.a11y-btn:hover{ transform:translateY(-3px) }
+.a11y-btn:focus-visible{ outline:2px solid var(--orange); outline-offset:4px }
+.a11y-btn svg{ width:24px; height:24px; fill:currentColor }
+
+/* ---------- הפאנל ---------- */
+.a11y{
+  position:fixed; z-index:76;
+  left:clamp(16px, 2.2vw, 30px);
+  bottom:calc(clamp(74px, 8vh, 92px) + var(--dock-offset));
+  width:min(320px, calc(100vw - 32px));
+  background:var(--light); color:var(--ink);
+  border-radius:20px; overflow:hidden;
+  box-shadow:0 20px 60px rgba(20,27,36,.26);
+  opacity:0; visibility:hidden; transform:translateY(10px) scale(.97);
+  transition:opacity .35s var(--ease), transform .35s var(--ease), visibility .35s var(--ease);
+}
+.a11y.is-on{ opacity:1; visibility:visible; transform:none }
+
+.a11y__head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px; background:var(--ink); color:var(--light);
+}
+.a11y__head b{ font-size:15px; font-weight:500 }
+.a11y__close{
+  background:none; border:0; color:inherit; cursor:pointer;
+  font-size:22px; line-height:1; padding:2px 6px;
+}
+.a11y__close:focus-visible{ outline:2px solid var(--orange); outline-offset:2px }
+
+.a11y__list{ padding:8px }
+.a11y__item{
+  width:100%; display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:13px 12px; border:0; border-radius:12px;
+  background:none; font:inherit; font-size:14px; color:var(--ink);
+  cursor:pointer; text-align:start;
+  transition:background .25s var(--ease);
+}
+.a11y__item:hover{ background:var(--silver) }
+.a11y__item:focus-visible{ outline:2px solid var(--orange); outline-offset:-2px }
+.a11y__state{
+  flex:none; font-size:12px; letter-spacing:.06em;
+  color:var(--gray-aa); border:1px solid rgba(20,27,36,.18);
+  border-radius:999px; padding:4px 11px;
+}
+.a11y__item[aria-pressed="true"] .a11y__state{
+  background:var(--orange); border-color:var(--orange); color:#fff;
+}
+.a11y__reset{
+  width:calc(100% - 16px); margin:4px 8px 12px;
+  padding:11px; border:1px solid rgba(20,27,36,.18); border-radius:12px;
+  background:none; font:inherit; font-size:13px; color:var(--gray-aa);
+  cursor:pointer;
+}
+.a11y__reset:hover{ border-color:var(--ink); color:var(--ink) }
+.a11y__note{
+  padding:0 18px 16px; margin:0;
+  font-size:11px; line-height:1.6; color:var(--gray-aa);
+}
+.a11y__note a{ color:var(--ink) }
+
+/* ============================================================
+   המצבים עצמם — חלים רק על מי שבחר
+   ============================================================ */
+
+/* טקסט גדול: שינוי בשורש בלבד, כך שכל ה-clamp וה-rem
+   באתר גדלים יחד ושום פריסה לא נשברת */
+html.a11y-text-1{ font-size:112.5% }
+html.a11y-text-2{ font-size:125% }
+
+/* ניגודיות גבוהה: מחליף את טוקני הצבע בלבד. כל האתר נשען
+   עליהם, ולכן זה משנה הכול בלי לגעת בשום כלל בודד. */
+html.a11y-contrast{
+  --gray:#3A3E44;
+  --gray-aa:#23272C;
+  --paper:#FFFFFF;
+  --light:#FFFFFF;
+  --silver:#E2E4E7;
+}
+html.a11y-contrast .page-lede .dim,
+html.a11y-contrast .sec-sub,
+html.a11y-contrast .tile__text,
+html.a11y-contrast .step p,
+html.a11y-contrast .card-tags,
+html.a11y-contrast .art figcaption span{ color:#23272C }
+html.a11y-contrast .foot-col a,
+html.a11y-contrast .foot-copy{ color:#E8EAEC }
+
+/* עצירת תנועה: אותו מנגנון שכבר קיים ל-prefers-reduced-motion,
+   הפעם כבחירה מפורשת של הגולש */
+html.a11y-still *,
+html.a11y-still *::before,
+html.a11y-still *::after{
+  animation-duration:.001ms !important;
+  animation-iteration-count:1 !important;
+  transition-duration:.001ms !important;
+  scroll-behavior:auto !important;
+}
+html.a11y-still .scroll-cue,
+html.a11y-still .blobs{ display:none }
+
+/* הדגשת קישורים */
+html.a11y-links a:not(.cta):not(.card):not(.tile){
+  text-decoration:underline !important;
+  text-underline-offset:3px;
+  text-decoration-thickness:1px;
+}
+html.a11y-links .foot-col a,
+html.a11y-links .menu__navigation-link{ text-decoration:underline !important }

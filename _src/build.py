@@ -276,6 +276,11 @@ CREATIVE = [
 # ⚠ המעבר לעוסק מורשה: לעדכן את BUSINESS למספר עוסק מורשה,
 #   ובדף הנגישות להחליף את פסקת הפטור בהצהרת עמידה בתקן.
 
+# ⚠ מתג המעמד. כל עוד True, הצהרת הנגישות מציגה את פסקת הפטור.
+#   ביום שהעסק יירשם כעוסק מורשה (או כחברה בע"מ): להחליף ל-False
+#   ולהריץ את הגנרטור. הפסקה מתחלפת בהצהרת עמידה בתקן, וזה הכל.
+EXEMPT = True
+
 BUSINESS = {
     'name':    'Digital Frame',
     'legal':   '⚠ שם בעל העסק המלא',
@@ -441,6 +446,18 @@ ACCESS = [
   '<li>טפסים עם תוויות מקושרות והודעות שגיאה מילוליות.</li>'
   '</ul>']),
 
+ ('התאמות שהגולש יכול להפעיל', [
+  'בפינה השמאלית התחתונה של כל עמוד נמצא כפתור נגישות, שפותח את '
+  'ההתאמות הבאות:',
+  '<ul>'
+  '<li>הגדלת טקסט בשתי דרגות, מבלי לשבור את פריסת העמוד.</li>'
+  '<li>ניגודיות גבוהה, המעלה את ניגודיות הטקסט מעבר לדרישת התקן.</li>'
+  '<li>עצירת אנימציות ותנועה, כולל גלילה חלקה.</li>'
+  '<li>הדגשת קישורים בקו תחתון.</li>'
+  '</ul>',
+  'ההתאמות חלות רק על מי שבוחר בהן, נשמרות בדפדפן ומוחלות גם '
+  'בביקורים הבאים. ניתן לאפס אותן בכל עת מתוך אותו חלון.']),
+
  ('מגבלות ידועות', [
   'האתר כולל אנימציות ותנועה המהוות חלק מהשפה העיצובית. מי שהגדיר במערכת '
   'ההפעלה העדפה להפחתת תנועה יקבל גרסה סטטית.',
@@ -455,10 +472,14 @@ ACCESS = [
   'נעשה מאמץ להשיב לכל פנייה בתוך זמן סביר.']),
 
  ('מעמד רגולטורי', [
-  '⚠ הפסקה הזו נכונה כל עוד העסק רשום כעוסק פטור: על פי תקנות שוויון '
-  'זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), עוסק פטור זכאי לפטור '
-  'מביצוע התאמות נגישות בשירותי אינטרנט, ואף על פי כן בחרנו לבצע התאמות '
-  'מרצון. עם המעבר לעוסק מורשה יש להחליף פסקה זו בהצהרת עמידה מלאה בתקן.']),
+  ('על פי תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), '
+   'עוסק פטור זכאי לפטור מביצוע התאמות נגישות בשירותי אינטרנט. אף על פי '
+   'כן בחרנו לבצע את ההתאמות המפורטות לעיל מרצון, ולשמור עליהן לאורך זמן.')
+  if EXEMPT else
+  ('האתר נבנה בהתאם לדרישות תקן ישראלי 5568, המבוסס על הנחיות WCAG 2.0 '
+   'ברמה AA, כנדרש בתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות '
+   'לשירות). אנו מקיימים בדיקה תקופתית של העמידה בתקן ומתקנים ליקויים '
+   'שמתגלים.')]),
 ]
 
 
@@ -575,6 +596,14 @@ def page(path, title, desc, body, extra_css=True, noindex=False):
 (function(d){{
   var h = d.documentElement;
   if(!matchMedia('(prefers-reduced-motion:reduce)').matches) h.classList.add('js-anim');
+  try {{
+    var a = JSON.parse(localStorage.getItem('df_a11y_v1') || '{{}}');
+    if(a.text) h.classList.add('a11y-text-' + a.text);
+    if(a.contrast) h.classList.add('a11y-contrast');
+    if(a.still) h.classList.add('a11y-still');
+    if(a.links) h.classList.add('a11y-links');
+  }} catch(e){{}}
+
   setTimeout(function(){{ if(!window.gsap) h.classList.remove('js-anim'); }}, 4000);
 }})(document);
 </script>
@@ -665,6 +694,36 @@ j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNo
     </div>
     <button class="rlb__btn rlb__mute" type="button" data-rlb="mute">MUTE</button>
   </div>
+</div>
+
+<!-- ============ נגישות ============
+     כל ההתאמות חלות רק על מי שבוחר בהן. גולש שלא נגע בפאנל
+     רואה את האתר בדיוק כפי שעוצב.
+     inert כשסגור: אחרת ששת הכפתורים שבפנים יושבים במסלול
+     ה-Tab של כל דף. -->
+<button class="a11y-btn" type="button" id="a11yBtn"
+        aria-label="התאמות נגישות" aria-expanded="false" aria-controls="a11yPanel">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8Zm8.1 4.4-5.6 1.1v4.1l2.1 8.4a1 1 0 0 1-1.9.5L12 14.6l-2.7 6.1a1 1 0 0 1-1.9-.5l2.1-8.4V7.7L3.9 6.6a1 1 0 1 1 .4-2l5.6 1.1h4.2l5.6-1.1a1 1 0 1 1 .4 2Z"/></svg>
+</button>
+
+<div class="a11y" id="a11yPanel" role="dialog" aria-label="התאמות נגישות" inert aria-hidden="true">
+  <div class="a11y__head">
+    <b>התאמות נגישות</b>
+    <button class="a11y__close" type="button" data-a11y="close" aria-label="סגירה">&times;</button>
+  </div>
+  <div class="a11y__list">
+    <button class="a11y__item" type="button" data-a11y="text" aria-pressed="false">
+      הגדלת טקסט <span class="a11y__state">רגיל</span></button>
+    <button class="a11y__item" type="button" data-a11y="contrast" aria-pressed="false">
+      ניגודיות גבוהה <span class="a11y__state">כבוי</span></button>
+    <button class="a11y__item" type="button" data-a11y="still" aria-pressed="false">
+      עצירת אנימציות <span class="a11y__state">כבוי</span></button>
+    <button class="a11y__item" type="button" data-a11y="links" aria-pressed="false">
+      הדגשת קישורים <span class="a11y__state">כבוי</span></button>
+  </div>
+  <button class="a11y__reset" type="button" data-a11y="reset">איפוס ההתאמות</button>
+  <p class="a11y__note">ההתאמות נשמרות בדפדפן שלך בלבד.
+    <a href="/accessibility">להצהרת הנגישות</a></p>
 </div>
 
 <div class="scroll-prog" aria-hidden="true"><span class="scroll-prog__fill"></span></div>
@@ -1072,11 +1131,13 @@ def patch_home():
     rlb  = full[full.index('<div class="rlb" id="reelBox"'):
                 full.index('</div>', full.index('data-rlb="mute"')) + 6]
     rlb  = full[full.index('<!-- ============ שכבת הנגן'):
+                full.index('<!-- ============ נגישות')].rstrip()
+    a11y = full[full.index('<!-- ============ נגישות'):
                 full.index('<div class="scroll-prog"')].rstrip()
     ico  = full[full.index('<!-- ספריית האייקונים'):
                 full.index('<!-- ============ שכבת הנגן')].rstrip()
     for tag, blk in (('nav', NAV), ('menu', MENU), ('contact', CONTACT),
-                     ('footer', FOOTER), ('seo', home_seo()), ('wa', wa), ('rlb', rlb), ('ico', ico)):
+                     ('footer', FOOTER), ('seo', home_seo()), ('wa', wa), ('rlb', rlb), ('ico', ico), ('a11y', a11y)):
         # בדף הבית העוגנים נשארים מקומיים -> {{HOME}} ריק
         new = resolve(blk, '')
         src = re.sub(f'<!--@{tag}-->.*?<!--/@{tag}-->',

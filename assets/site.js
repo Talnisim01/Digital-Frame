@@ -780,3 +780,104 @@
     if(d.event === 'finish'){ playing = false; close(); }
   });
 })();
+
+/* ============================================================
+   פאנל נגישות
+   ============================================================
+   ההתאמות נשמרות ב-localStorage ומוחלות כמחלקות על <html>.
+   ההחלה הראשונית קורית כבר בסקריפט המוטבע בראש הדף — כאן רק
+   הממשק. כך מי שבחר בהגדלה לא רואה הבזק של גודל רגיל בכל
+   מעבר דף.
+   ============================================================ */
+(function(){
+  var KEY = 'df_a11y_v1';
+  var btn = document.getElementById('a11yBtn');
+  var panel = document.getElementById('a11yPanel');
+  if(!btn || !panel) return;
+  var root = document.documentElement;
+
+  var state = { text:0, contrast:false, still:false, links:false };
+  try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var TEXT_LABELS = ['רגיל', 'גדול', 'גדול מאוד'];
+
+  function apply(){
+    root.classList.remove('a11y-text-1','a11y-text-2');
+    if(state.text) root.classList.add('a11y-text-' + state.text);
+    root.classList.toggle('a11y-contrast', !!state.contrast);
+    root.classList.toggle('a11y-still',    !!state.still);
+    root.classList.toggle('a11y-links',    !!state.links);
+
+    /* עצירת אנימציות צריכה גם לעצור את Lenis ואת GSAP, לא רק את
+       מעברי ה-CSS — אחרת הגלילה החלקה והרצף ממשיכים לנוע. */
+    if(window.gsap) gsap.globalTimeline.timeScale(state.still ? 0 : 1);
+    /* Lenis נעצר ולא נהרס: stop() מחזיר את הגלילה הטבעית של
+       הדפדפן, ו-start() מחזיר אותה כשמבטלים. destroy() היה
+       דורש לאתחל מחדש את כל המנוע. */
+    if(window.lenis){
+      if(state.still) window.lenis.stop(); else window.lenis.start();
+    }
+
+    [].forEach.call(panel.querySelectorAll('[data-a11y]'), function(b){
+      var k = b.dataset.a11y, lab = b.querySelector('.a11y__state');
+      if(k === 'text'){
+        b.setAttribute('aria-pressed', state.text ? 'true' : 'false');
+        if(lab) lab.textContent = TEXT_LABELS[state.text];
+      } else if(k in state){
+        b.setAttribute('aria-pressed', state[k] ? 'true' : 'false');
+        if(lab) lab.textContent = state[k] ? 'פעיל' : 'כבוי';
+      }
+    });
+  }
+
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  var lastFocus = null;
+  function open(){
+    lastFocus = document.activeElement;
+    panel.removeAttribute('inert');
+    panel.removeAttribute('aria-hidden');
+    panel.classList.add('is-on');
+    btn.setAttribute('aria-expanded','true');
+    /* ממתינים למעבר האמיתי: focus() על אלמנט שעדיין
+       visibility:hidden נופל בשקט — כפי שנמדד בנגן. */
+    var first = panel.querySelector('.a11y__item');
+    var done = false;
+    function grab(){
+      if(done || getComputedStyle(panel).visibility !== 'visible') return;
+      done = true; first.focus();
+    }
+    panel.addEventListener('transitionend', grab, {once:true});
+    setTimeout(grab, 380);
+  }
+  function close(){
+    panel.classList.remove('is-on');
+    panel.setAttribute('inert','');
+    panel.setAttribute('aria-hidden','true');
+    btn.setAttribute('aria-expanded','false');
+    if(lastFocus) lastFocus.focus();
+  }
+
+  btn.addEventListener('click', function(){
+    panel.classList.contains('is-on') ? close() : open();
+  });
+
+  panel.addEventListener('click', function(e){
+    var b = e.target.closest('[data-a11y]');
+    if(!b) return;
+    var k = b.dataset.a11y;
+    if(k === 'close'){ close(); return; }
+    if(k === 'reset'){ state = { text:0, contrast:false, still:false, links:false }; }
+    else if(k === 'text'){ state.text = (state.text + 1) % 3; }
+    else { state[k] = !state[k]; }
+    apply(); save();
+  });
+
+  addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && panel.classList.contains('is-on')) close();
+  });
+
+  apply();
+})();
