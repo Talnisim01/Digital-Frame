@@ -800,6 +800,9 @@
   try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
 
   var TEXT_LABELS = ['רגיל', 'גדול', 'גדול מאוד'];
+  if(window.lenis && window.lenis.__baseLerp === undefined){
+    window.lenis.__baseLerp = window.lenis.options.lerp;
+  }
 
   function apply(){
     root.classList.remove('a11y-text-1','a11y-text-2');
@@ -811,11 +814,15 @@
     /* עצירת אנימציות צריכה גם לעצור את Lenis ואת GSAP, לא רק את
        מעברי ה-CSS — אחרת הגלילה החלקה והרצף ממשיכים לנוע. */
     if(window.gsap) gsap.globalTimeline.timeScale(state.still ? 0 : 1);
-    /* Lenis נעצר ולא נהרס: stop() מחזיר את הגלילה הטבעית של
-       הדפדפן, ו-start() מחזיר אותה כשמבטלים. destroy() היה
-       דורש לאתחל מחדש את כל המנוע. */
+    /* ההערה הקודמת כאן טענה ש-stop() מחזיר את הגלילה הטבעית.
+       זה לא נכון: stop() חוסם גלילה לגמרי ומוסיף lenis-stopped
+       (overflow:hidden) — הוא נועד לעצירה זמנית בזמן שתפריט
+       פתוח. נמדד: הגלגלת נתקעה ב-1500.
+       smoothWheel:false משאיר את Lenis רץ, רק בלי ההחלקה —
+       הגלילה זזה צעד-צעד כמו בדפדפן רגיל. */
     if(window.lenis){
-      if(state.still) window.lenis.stop(); else window.lenis.start();
+      window.lenis.options.smoothWheel = !state.still;
+      window.lenis.options.lerp = state.still ? 1 : window.lenis.__baseLerp;
     }
 
     [].forEach.call(panel.querySelectorAll('[data-a11y]'), function(b){
