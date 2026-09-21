@@ -627,6 +627,15 @@
   var id    = host ? host.dataset.vimeoId : '';
   var lastFocus = null, duration = 0, muted = false, playing = false;
 
+  function setMuteUI(m){
+    muted = m;
+    muteB.textContent = m ? 'UNMUTE' : 'MUTE';
+    muteB.classList.toggle('is-off', m);
+    muteB.setAttribute('aria-pressed', m ? 'true' : 'false');
+    muteB.setAttribute('aria-label', m ? 'הפעלת סאונד' : 'השתקת סאונד');
+  }
+  function syncMute(){ send('getMuted'); send('getVolume'); }
+
   function send(method, value){
     if(!frame.contentWindow) return;
     frame.contentWindow.postMessage(JSON.stringify(
@@ -653,8 +662,7 @@
     box.classList.add('is-on');
     document.documentElement.classList.add('rlb-open');
     if(window.lenis) window.lenis.stop();
-    playing = true; muted = false;
-    muteB.textContent = 'MUTE';
+    playing = true;
 
     /* מלכודת פוקוס: כל שאר הדף הופך inert. בלי זה Tab בורח
        לכפתורים שמאחורי הנגן — נמדד: הפוקוס נחת על craft-pill.
@@ -723,9 +731,13 @@
     if(act === 'toggle'){ playing = !playing; send(playing ? 'play' : 'pause');
                           box.classList.toggle('is-paused', !playing);
                           b.setAttribute('aria-label', playing ? 'השהה' : 'נגן'); }
-    if(act === 'mute'){ muted = !muted; send('setVolume', muted ? 0 : 1);
-                        b.textContent = muted ? 'UNMUTE' : 'MUTE';
-                        b.classList.toggle('is-off', muted); }
+    /* השתקה נשלטת ב-setMuted ולא ב-setVolume: ב-Vimeo, כמו ב-<video>,
+       עוצמה והשתקה הן שני מצבים נפרדים. כשהדפדפן חוסם ניגון עם סאונד
+       בתוך iframe (Safari/iOS גם אחרי לחיצה), Vimeo מתנגן מושתק —
+       ו-setVolume(1) לא מבטל השתקה, כך שלא הייתה שום דרך לשמוע.
+       המצב המוצג מסונכרן מהנגן עצמו (syncMute), לא מניחוש. */
+    if(act === 'mute'){ setMuteUI(!muted); send('setMuted', muted);
+                        if(!muted) send('setVolume', 1); }
   });
 
   function seekFromEvent(e){
@@ -759,10 +771,20 @@
     if(d.event === 'ready'){
       send('addEventListener', 'playProgress');
       send('addEventListener', 'finish');
+      send('addEventListener', 'play');
+      send('addEventListener', 'volumechange');
+      syncMute();
       send('getDuration');
       return;
     }
     if(d.method === 'getDuration'){ duration = d.value || 0; return; }
+    /* מושתק = השתקה פעילה או עוצמה אפס; שתי התשובות מגיעות בנפרד */
+    if(d.method === 'getMuted'){ box.dataset.pm = d.value ? 1 : 0; }
+    if(d.method === 'getVolume'){ box.dataset.pv = d.value; }
+    if(d.method === 'getMuted' || d.method === 'getVolume'){
+      setMuteUI(box.dataset.pm === '1' || box.dataset.pv === '0'); return;
+    }
+    if(d.event === 'play' || d.event === 'volumechange'){ syncMute(); return; }
     if(d.method === 'getCurrentTime' && track.dataset.nudge){
       send('setCurrentTime', Math.max(0, (d.value || 0) + (+track.dataset.nudge)));
       track.dataset.nudge = '';
