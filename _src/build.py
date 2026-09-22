@@ -238,6 +238,11 @@ PROJECTS = [
   'מיתוג למותג טיפוח לגברים, בשפה כהה ואיכותית.'),
 ]
 
+# הפרויקטים שמוצגים ברשת של דף הבית, לפי הסדר. הרשת בשני טורים,
+# לכן מספר זוגי — אחרת נשאר חור בשורה האחרונה. לשינוי: להחליף slug.
+HOME_WORK = ['roommate', 'fintechpro', 'woodly', 'zion-covenant-gateways',
+             'rak-ayom', 'ptorzakan']
+
 # עבודות גרפיות — פריטי גלריה, בלי דף פרויקט משלהם.
 # (כותרת, תמונה, תיאור)
 CREATIVE = [
@@ -554,6 +559,26 @@ def card(slug, name, cat, tag, src, live=''):
             f'        <span class="card-name">{name}\n          {ARROW}\n        </span>\n'
             f'        <span class="card-tags">{cat}</span>\n'
             f'      </div>\n    </a>')
+
+
+def home_work():
+    """הפילטרים והרשת של סקשן העבודות בדף הבית, מאותם נתונים ואותו
+    card() של /projects. קודם הרשת הייתה שלושה כרטיסי שלד עם מילוי
+    גרדיאנט, מנותקים מהנתונים, וכולם קישרו ל-#work."""
+    by = {p[0]: p for p in PROJECTS}
+    missing = [s for s in HOME_WORK if s not in by]
+    assert not missing, f'HOME_WORK: אין פרויקט בשם {missing}'
+    cards = '\n\n'.join(card(*by[s][:6]) for s in HOME_WORK)
+    return ('''  <!-- הפילטור הוא JS, אבל מצב ברירת המחדל ("הכול") נכון גם בלעדיו -->
+  <div class="work-filters" role="group" aria-label="סינון פרויקטים" data-animate="fade-up">
+    <button class="filt" type="button" data-filter="all"    aria-pressed="true">הכול</button>
+    <button class="filt" type="button" data-filter="ux"     aria-pressed="false">UI/UX</button>
+    <button class="filt" type="button" data-filter="design" aria-pressed="false">עיצוב ומיתוג</button>
+  </div>
+
+  <div class="work-grid" id="workGrid">
+''' + cards + '''
+  </div>''')
 
 
 def canonical_of(path):
@@ -1195,7 +1220,8 @@ def patch_home():
     ico  = full[full.index('<!-- ספריית האייקונים'):
                 full.index('<!-- ============ שכבת הנגן')].rstrip()
     for tag, blk in (('nav', NAV), ('menu', MENU), ('contact', CONTACT),
-                     ('footer', FOOTER), ('seo', home_seo()), ('wa', wa), ('rlb', rlb), ('ico', ico), ('a11y', a11y)):
+                     ('footer', FOOTER), ('seo', home_seo()), ('wa', wa), ('rlb', rlb), ('ico', ico), ('a11y', a11y),
+                     ('work', home_work())):
         # בדף הבית העוגנים נשארים מקומיים -> {{HOME}} ריק
         new = resolve(blk, '')
         src = re.sub(f'<!--@{tag}-->.*?<!--/@{tag}-->',
