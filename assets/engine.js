@@ -463,6 +463,27 @@ function start(){
         scrollTrigger:{trigger:workGrid, start:'top bottom-=8', toggleActions:'play none none reverse'}});
     }
 
+    /* ── חשיפה לפי סקשן: data-reveal="section" ──
+       כל אלמנט נחשף כשהוא עצמו נכנס למסך (top bottom-=8). בסקשן
+       שמתאים לגובה המסך זה אומר שהאלמנט האחרון — המייל בפינה התחתונה
+       של יצירת קשר — נחשף רק כשהסקשן כמעט כולו על המסך, ועוד 80px
+       של ה-y ההתחלתי מאחרים אותו. נמדד: 90% מהסקשן גלוי, המייל 53px
+       מעל תחתית המסך, opacity 0.
+       כאן נוסף טריגר על הסקשן עצמו: ברגע שיותר מחצי ממנו גלוי, כל
+       האנימציות שבתוכו מתנגנות — מה שקורה קודם, הוא או הטריגר של
+       האלמנט. בגלילה חזרה, מה שעדיין מעל נקודת ההתחלה שלו חוזר
+       להיות מוסתר, כמו ב-toggleActions הרגיל. */
+    document.querySelectorAll('[data-reveal="section"]').forEach(sec=>{
+      const own = ScrollTrigger.getAll().filter(t=>t.animation && t.trigger !== sec && sec.contains(t.trigger));
+      if(!own.length) return;
+      ScrollTrigger.create({
+        trigger:sec,
+        start:()=>'top bottom-=' + Math.round(Math.min(sec.offsetHeight, innerHeight) * .5),
+        onEnter:()=>own.forEach(t=>t.animation.play()),
+        onLeaveBack:self=>own.forEach(t=>{ if(self.scroll() < t.start) t.animation.reverse(); })
+      });
+    });
+
     /* hover scale מנוהל ב-GSAP: על כפתורים שמקבלים reveal (transform של
        GSAP, למשל ה-CTA בסקשן 2) תכונת ה-CSS scale לא מתחברת אמין עם
        ה-transform — GSAP חייב לנהל את שניהם. חל על כל ה-.cta באחידות.
